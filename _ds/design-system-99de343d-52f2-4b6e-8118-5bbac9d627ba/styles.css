@@ -1,0 +1,14 @@
+/* ============================================================
+   ИнтеллектКАЗС Design System — entry point
+   «Белый зал с одним синим выключателем»
+   Consumers link THIS one file.
+   ============================================================ */
+
+/* — Tokens — */
+@import url('tokens/colors.css');
+@import url('tokens/typography.css');
+@import url('tokens/layout.css');
+
+/* — Foundations & components — */
+@import url('css/base.css');
+@import url('css/components.css');

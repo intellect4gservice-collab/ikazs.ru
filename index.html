@@ -1,0 +1,293 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>ИнтеллектКАЗС — контейнерные АЗС, резервуары, ТРК и автоматизация</title><meta name="description" content="Производство контейнерных АЗС, резервуаров, топливораздаточных колонок и систем автоматизации под ключ. Собственный завод в Санкт-Петербурге."><link rel="stylesheet" href="styles.css"><style>
+body{background:#fff}
+.st-page{display:flex;flex-direction:column;background:#fff}
+.st-top{position:relative;padding:clamp(84px,11vh,116px) 48px 18px;display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap}
+.st-top>h1,.st-top>p{position:relative;z-index:1}
+.st-top h1{font-size:clamp(26px,2.4vw,38px);line-height:1.1;letter-spacing:-.02em;max-width:22ch;font-weight:600;margin:0;background:linear-gradient(110deg,#0b0d0f 0%,#2997ff 22%,#a855f7 40%,#ff5470 58%,#ffb347 74%,#0b0d0f 100%);background-size:260% 260%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:ai-shift 8s ease-in-out infinite}
+@keyframes ai-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.dust{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+.dust i{position:absolute;border-radius:50%;opacity:0;filter:blur(var(--b,3px));animation:dustFloat ease-in-out infinite}
+@keyframes dustFloat{0%{opacity:0;transform:translate3d(0,0,0) scale(.35)}18%{opacity:calc(var(--o,.16)*2.8);transform:translate3d(calc(var(--dx,10px)*.22),calc(var(--dy,-14px)*.22),0) scale(1.5)}44%{opacity:calc(var(--o,.16)*1.1);transform:translate3d(calc(var(--dx,10px)*.5),calc(var(--dy,-14px)*.5),0) scale(.6)}70%{opacity:calc(var(--o,.16)*2.6);transform:translate3d(calc(var(--dx,10px)*.76),calc(var(--dy,-14px)*.76),0) scale(1.8)}100%{opacity:0;transform:translate3d(var(--dx,10px),var(--dy,-14px),0) scale(.45)}}
+@media(prefers-reduced-motion:reduce){.st-top h1{animation-duration:26s}.dust i{animation-duration:38s}}
+.st-top p{font-size:14px;line-height:1.5;color:#6b7280;max-width:34ch;margin:0}
+.nav .pill{white-space:nowrap}
+.st-rail{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 48px 14px}
+.strip{position:relative;height:calc((100svh - 196px)/2.18);min-height:210px;border:1px solid #e7e9ec;border-radius:8px;overflow:hidden;display:block;text-decoration:none;isolation:isolate}
+.strip-media{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center}
+.strip-media video{width:100%;height:100%;object-fit:cover;display:block}
+.strip.lt .strip-txt h2{text-shadow:0 1px 3px rgba(255,255,255,.9),0 0 12px rgba(255,255,255,.75)!important}
+.strip-media.zoom{background-size:190% auto;background-position:center 42%}
+.strip-media.zoom video{transform:scale(1.9);transform-origin:center 42%}
+.strip-media.fit{background-size:contain;background-repeat:no-repeat;background-color:#fff}
+.strip-media.fit video{object-fit:contain;background:#fff}
+.strip.dk .strip-txt span,.strip.dk .strip-go{color:#0b0d0f!important;text-shadow:none!important}
+.strip-media.inset{background-size:contain;background-repeat:no-repeat;background-position:center center;background-color:#fff}
+.strip-media.inset video{object-fit:contain;object-position:center center;background:#fff}
+.strip-media.inset{background-size:contain;background-position:center center;background-color:#fff}
+.strip-media.inset video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center center;background:#fff}
+.strip-media video:not(:has(source)){display:none}
+.strip-row{position:absolute;inset:0;z-index:2;display:flex;align-items:flex-end;gap:14px;padding:24px}
+.strip-idx{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11px;letter-spacing:.1em;color:#fff!important;text-shadow:none!important;background:#0b0d0f;border-radius:4px;padding:5px 7px 4px;flex:none;align-self:flex-end;margin-bottom:2px}
+.strip-txt{display:grid;grid-template-rows:auto 0fr;min-width:0;transition:grid-template-rows .45s cubic-bezier(.4,0,.2,1)}
+.strip:hover .strip-txt{grid-template-rows:auto 1fr}
+.strip-txt h2{margin:0;font-size:clamp(19px,1.7vw,27px);line-height:1.12;letter-spacing:-.015em;font-weight:600;color:#0b0d0f!important;text-shadow:none!important}
+.strip-txt span{font-size:13px;line-height:1.45;color:#fff!important;text-shadow:0 1px 3px rgba(0,0,0,.55)!important;opacity:1;max-width:46ch;overflow:hidden;opacity:0;padding-top:0;transition:opacity .4s ease,padding-top .45s ease}
+.strip:hover .strip-txt span{opacity:1;padding-top:5px}
+.strip-go{margin-left:auto;flex:none;display:flex;align-items:center;gap:10px;font-size:13px;color:#fff!important;text-shadow:0 1px 3px rgba(0,0,0,.55)!important;opacity:0;transform:translateX(-8px);transition:opacity .45s ease,transform .45s ease;padding-bottom:2px}
+.strip:hover .strip-go{opacity:1;transform:none}
+.strip-go svg{width:16px;height:16px}
+.sitemap{position:relative;isolation:isolate;border-top:1px solid #e7e9ec;margin-top:26px;padding:44px 48px 8px}
+.sitemap h3,.sitemap .sm-grid{position:relative;z-index:1}
+.sitemap h3{margin:0 0 26px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8a929b;font-weight:600}
+.sm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:34px 28px}
+.sm-col h4{margin:0 0 12px;font-size:13px;font-weight:600;color:#0b0d0f;letter-spacing:-.01em}
+.sm-col ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.sm-col a{font-size:13px;line-height:1.35;color:#6b7280;text-decoration:none}
+.sm-col a:hover{color:#0b0d0f}
+@media(max-width:860px){.sitemap{padding:34px 22px 4px}.sm-grid{gap:28px 20px}}
+.st-foot{padding:clamp(14px,2.4vh,22px) 48px clamp(16px,2.6vh,26px);display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;font-size:12px;color:#8a929b;border-top:1px solid #e7e9ec;margin-top:14px}
+.st-foot a{color:#8a929b}.st-foot a:hover{color:#0b0d0f}
+@media(max-width:860px){.strip-row{padding:18px}.st-top{padding:96px 22px 18px}.st-rail{grid-template-columns:1fr;padding:0 22px 14px}.strip{height:auto;min-height:190px}.strip-idx{display:none}.strip-go{display:none}.sitemap{position:relative;isolation:isolate;border-top:1px solid #e7e9ec;margin-top:26px;padding:44px 48px 8px}
+.sitemap h3,.sitemap .sm-grid{position:relative;z-index:1}
+.sitemap h3{margin:0 0 26px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#8a929b;font-weight:600}
+.sm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:34px 28px}
+.sm-col h4{margin:0 0 12px;font-size:13px;font-weight:600;color:#0b0d0f;letter-spacing:-.01em}
+.sm-col ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.sm-col a{font-size:13px;line-height:1.35;color:#6b7280;text-decoration:none}
+.sm-col a:hover{color:#0b0d0f}
+@media(max-width:860px){.sitemap{padding:34px 22px 4px}.sm-grid{gap:28px 20px}}
+.st-foot{padding:20px 22px}}
+.nav{background:rgba(255,255,255,.9);border-bottom:1px solid #e7e9ec}
+.nav.solid{background:rgba(255,255,255,.94)!important;backdrop-filter:saturate(1.4) blur(14px);border-bottom-color:#e7e9ec}
+.nav .brand .word{color:#0b0d0f}
+.nav-links>a,.nav-item>a{color:#4b5563}
+.nav-links>a:hover,.nav-item>a:hover{color:#0b0d0f}
+.nav-phone{color:#0b0d0f}
+.nav-mail{color:#6b7280}.nav-mail:hover{color:#0b0d0f}
+.nav-burger span{background:#0b0d0f}
+</style></head><body>
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-mark.png" alt="ИнтеллектКАЗС">
+      <span class="word">Интеллект<b>КАЗС</b></span>
+    </a>
+    <div class="nav-links"><div class="nav-item"><a href="index.html">КАЗС <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="drop-free" href="kazs-besplatno.html">КАЗС Бесплатно<small>Совместная программа с ЛУКОЙЛ</small></a><a href="kommercheskaya.html">Коммерческая КАЗС<small>Продавать топливо через АЗС</small></a><a class="simple" href="soon.html">Индивидуальный дизайн</a><a href="vedomstvennaya.html">Ведомственная КАЗС<small>Для собственного автопарка</small></a><div class="drop-head">Модельный ряд</div><a class="simple" href="kazs-open.html">Открытый тех. отсек</a><a class="simple" href="kazs-monoblock.html">Моноблок</a><a class="simple" href="kazs-suitcase.html">Чемодан</a><a class="simple" href="kazs-profile.html">Контейнер профлист</a><a class="simple" href="kazs-premium.html">Контейнер коммерческий</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="reservoirs-rgs.html">Резервуары <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="reservoirs-rgs.html">РГС — горизонтальные</a><a class="simple" href="reservoirs-rvs.html">РВС — вертикальные</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="trk-topaz.html">ТРК <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="trk-topaz.html">Топаз</a><a class="simple" href="trk-kvant.html">Квант</a><a class="simple" href="trk-sanki.html">Sanki</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="automation-terminal.html">Автоматизация <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="automation-terminal.html">Терминал самообслуживания</a><a class="simple" href="automation-scada.html">Промышленная автоматизация (SCADA)</a><a class="simple" href="automation-monitoring.html">Удалённый мониторинг и учёт</a><a class="simple" href="automation-smart-azs.html">ПО «Смарт-АЗС»</a><a class="simple" href="automation-plexpoint.html">PlexPoint</a><a class="simple" href="automation-buk-tsg.html">БУК TS-G</a><a class="simple" href="soon.html">ПО ТОПАЗ</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="epc-pod-klyuch.html">Услуги <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="epc-pod-klyuch.html">EPC под ключ</a><a class="simple" href="services-design.html">Проектирование</a><a class="simple" href="services-installation.html">Монтаж и ПНР</a><a class="simple" href="services-service.html">Сервис 24/7</a><a class="simple" href="services-modernization.html">Модернизация старых АЗС</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="configurator.html">Инструменты <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="configurator.html">3D-конфигуратор КАЗС</a><a class="simple" href="calculator.html">Калькулятор окупаемости</a><a class="simple" href="calculator-tco.html">Калькулятор TCO 5 лет</a><a class="simple" href="wizard.html">Визард «Какой КАЗС нужен»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="znaniya.html">Знания <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="projects.html">Кейсы</a><a class="simple" href="faq.html">FAQ</a><a class="simple" href="objections.html">Возражения</a><a class="simple" href="docs.html">Нормативка</a><a class="simple" href="glossary.html">Глоссарий</a><a class="simple" href="industries.html">Отрасли</a><a class="simple" href="blog.html">Блог</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="proizvodstvo.html">О компании <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="proizvodstvo.html">Производство</a><a class="simple" href="about-team.html">Команда</a><a class="simple" href="about-certificates.html">Сертификаты</a><a class="simple" href="about-quality.html">Контроль качества</a><a class="simple" href="contacts.html">Контакты</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div></div>
+    <div class="nav-cta">
+      <div class="nav-contact"><a href="tel:+78122193485" class="nav-phone mono">8 812 219 34 85</a><a href="mailto:info@ikazs.ru" class="nav-mail mono">info@ikazs.ru</a></div>
+      <button class="pill pill-primary" data-call>Заказать звонок</button>
+      <button class="nav-burger" aria-label="Меню"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="st-page">
+  <div class="st-top">
+    <div class="dust" aria-hidden="true">
+      <i style="left:0.2%;top:70%;width:7px;height:7px;--b:1px;background:#b8bec8;--dx:180px;--dy:-90px;--o:.16;animation-duration:11s;animation-delay:0s"></i>
+      <i style="left:1.5%;top:24%;width:22px;height:22px;--b:5px;background:radial-gradient(circle at 34% 30%,#eef1f5,#9aa6bb 60%,rgba(154,166,187,0) 78%);--dx:-120px;--dy:120px;--o:.18;animation-duration:14s;animation-delay:-4s"></i>
+      <i style="left:3.2%;top:86%;width:5px;height:5px;--b:.5px;background:#a9b2c0;--dx:230px;--dy:-140px;--o:.2;animation-duration:9s;animation-delay:-6s"></i>
+      <i style="left:6.0%;top:44%;width:34px;height:34px;--b:8px;background:radial-gradient(circle at 40% 32%,#f2f4f8,#8fa1c4 58%,rgba(143,161,196,0) 76%);--dx:150px;--dy:96px;--o:.13;animation-duration:17s;animation-delay:-9s"></i>
+      <i style="left:9.5%;top:14%;width:9px;height:9px;--b:1.5px;background:#c2c8d2;--dx:-160px;--dy:130px;--o:.19;animation-duration:12s;animation-delay:-2s"></i>
+      <i style="left:14.4%;top:62%;width:14px;height:14px;--b:3px;background:radial-gradient(circle at 36% 30%,#fff,#a9b6cc 62%,rgba(169,182,204,0) 80%);--dx:210px;--dy:-110px;--o:.17;animation-duration:13s;animation-delay:-7s"></i>
+      <i style="left:20.1%;top:90%;width:6px;height:6px;--b:1px;background:#b0b8c4;--dx:-190px;--dy:-150px;--o:.21;animation-duration:10s;animation-delay:-3s"></i>
+      <i style="left:25.7%;top:30%;width:26px;height:26px;--b:6px;background:radial-gradient(circle at 38% 30%,#f6f2fb,#b39ac9 58%,rgba(179,154,201,0) 78%);--dx:130px;--dy:150px;--o:.12;animation-duration:15s;animation-delay:-11s"></i>
+      <i style="left:32.9%;top:74%;width:8px;height:8px;--b:1px;background:#bcc3cd;--dx:-220px;--dy:-96px;--o:.18;animation-duration:11s;animation-delay:-5s"></i>
+      <i style="left:39.7%;top:18%;width:38px;height:38px;--b:9px;background:radial-gradient(circle at 42% 34%,#f4f6fa,#93a4c6 56%,rgba(147,164,198,0) 76%);--dx:-140px;--dy:170px;--o:.11;animation-duration:16s;animation-delay:-1s"></i>
+      <i style="left:47.1%;top:56%;width:11px;height:11px;--b:2px;background:radial-gradient(circle at 34% 30%,#fff,#c4a9b8 62%,rgba(196,169,184,0) 80%);--dx:200px;--dy:-130px;--o:.19;animation-duration:10s;animation-delay:-8s"></i>
+      <i style="left:54.9%;top:88%;width:5px;height:5px;--b:.5px;background:#a6aeba;--dx:-170px;--dy:-170px;--o:.22;animation-duration:10s;animation-delay:-2s"></i>
+      <i style="left:63.3%;top:36%;width:19px;height:19px;--b:4px;background:radial-gradient(circle at 38% 30%,#f1f5fb,#9db0d2 58%,rgba(157,176,210,0) 78%);--dx:160px;--dy:110px;--o:.15;animation-duration:14s;animation-delay:-10s"></i>
+      <i style="left:72.2%;top:66%;width:7px;height:7px;--b:1px;background:#b5bcc7;--dx:-210px;--dy:-88px;--o:.2;animation-duration:12s;animation-delay:-5s"></i>
+      <i style="left:81.6%;top:22%;width:30px;height:30px;--b:7px;background:radial-gradient(circle at 40% 32%,#faf4ef,#c9a98f 58%,rgba(201,169,143,0) 78%);--dx:-130px;--dy:150px;--o:.12;animation-duration:15s;animation-delay:-6s"></i>
+      <i style="left:89.7%;top:78%;width:10px;height:10px;--b:2px;background:#bec5cf;--dx:-180px;--dy:-140px;--o:.18;animation-duration:13s;animation-delay:-9s"></i>
+      <i style="left:0.7%;top:46%;width:12px;height:12px;--b:2px;background:#b3bbc7;--dx:200px;--dy:70px;--o:.17;animation-duration:13s;animation-delay:-2s"></i>
+      <i style="left:2.4%;top:60%;width:4px;height:4px;--b:.5px;background:#9ea7b4;--dx:-150px;--dy:-120px;--o:.23;animation-duration:9s;animation-delay:-7s"></i>
+      <i style="left:7.6%;top:80%;width:16px;height:16px;--b:3px;background:radial-gradient(circle at 36% 30%,#fbf7ff,#a894c4 60%,rgba(168,148,196,0) 79%);--dx:170px;--dy:-100px;--o:.14;animation-duration:15s;animation-delay:-11s"></i>
+      <i style="left:11.5%;top:34%;width:6px;height:6px;--b:1px;background:#c6ccd6;--dx:-200px;--dy:110px;--o:.2;animation-duration:11s;animation-delay:-1s"></i>
+      <i style="left:16.7%;top:22%;width:24px;height:24px;--b:5px;background:radial-gradient(circle at 40% 32%,#f0f4fa,#96a8c8 58%,rgba(150,168,200,0) 77%);--dx:140px;--dy:130px;--o:.12;animation-duration:16s;animation-delay:-5s"></i>
+      <i style="left:22.8%;top:70%;width:8px;height:8px;--b:1px;background:#aab2be;--dx:-230px;--dy:-80px;--o:.19;animation-duration:10s;animation-delay:-8s"></i>
+      <i style="left:29.7%;top:48%;width:13px;height:13px;--b:2.5px;background:radial-gradient(circle at 34% 30%,#fff,#b8a4c0 62%,rgba(184,164,192,0) 80%);--dx:190px;--dy:-120px;--o:.16;animation-duration:12s;animation-delay:-3s"></i>
+      <i style="left:36.3%;top:88%;width:5px;height:5px;--b:.5px;background:#a3abb8;--dx:-160px;--dy:-160px;--o:.22;animation-duration:10s;animation-delay:-10s"></i>
+      <i style="left:43.3%;top:40%;width:28px;height:28px;--b:6px;background:radial-gradient(circle at 38% 30%,#f5f7fb,#8ea0c2 57%,rgba(142,160,194,0) 76%);--dx:-120px;--dy:160px;--o:.11;animation-duration:17s;animation-delay:-7s"></i>
+      <i style="left:50.9%;top:72%;width:9px;height:9px;--b:1.5px;background:#b9c0cb;--dx:210px;--dy:-90px;--o:.18;animation-duration:11s;animation-delay:-4s"></i>
+      <i style="left:60.4%;top:16%;width:17px;height:17px;--b:3.5px;background:radial-gradient(circle at 36% 30%,#fdf6f2,#c7a493 60%,rgba(199,164,147,0) 79%);--dx:-180px;--dy:140px;--o:.13;animation-duration:14s;animation-delay:-10s"></i>
+      <i style="left:69.2%;top:52%;width:6px;height:6px;--b:1px;background:#adb5c1;--dx:160px;--dy:-150px;--o:.21;animation-duration:10s;animation-delay:0s"></i>
+      <i style="left:78.4%;top:84%;width:20px;height:20px;--b:4px;background:radial-gradient(circle at 40% 32%,#f2f5fa,#9aacce 58%,rgba(154,172,206,0) 77%);--dx:-150px;--dy:-130px;--o:.13;animation-duration:15s;animation-delay:-12s"></i>
+      <i style="left:94.8%;top:38%;width:11px;height:11px;--b:2px;background:#c0c7d1;--dx:-220px;--dy:100px;--o:.17;animation-duration:13s;animation-delay:-6s"></i>
+    </div>
+    <h1>Топливная инфраструктура под ключ</h1>
+    <p>Собственное производство в Санкт-Петербурге. Проект, изготовление, монтаж и сервис — один договор.</p>
+  </div>
+  <div class="st-rail">
+    <a class="strip" href="kommercheskaya.html" data-screen-label="Коммерческая">
+      <div class="strip-media" style="background-image:url(assets/strip-kom.jpg)"><video muted playsinline preload="metadata" poster="assets/strip-kom.jpg" data-strip-video><source src="assets/vid-kom.mp4" type="video/mp4"><source src="assets/vid-kom.webm" type="video/webm"></video></div>
+      
+      <div class="strip-row">
+        <div class="strip-idx">01</div>
+        <div class="strip-txt"><h2>Коммерческая КАЗС</h2><span>Продажа топлива 24/7 без оператора: терминал самообслуживания и онлайн-касса.</span></div>
+        <div class="strip-go">Смотреть<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+    <a class="strip" href="vedomstvennaya.html" data-screen-label="Ведомственная">
+      <div class="strip-media" style="background-image:url(assets/strip-ved.jpg)"><video muted playsinline preload="metadata" poster="assets/strip-ved.jpg" data-strip-video><source src="assets/vid-ved.mp4" type="video/mp4"><source src="assets/vid-ved.webm" type="video/webm"></video></div>
+      
+      <div class="strip-row">
+        <div class="strip-idx">02</div>
+        <div class="strip-txt"><h2>Ведомственная КАЗС</h2><span>Своя заправка для автопарка: топливо по оптовой цене, учёт до литра.</span></div>
+        <div class="strip-go">Смотреть<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+    <a class="strip dk" href="kazs-besplatno.html" data-screen-label="КАЗС бесплатно">
+      <div class="strip-media" style="background-image:url(assets/strip-free.jpg)"><video muted playsinline preload="metadata" poster="assets/strip-free.jpg" data-strip-video><source src="assets/vid-free.mp4" type="video/mp4"><source src="assets/vid-free.webm" type="video/webm"></video></div>
+      
+      <div class="strip-row">
+        <div class="strip-idx">03</div>
+        <div class="strip-txt"><h2>КАЗС бесплатно</h2><span>Станция без капитальных вложений — совместная программа с ЛУКОЙЛ. Для своего автопарка.</span></div>
+        <div class="strip-go">Смотреть<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+    <a class="strip sc" href="reservoirs-rgs.html" data-screen-label="Резервуары">
+      <div class="strip-media" style="background-image:url(assets/strip-tank2.jpg)"><video muted playsinline preload="metadata" poster="assets/strip-tank2.jpg" data-strip-video><source src="assets/vid-tank.mp4" type="video/mp4"><source src="assets/vid-tank.webm" type="video/webm"></video></div>
+      
+      <div class="strip-row">
+        <div class="strip-idx">04</div>
+        <div class="strip-txt"><h2>Резервуары РГС и РВС</h2><span>РГС 5–120 м³, РВС 500–50 000 м³, одно- и двустенные.</span></div>
+        <div class="strip-go">Смотреть<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+    <a class="strip sc" href="trk-topaz.html" data-screen-label="ТРК">
+      <div class="strip-media" style="background-image:url(assets/strip-trk3.jpg)"><video muted playsinline preload="metadata" poster="assets/strip-trk3.jpg" data-strip-video><source src="assets/vid-trk.mp4" type="video/mp4"><source src="assets/vid-trk.webm" type="video/webm"></video></div>
+      
+      <div class="strip-row">
+        <div class="strip-idx">05</div>
+        <div class="strip-txt"><h2>ТРК</h2><span>Топаз, Квант, Sanki — выдача и точный учёт, интеграция с автоматикой.</span></div>
+        <div class="strip-go">Смотреть<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+    <a class="strip lt" href="automation-scada.html" data-screen-label="Автоматизация">
+      <div class="strip-media zoom" style="background-image:url(assets/strip-auto.jpg)"><video muted playsinline preload="metadata" poster="assets/strip-auto.jpg" data-strip-video><source src="assets/vid-auto.mp4" type="video/mp4"><source src="assets/vid-auto.webm" type="video/webm"></video></div>
+      
+      <div class="strip-row">
+        <div class="strip-idx">06</div>
+        <div class="strip-txt"><h2>Терминалы и<br>автоматизация</h2><span>АСУ АЗС, SCADA, терминалы, удалённый мониторинг — до 20% экономии на потерях.</span></div>
+        <div class="strip-go">Смотреть<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+      </div>
+    </a>
+  </div>
+  <nav class="sitemap" data-screen-label="Карта сайта">
+    <h3>Карта сайта</h3>
+    <div class="sm-grid">
+      <div class="sm-col"><h4>КАЗС</h4><ul><li><a href="kommercheskaya.html">Коммерческая КАЗС</a></li><li><a href="kommercheskaya-classic.html">Коммерческая Classic</a></li><li><a href="vedomstvennaya.html">Ведомственная КАЗС</a></li><li><a href="kazs-besplatno.html">КАЗС бесплатно</a></li><li><a href="kazs-monoblock.html">Моноблок</a></li><li><a href="kazs-profile.html">Профиль</a></li><li><a href="kazs-premium.html">Премиум</a></li><li><a href="kazs-open.html">Открытая</a></li><li><a href="kazs-suitcase.html">Чемодан</a></li><li><a href="komplektacii.html">Комплектации</a></li><li><a href="configurator.html">Конфигуратор</a></li></ul></div>
+      <div class="sm-col"><h4>Резервуары и ТРК</h4><ul><li><a href="reservoirs-rgs.html">Резервуары РГС</a></li><li><a href="reservoirs-rvs.html">Резервуары РВС</a></li><li><a href="trk-topaz.html">ТРК Топаз</a></li><li><a href="trk-kvant.html">ТРК Квант</a></li><li><a href="trk-sanki.html">ТРК Sanki</a></li></ul></div>
+      <div class="sm-col"><h4>Автоматизация</h4><ul><li><a href="automation-scada.html">АСУ и SCADA</a></li><li><a href="automation-terminal.html">Терминалы самообслуживания</a></li><li><a href="automation-smart-azs.html">Смарт-АЗС</a></li><li><a href="automation-monitoring.html">Удалённый мониторинг</a></li><li><a href="automation-plexpoint.html">PlexPoint</a></li><li><a href="automation-buk-tsg.html">БУК и ТСГ</a></li></ul></div>
+      <div class="sm-col"><h4>Услуги</h4><ul><li><a href="epc-pod-klyuch.html">EPC под ключ</a></li><li><a href="services-epc.html">EPC-подряд</a></li><li><a href="services-design.html">Проектирование</a></li><li><a href="services-installation.html">Монтаж и ПНР</a></li><li><a href="services-service.html">Сервис 24/7</a></li><li><a href="services-modernization.html">Модернизация</a></li><li><a href="garantiya.html">Гарантия</a></li><li><a href="plan-grafik.html">План-график</a></li></ul></div>
+      <div class="sm-col"><h4>Покупка</h4><ul><li><a href="calculator.html">Калькулятор</a></li><li><a href="calculator-tco.html">Расчёт TCO</a></li><li><a href="calculator-leasing.html">Расчёт лизинга</a></li><li><a href="lizing.html">Лизинг</a></li><li><a href="usloviya-pokupki.html">Условия покупки</a></li><li><a href="wizard.html">Подбор станции</a></li><li><a href="industries.html">Отрасли</a></li></ul></div>
+      <div class="sm-col"><h4>Компания</h4><ul><li><a href="proizvodstvo.html">О производстве</a></li><li><a href="about-production.html">Цех и мощности</a></li><li><a href="about-team.html">Команда</a></li><li><a href="about-quality.html">Контроль качества</a></li><li><a href="about-certificates.html">Сертификаты</a></li><li><a href="projects.html">Проекты</a></li><li><a href="postavshchikam.html">Поставщикам</a></li><li><a href="docs.html">Документы</a></li><li><a href="contacts.html">Контакты</a></li></ul></div>
+      <div class="sm-col"><h4>Знания</h4><ul><li><a href="znaniya.html">База знаний</a></li><li><a href="blog.html">Блог</a></li><li><a href="faq.html">Вопросы и ответы</a></li><li><a href="glossary.html">Глоссарий</a></li><li><a href="objections.html">Разбор возражений</a></li><li><a href="glavnaya-obzor.html">Обзор направлений</a></li></ul></div>
+    </div>
+  </nav>
+  <div class="st-foot">
+    <span>ИнтеллектКАЗС · производство КАЗС и АЗС · Санкт-Петербург · <a href="tel:+78122193485">8 812 219 34 85</a></span>
+    <span><a href="proizvodstvo.html">О компании</a> · <a href="projects.html">Кейсы</a> · <a href="znaniya.html">Знания</a> · <a href="contacts.html">Контакты</a> · © 2026 ИнтеллектКАЗС</span>
+  </div>
+</div>
+
+
+<script src="app.js"></script>
+<script>
+(function(){
+  var d=document.querySelector('.st-top .dust'),sm=document.querySelector('.sitemap');if(!d||!sm)return;
+  var c=d.cloneNode(true);c.classList.add('dust-mag');
+  var extra=d.cloneNode(true);[].slice.call(extra.children).forEach(function(p,n){var l=parseFloat(p.style.left)||0,t=parseFloat(p.style.top)||0;p.style.left=((l+37+n*2.3)%98)+'%';p.style.top=((t+41+n*3.7)%92)+'%';p.style.animationDelay=(n*0.37%9).toFixed(2)+'s';c.appendChild(p)});
+  var extra2=d.cloneNode(true);[].slice.call(extra2.children).forEach(function(p,n){var l=parseFloat(p.style.left)||0,t=parseFloat(p.style.top)||0;p.style.left=((l+68+n*1.7)%98)+'%';p.style.top=((t+19+n*5.1)%92)+'%';p.style.animationDelay=(n*0.53%11).toFixed(2)+'s';c.appendChild(p)});
+  sm.insertBefore(c,sm.firstChild);
+  var items=[];
+  [].slice.call(c.querySelectorAll('i')).forEach(function(i){
+    var w=parseFloat(i.style.width)||8,hh=parseFloat(i.style.height)||w;
+    // диапазон размеров вдвое шире: растягиваем вокруг среднего 12px
+    var nw2=Math.max(2,12+(w-12)*2),nh2=Math.max(2,12+(hh-12)*2);
+    i.style.width=nw2+'px';i.style.height=nh2+'px';
+    var b=parseFloat(i.style.getPropertyValue('--b'))||3;i.style.setProperty('--b',Math.max(.5,12*0+b*(nw2/w))+'px');
+    var wrap=document.createElement('span');
+    wrap.style.cssText='position:absolute;left:'+i.style.left+';top:'+i.style.top+';will-change:transform';
+    i.style.left='0';i.style.top='0';
+    i.parentNode.insertBefore(wrap,i);wrap.appendChild(i);
+    items.push({el:wrap,x:0,y:0,k:.7+Math.random()*.6,lag:.012+Math.random()*.014});
+  });
+  var mx=0,my=0,have=false,pull=0,lastMove=0,raf=null;
+  function onMove(e){var r=c.getBoundingClientRect();mx=e.clientX-r.left;my=e.clientY-r.top;have=true;lastMove=performance.now();start()}
+  sm.addEventListener('pointermove',onMove);
+  sm.addEventListener('pointerleave',function(){have=false});
+  function start(){if(!raf)raf=requestAnimationFrame(step)}
+  function step(){
+    var idle=performance.now()-lastMove;
+    var want=(have&&idle<200)?1:0;
+    pull+=(want-pull)*(want?0.012:0.004);
+    var moving=false;
+    for(var n=0;n<items.length;n++){
+      var it=items[n],tx=0,ty=0;
+      if(pull>0.002){var r=it.el.getBoundingClientRect(),cr=c.getBoundingClientRect();
+        var px=r.left-cr.left+r.width/2-it.x,py=r.top-cr.top+r.height/2-it.y;
+        tx=(mx-px)*0.25*it.k*pull;ty=(my-py)*0.25*it.k*pull;}
+      it.x+=(tx-it.x)*it.lag;it.y+=(ty-it.y)*it.lag;
+      if(Math.abs(it.x)>0.2||Math.abs(it.y)>0.2)moving=true;
+      it.el.style.transform='translate3d('+it.x.toFixed(2)+'px,'+it.y.toFixed(2)+'px,0)';
+    }
+    if(moving||pull>0.002)raf=requestAnimationFrame(step);else{raf=null;}
+  }
+})();
+var rail=document.querySelector('.st-rail');
+function warmVideos(){var vs=[].slice.call(document.querySelectorAll('[data-strip-video]')).filter(function(x){return x.querySelector('source')});var i=0;(function next(){if(i>=vs.length)return;var x=vs[i++];try{x.preload='auto';x.load()}catch(e){}setTimeout(next,250)})()}
+if(document.readyState==='complete')setTimeout(warmVideos,300);else window.addEventListener('load',function(){setTimeout(warmVideos,300)});
+document.querySelectorAll('.strip').forEach(function(strip){
+  var med=strip.querySelector('.strip-media');
+  if(med){
+    var m=/url\(["']?([^"')]+)/.exec(med.style.backgroundImage||'');
+    if(m){var im=new Image();im.onload=function(){
+      try{
+        var sr=strip.getBoundingClientRect();if(!sr.width)return;
+        var sc=Math.max(sr.width/im.width,sr.height/im.height);
+        var dw=im.width*sc,dh=im.height*sc,ox=(dw-sr.width)/2,oy=(dh-sr.height)/2;
+        var cv=document.createElement('canvas'),cx=cv.getContext('2d');
+        function tone(el){
+          var r=el.getBoundingClientRect();if(!r.width||!r.height)return null;
+          var sx=(r.left-sr.left+ox)/sc,sy=(r.top-sr.top+oy)/sc;
+          var sw=Math.max(1,r.width/sc),sh=Math.max(1,r.height/sc);
+          sx=Math.max(0,Math.min(im.width-1,sx));sy=Math.max(0,Math.min(im.height-1,sy));
+          sw=Math.min(sw,im.width-sx);sh=Math.min(sh,im.height-sy);
+          var n=24;cv.width=n;cv.height=n;cx.drawImage(im,sx,sy,sw,sh,0,0,n,n);
+          var d=cx.getImageData(0,0,n,n).data,sum=0;
+          for(var i=0;i<d.length;i+=4)sum+=0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
+          return sum/(d.length/4);
+        }
+      }catch(err){}
+    };im.src=m[1];}
+  }
+  var v=strip.querySelector('[data-strip-video]');if(!v||!v.querySelector('source'))return;
+  var raf=null;
+  function stopRaf(){if(raf){cancelAnimationFrame(raf);raf=null}}
+  strip.addEventListener('mouseenter',function(){
+    stopRaf();
+    v.playbackRate=2;
+    v.play().catch(function(){});
+  });
+  var seekH=null;
+  strip.addEventListener('mouseleave',function(){
+    v.pause();stopRaf();
+    var from=v.currentTime;if(!from){return}
+    var st=performance.now(),dur=Math.max(150,from*1000/2.5),pending=false,wd=null;
+    function step(){
+      if(!raf)return;
+      var k=Math.min((performance.now()-st)/dur,1);
+      var tgt=from*(1-k);
+      if(k>=1){raf=null;pending=false;v.currentTime=0;return}
+      if(Math.abs(tgt-v.currentTime)<0.005){requestAnimationFrame(step);return}
+      pending=true;v.currentTime=tgt;
+      clearTimeout(wd);wd=setTimeout(function(){if(pending){pending=false;step()}},80);
+    }
+    if(seekH)v.removeEventListener('seeked',seekH);
+    seekH=function(){clearTimeout(wd);if(pending){pending=false;step()}};
+    v.addEventListener('seeked',seekH);
+    raf=1;step();
+  });
+});
+</script></body></html>

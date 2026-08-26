@@ -1,0 +1,10 @@
+# служебное
+.DS_Store
+Thumbs.db
+scraps/
+screenshots/
+uploads/
+.thumbnail
+
+# крупные исходники, если решишь не хранить в git
+# assets/cine/

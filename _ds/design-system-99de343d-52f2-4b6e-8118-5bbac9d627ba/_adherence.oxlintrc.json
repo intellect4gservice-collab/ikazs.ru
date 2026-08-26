@@ -1,0 +1,357 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/cards/**",
+              "components/core/**",
+              "components/data/**",
+              "components/forms/**",
+              "components/sections/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Inter|JetBrains Mono))/i]",
+        "message": "Font not provided by the design system. Available: Inter, JetBrains Mono."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='AdvCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:icon|title|children|key|ref|className|style|children)$/]",
+        "message": "<AdvCard> doesn't accept that prop. Declared props: icon, title, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Banner'] > JSXAttribute > JSXIdentifier[name!=/^(?:image|alt|eyebrow|title|sub|cta|ctaHref|center|key|ref|className|style|children)$/]",
+        "message": "<Banner> doesn't accept that prop. Declared props: image, alt, eyebrow, title, sub, cta, ctaHref, center."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='CaseMeta'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|key|ref|className|style|children)$/]",
+        "message": "<CaseMeta> doesn't accept that prop. Declared props: value, label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Counter'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|key|ref|className|style|children)$/]",
+        "message": "<Counter> doesn't accept that prop. Declared props: value, label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Eyebrow'] > JSXAttribute > JSXIdentifier[name!=/^(?:signal|children|key|ref|className|style|children)$/]",
+        "message": "<Eyebrow> doesn't accept that prop. Declared props: signal, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FaqItem'] > JSXAttribute > JSXIdentifier[name!=/^(?:q|children|defaultOpen|key|ref|className|style|children)$/]",
+        "message": "<FaqItem> doesn't accept that prop. Declared props: q, children, defaultOpen."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Field'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|unit|mono|key|ref|className|style|children)$/]",
+        "message": "<Field> doesn't accept that prop. Declared props: label, unit, mono."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FlipCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:icon|title|hint|children|payback|key|ref|className|style|children)$/]",
+        "message": "<FlipCard> doesn't accept that prop. Declared props: icon, title, hint, children, payback."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='FooterColumn'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|links|key|ref|className|style|children)$/]",
+        "message": "<FooterColumn> doesn't accept that prop. Declared props: title, links."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='GhostLink'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|key|ref|className|style|children)$/]",
+        "message": "<GhostLink> doesn't accept that prop. Declared props: children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='LinkCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|children|href|linkLabel|key|ref|className|style|children)$/]",
+        "message": "<LinkCard> doesn't accept that prop. Declared props: title, children, href, linkLabel."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ModelSpec'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|key|ref|className|style|children)$/]",
+        "message": "<ModelSpec> doesn't accept that prop. Declared props: value, label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='NavLink'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|href|key|ref|className|style|children)$/]",
+        "message": "<NavLink> doesn't accept that prop. Declared props: label, href."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='ObjCard'] > JSXAttribute > JSXIdentifier[name!=/^(?:q|children|key|ref|className|style|children)$/]",
+        "message": "<ObjCard> doesn't accept that prop. Declared props: q, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Pill'] > JSXAttribute > JSXIdentifier[name!=/^(?:variant|as|children|key|ref|className|style|children)$/]",
+        "message": "<Pill> doesn't accept that prop. Declared props: variant, as, children."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Pill'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|outline|ghost)$/]",
+        "message": "<Pill> variant must be one of 'primary' | 'outline' | 'ghost'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Pill'] > JSXAttribute[name.name='as'] > Literal[value!=/^(?:button|a)$/]",
+        "message": "<Pill> as must be one of 'button' | 'a'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SectionHead'] > JSXAttribute > JSXIdentifier[name!=/^(?:eyebrow|signal|title|sub|center|level|size|key|ref|className|style|children)$/]",
+        "message": "<SectionHead> doesn't accept that prop. Declared props: eyebrow, signal, title, sub, center, level, size."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SectionHead'] > JSXAttribute[name.name='level'] > Literal[value!=/^(?:h1|h2|h3)$/]",
+        "message": "<SectionHead> level must be one of 'h1' | 'h2' | 'h3'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SectionHead'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:t-hero|t-display|t-heading-lg|t-heading|t-heading-sm)$/]",
+        "message": "<SectionHead> size must be one of 't-hero' | 't-display' | 't-heading-lg' | 't-heading' | 't-heading-sm'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Spec'] > JSXAttribute > JSXIdentifier[name!=/^(?:value|label|key|ref|className|style|children)$/]",
+        "message": "<Spec> doesn't accept that prop. Declared props: value, label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TextArea'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|key|ref|className|style|children)$/]",
+        "message": "<TextArea> doesn't accept that prop. Declared props: label."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='TimelineStep'] > JSXAttribute > JSXIdentifier[name!=/^(?:title|text|key|ref|className|style|children)$/]",
+        "message": "<TimelineStep> doesn't accept that prop. Declared props: title, text."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "AdvCard": {
+        "replaces": []
+      },
+      "Banner": {
+        "replaces": []
+      },
+      "CaseMeta": {
+        "replaces": []
+      },
+      "Counter": {
+        "replaces": []
+      },
+      "Eyebrow": {
+        "replaces": []
+      },
+      "FaqItem": {
+        "replaces": []
+      },
+      "Field": {
+        "replaces": []
+      },
+      "FlipCard": {
+        "replaces": []
+      },
+      "FooterColumn": {
+        "replaces": []
+      },
+      "GhostLink": {
+        "replaces": []
+      },
+      "LinkCard": {
+        "replaces": []
+      },
+      "ModelSpec": {
+        "replaces": []
+      },
+      "NavLink": {
+        "replaces": []
+      },
+      "ObjCard": {
+        "replaces": []
+      },
+      "Pill": {
+        "replaces": []
+      },
+      "SectionHead": {
+        "replaces": []
+      },
+      "Spec": {
+        "replaces": []
+      },
+      "TextArea": {
+        "replaces": []
+      },
+      "TimelineStep": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--apple-blue",
+      "--apple-blue-hover",
+      "--ash",
+      "--blur-nav",
+      "--body-leading",
+      "--body-size",
+      "--body-tracking",
+      "--border-default",
+      "--carbon",
+      "--dur",
+      "--dur-fast",
+      "--dur-slow",
+      "--ease",
+      "--font-mono",
+      "--font-text",
+      "--frost",
+      "--fw-light",
+      "--fw-medium",
+      "--fw-regular",
+      "--fw-semibold",
+      "--glass-drop",
+      "--glass-nav",
+      "--glass-nav-solid",
+      "--hairline",
+      "--hairline-dark",
+      "--ice",
+      "--link-blue",
+      "--mist",
+      "--onyx",
+      "--page-max",
+      "--page-pad",
+      "--pebble",
+      "--radius-card",
+      "--radius-modal",
+      "--radius-pill",
+      "--render-grad",
+      "--section-y",
+      "--section-y-tight",
+      "--selection",
+      "--shadow-chat",
+      "--shadow-drop",
+      "--shadow-modal",
+      "--shadow-product",
+      "--signal-blue",
+      "--smoke",
+      "--space-1",
+      "--space-10",
+      "--space-14",
+      "--space-2",
+      "--space-3",
+      "--space-4",
+      "--space-5",
+      "--space-6",
+      "--space-8",
+      "--success",
+      "--surface-alt",
+      "--surface-card",
+      "--surface-dark",
+      "--surface-page",
+      "--t-display",
+      "--t-eyebrow",
+      "--t-heading",
+      "--t-heading-lg",
+      "--t-heading-sm",
+      "--t-hero",
+      "--t-sub",
+      "--text-col",
+      "--text-primary",
+      "--text-secondary",
+      "--text-tertiary"
+    ],
+    "tokenKinds": {
+      "--apple-blue": "color",
+      "--link-blue": "color",
+      "--signal-blue": "color",
+      "--apple-blue-hover": "color",
+      "--carbon": "color",
+      "--frost": "color",
+      "--ice": "color",
+      "--smoke": "color",
+      "--ash": "color",
+      "--mist": "color",
+      "--onyx": "color",
+      "--pebble": "color",
+      "--hairline": "color",
+      "--hairline-dark": "color",
+      "--success": "color",
+      "--text-primary": "font",
+      "--text-secondary": "font",
+      "--text-tertiary": "font",
+      "--surface-page": "color",
+      "--surface-alt": "color",
+      "--surface-card": "color",
+      "--surface-dark": "color",
+      "--border-default": "color",
+      "--selection": "color",
+      "--render-grad": "other",
+      "--font-text": "font",
+      "--font-mono": "font",
+      "--fw-light": "font",
+      "--fw-regular": "font",
+      "--fw-medium": "font",
+      "--fw-semibold": "font",
+      "--body-size": "font",
+      "--body-leading": "font",
+      "--body-tracking": "font",
+      "--t-hero": "font",
+      "--t-display": "font",
+      "--t-heading-lg": "font",
+      "--t-heading": "font",
+      "--t-heading-sm": "font",
+      "--t-sub": "font",
+      "--t-eyebrow": "font",
+      "--page-max": "spacing",
+      "--text-col": "font",
+      "--page-pad": "spacing",
+      "--section-y": "spacing",
+      "--section-y-tight": "spacing",
+      "--space-1": "spacing",
+      "--space-2": "spacing",
+      "--space-3": "spacing",
+      "--space-4": "spacing",
+      "--space-5": "spacing",
+      "--space-6": "spacing",
+      "--space-8": "spacing",
+      "--space-10": "spacing",
+      "--space-14": "spacing",
+      "--radius-card": "radius",
+      "--radius-modal": "radius",
+      "--radius-pill": "radius",
+      "--shadow-product": "shadow",
+      "--shadow-drop": "shadow",
+      "--shadow-modal": "shadow",
+      "--shadow-chat": "shadow",
+      "--glass-nav": "color",
+      "--glass-nav-solid": "color",
+      "--glass-drop": "color",
+      "--blur-nav": "other",
+      "--ease": "other",
+      "--dur-fast": "other",
+      "--dur": "other",
+      "--dur-slow": "other"
+    },
+    "fontFamilies": [
+      "Inter",
+      "JetBrains Mono"
+    ]
+  }
+}

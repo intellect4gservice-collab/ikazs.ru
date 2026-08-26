@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Лизинг КАЗС и оборудования для АЗС — ИнтеллектКАЗС</title><meta name="description" content="Как купить контейнерную АЗС в лизинг: условия, специальная цена для лизинговых сделок, что нужно для одобрения."><link rel="stylesheet" href="styles.css"><style>
+.aurora{position:relative;overflow:hidden;background:#0a0a0c}
+.aurora>.wrap{position:relative;z-index:2}
+.aurora::before,.aurora::after{content:"";position:absolute;z-index:0;border-radius:50%;filter:blur(90px);opacity:.55;pointer-events:none}
+.aurora::before{width:70vw;height:70vw;left:-18vw;top:-28vw;background:radial-gradient(circle at 40% 40%,#2997ff,transparent 65%);animation:auroraA 22s ease-in-out infinite alternate}
+.aurora::after{width:62vw;height:62vw;right:-16vw;bottom:-30vw;background:radial-gradient(circle at 60% 55%,#7a5cff 0%,#00c2a8 60%,transparent 72%);animation:auroraB 27s ease-in-out infinite alternate}
+.aurora>.veil{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(10,10,12,.62),rgba(10,10,12,.78));pointer-events:none}
+@keyframes auroraA{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(14vw,8vw,0) scale(1.15)}100%{transform:translate3d(4vw,-6vw,0) scale(.95)}}
+@keyframes auroraB{0%{transform:translate3d(0,0,0) scale(1.05)}50%{transform:translate3d(-12vw,-8vw,0) scale(.92)}100%{transform:translate3d(-4vw,6vw,0) scale(1.18)}}
+@media(prefers-reduced-motion:reduce){.aurora::before,.aurora::after{animation:none}}
+.aurora.mid{background:#1b1d24}
+.aurora.mid::before{opacity:.5}
+.aurora.mid::after{opacity:.5}
+.aurora.mid>.veil{background:linear-gradient(180deg,rgba(24,26,32,.5),rgba(24,26,32,.68))}
+.aurora.light{background:#f2f4f8}
+.aurora.light::before{background:radial-gradient(circle at 40% 40%,#7cc4ff,transparent 65%);opacity:.75}
+.aurora.light::after{background:radial-gradient(circle at 60% 55%,#b9a6ff 0%,#8fe3d6 60%,transparent 72%);opacity:.7}
+.aurora.light>.veil{background:linear-gradient(180deg,rgba(255,255,255,.62),rgba(255,255,255,.8))}
+.lz-hero{padding:132px 0 44px}
+.shine{background:linear-gradient(90deg,var(--carbon) 0%,#0071e3 22%,#00b3a4 36%,var(--carbon) 55%,var(--carbon) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;background-repeat:repeat;animation:shine 9s linear infinite;will-change:background-position}
+@keyframes shine{from{background-position:0% 50%}to{background-position:-200% 50%}}
+.lz-mode{display:inline-flex;gap:4px;padding:4px;border-radius:980px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+.lz-mode button{padding:9px 18px;white-space:nowrap;line-height:1.2;border-radius:980px;font-size:14px;font-weight:500;color:rgba(245,245,247,.66);transition:all .25s}
+.lz-mode button.on{background:var(--frost);color:var(--carbon);font-weight:600}
+.lz{display:grid;grid-template-columns:1fr 1.05fr;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(14px)}
+.lz-in{padding:34px 34px;display:flex;flex-direction:column;gap:24px;border-right:1px solid rgba(255,255,255,.12)}
+.lz-out{padding:34px 34px;display:flex;flex-direction:column;gap:22px;background:rgba(41,151,255,.09)}
+.lz-f label{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:13px;color:rgba(245,245,247,.62);margin-bottom:10px}
+.lz-f label b{font-family:var(--font-mono);font-size:17px;font-weight:600;color:var(--frost);letter-spacing:-.3px}
+.lz-f input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:3px;border-radius:3px;background:rgba(255,255,255,.18);outline:none}
+.lz-f input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--frost);border:5px solid var(--signal-blue);cursor:grab;box-shadow:0 2px 12px rgba(41,151,255,.5);transition:transform .15s}
+.lz-f input[type=range]::-webkit-slider-thumb:active{transform:scale(1.15);cursor:grabbing}
+.lz-f input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:var(--frost);border:5px solid var(--signal-blue);cursor:grab}
+.lz-f .hint{font-size:12px;color:rgba(245,245,247,.36);margin-top:8px}
+.lz-seg{display:flex;gap:6px}
+.lz-seg button{flex:1 1 0;min-width:0;padding:9px 4px;border-radius:8px;border:1px solid rgba(255,255,255,.16);background:transparent;color:rgba(245,245,247,.66);font-size:13px;font-family:var(--font-mono);transition:all .22s}
+.lz-seg button:hover{border-color:rgba(255,255,255,.4);color:var(--frost)}
+.lz-seg button.on{background:var(--frost);color:var(--carbon);border-color:var(--frost);font-weight:600}
+.lz-hero-val{font-family:var(--font-mono);font-size:clamp(36px,4.6vw,52px);font-weight:600;letter-spacing:-2px;line-height:1;color:var(--frost)}
+.lz-hero-val small{font-size:20px;letter-spacing:-.5px;color:rgba(245,245,247,.5);font-weight:400}
+.lz-lbl{font-size:12px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;color:var(--signal-blue);margin-bottom:10px}
+.lz-rows{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.12);border-radius:8px;overflow:hidden}
+.lz-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:13px 16px;background:rgba(15,15,18,.82);font-size:14px;color:rgba(245,245,247,.62)}
+.lz-row span:last-child{font-family:var(--font-mono);color:var(--frost);font-size:15px;font-weight:500;text-align:right}
+.lz-row.pos span:last-child{color:var(--success,#30d158)}
+.lz-bars{display:flex;flex-direction:column;gap:14px}
+.lz-bar .bt{display:flex;justify-content:space-between;font-size:13px;color:rgba(245,245,247,.62);margin-bottom:7px}
+.lz-bar .bt b{font-family:var(--font-mono);color:var(--frost);font-weight:600}
+.lz-bar .btrack{height:10px;border-radius:6px;background:rgba(255,255,255,.1);overflow:hidden}
+.lz-bar .bfill{height:100%;border-radius:6px;width:0;transition:width .55s var(--ease,cubic-bezier(.4,0,.2,1))}
+.lz-bar.pay .bfill{background:rgba(245,245,247,.42)}
+.lz-bar.save .bfill{background:linear-gradient(90deg,#30d158,#7ad9ff)}
+.lz-verdict{border-radius:10px;padding:20px 22px;background:rgba(48,209,88,.12);border:1px solid rgba(48,209,88,.3);font-size:16px;line-height:1.5;color:var(--frost)}
+.lz-verdict.warn{background:rgba(255,159,10,.1);border-color:rgba(255,159,10,.32)}
+.lz-verdict b{color:var(--success,#30d158)}
+.lz-verdict.warn b{color:#ff9f0a}
+.lz-note{font-size:12px;color:rgba(245,245,247,.35);line-height:1.5}
+.lz-band{background:#fff;border-top:1px solid rgba(0,0,0,.06);border-bottom:1px solid rgba(0,0,0,.06);padding:18px 0}
+.lz-band .inner{display:flex;align-items:center;justify-content:space-between;gap:32px}
+.lz-shot{position:relative;flex:1;height:190px}
+.lz-shot img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(.985);transition:opacity .5s var(--ease,cubic-bezier(.4,0,.2,1)),transform .5s var(--ease,cubic-bezier(.4,0,.2,1))}
+.lz-shot img.on{opacity:1;transform:scale(1)}
+.lz-cap{flex:0 0 230px;text-align:right}
+.lz-cap .k{font-size:12px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;color:var(--link-blue)}
+.lz-cap .t{font-size:20px;font-weight:600;letter-spacing:-.3px;color:var(--carbon);margin-top:8px}
+.lz-cap .d{font-size:13px;color:var(--ash);margin-top:6px;line-height:1.45}
+@media(max-width:760px){.lz-band .inner{flex-direction:column;gap:16px}.lz-cap{flex:none;text-align:center}.lz-shot{width:100%;height:150px}}
+.steps3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:36px}
+.step3{padding:30px 28px;border-radius:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12)}
+.step3 .n{font-family:var(--font-mono);font-size:13px;color:var(--signal-blue);font-weight:600}
+.step3 h3{font-size:22px;font-weight:600;letter-spacing:-.3px;color:var(--frost);margin:12px 0 10px}
+.step3 p{font-size:15px;line-height:1.55;color:rgba(245,245,247,.6)}
+.big-claim{font-size:clamp(26px,3.4vw,40px);line-height:1.22;letter-spacing:-1px;font-weight:600;color:var(--frost);max-width:22ch}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.tick{display:flex;flex-direction:column;gap:14px;margin-top:6px}
+.tick div{display:flex;gap:12px;font-size:16px;line-height:1.5;color:rgba(245,245,247,.72)}
+.tick div::before{content:"";flex:0 0 18px;height:18px;margin-top:3px;border-radius:50%;background:rgba(48,209,88,.16);border:1px solid rgba(48,209,88,.55)}
+@media(max-width:1040px){.lz{grid-template-columns:1fr}.lz-in{border-right:none;border-bottom:1px solid rgba(255,255,255,.12)}.lz-in,.lz-out{padding:28px 22px}.steps3{grid-template-columns:1fr}.two-col{grid-template-columns:1fr;gap:32px}}
+</style></head><body>
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-mark.png" alt="ИнтеллектКАЗС">
+      <span class="word">Интеллект<b>КАЗС</b></span>
+    </a>
+    <div class="nav-links"><div class="nav-item"><a href="index.html">КАЗС <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="drop-free" href="kazs-besplatno.html">КАЗС Бесплатно<small>Совместная программа с ЛУКОЙЛ</small></a><a href="kommercheskaya.html">Коммерческая КАЗС<small>Продавать топливо через АЗС</small></a><a class="simple" href="soon.html">Индивидуальный дизайн</a><a href="vedomstvennaya.html">Ведомственная КАЗС<small>Для собственного автопарка</small></a><div class="drop-head">Модельный ряд</div><a class="simple" href="kazs-open.html">Открытый тех. отсек</a><a class="simple" href="kazs-monoblock.html">Моноблок</a><a class="simple" href="kazs-suitcase.html">Чемодан</a><a class="simple" href="kazs-profile.html">Контейнер профлист</a><a class="simple" href="kazs-premium.html">Контейнер коммерческий</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="reservoirs-rgs.html">Резервуары <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="reservoirs-rgs.html">РГС — горизонтальные</a><a class="simple" href="reservoirs-rvs.html">РВС — вертикальные</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="trk-topaz.html">ТРК <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="trk-topaz.html">Топаз</a><a class="simple" href="trk-kvant.html">Квант</a><a class="simple" href="trk-sanki.html">Sanki</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="automation-terminal.html">Автоматизация <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="automation-terminal.html">Терминал самообслуживания</a><a class="simple" href="automation-scada.html">Промышленная автоматизация (SCADA)</a><a class="simple" href="automation-monitoring.html">Удалённый мониторинг и учёт</a><a class="simple" href="automation-smart-azs.html">ПО «Смарт-АЗС»</a><a class="simple" href="automation-plexpoint.html">PlexPoint</a><a class="simple" href="automation-buk-tsg.html">БУК TS-G</a><a class="simple" href="soon.html">ПО ТОПАЗ</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="epc-pod-klyuch.html">Услуги <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="epc-pod-klyuch.html">EPC под ключ</a><a class="simple" href="services-design.html">Проектирование</a><a class="simple" href="services-installation.html">Монтаж и ПНР</a><a class="simple" href="services-service.html">Сервис 24/7</a><a class="simple" href="services-modernization.html">Модернизация старых АЗС</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="configurator.html">Инструменты <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="configurator.html">3D-конфигуратор КАЗС</a><a class="simple" href="calculator.html">Калькулятор окупаемости</a><a class="simple" href="calculator-tco.html">Калькулятор TCO 5 лет</a><a class="simple" href="wizard.html">Визард «Какой КАЗС нужен»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="znaniya.html">Знания <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="projects.html">Кейсы</a><a class="simple" href="faq.html">FAQ</a><a class="simple" href="objections.html">Возражения</a><a class="simple" href="docs.html">Нормативка</a><a class="simple" href="glossary.html">Глоссарий</a><a class="simple" href="industries.html">Отрасли</a><a class="simple" href="blog.html">Блог</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="proizvodstvo.html">О компании <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="proizvodstvo.html">Производство</a><a class="simple" href="about-team.html">Команда</a><a class="simple" href="about-certificates.html">Сертификаты</a><a class="simple" href="about-quality.html">Контроль качества</a><a class="simple" href="contacts.html">Контакты</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div></div>
+    <div class="nav-cta">
+      <div class="nav-contact"><a href="tel:+78122193485" class="nav-phone mono">8 812 219 34 85</a><a href="mailto:info@ikazs.ru" class="nav-mail mono">info@ikazs.ru</a></div>
+      <button class="pill pill-primary" data-call>Заказать звонок</button>
+      <button class="nav-burger" aria-label="Меню"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav><header class="phero lz-hero aurora light" data-screen-label="Лизинг"><div class="veil"></div><div class="wrap"><div class="col">
+<div class="crumbs reveal"><a href="index.html">Главная</a> / Лизинг</div>
+<h1 class="t-heading-lg reveal d1" style="margin:14px 0 16px;max-width:20ch">Станция работает <span class="shine">с первого дня</span>. Платите — частями.</h1>
+<p class="t-sub reveal d2" style="max-width:62ch">Аванс от 20%, решение за 2–3 дня, поставка за 40–45 дней. Дальше станция сама закрывает свой платёж — топливом.</p>
+<div class="btn-row reveal d3"><a href="#calc" class="pill pill-primary">Открыть калькулятор ↓</a><a href="#cta" class="pill pill-outline">Запросить условия</a></div>
+</div></div></header>
+<div class="lz-band"><div class="wrap"><div class="col"><div class="inner">
+<div class="lz-shot"><img id="shotFleet" class="on" src="assets/lz-open.png" alt="Ведомственная КАЗС открытого исполнения"><img id="shotSale" src="assets/lz-premium.png" alt="Коммерческая КАЗС в металлокассетах"></div>
+<div class="lz-cap"><div class="k" id="capK">Свой автопарк</div><div class="t" id="capT">Открытое исполнение</div><div class="d" id="capD">Минимальная цена входа — быстрее окупается на собственном расходе.</div></div>
+</div></div></div></div>
+<section class="section aurora mid" id="calc" style="padding:20px 0 clamp(72px,9vw,110px)"><div class="veil"></div><div class="wrap"><div class="col">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:22px">
+<div><p class="t-eyebrow" style="color:var(--signal-blue)">Калькулятор</p><h2 class="t-heading-sm" style="color:var(--frost);margin-top:10px">Посчитайте свой платёж и выгоду</h2></div>
+<div class="lz-mode" id="lzMode"><button data-m="fleet" class="on">Свой автопарк</button><button data-m="sale">Продажа топлива</button></div>
+</div>
+<div class="lz">
+<div class="lz-in">
+<div class="lz-f"><label>Стоимость станции <b id="lzPriceV">3 200 000 ₽</b></label><input type="range" id="lzPrice" min="1500000" max="12000000" step="100000" value="3200000"><div class="hint">КАЗС с ТРК, резервуаром и автоматикой</div></div>
+<div class="lz-f"><label>Аванс <b id="lzAdvV">20%</b></label><input type="range" id="lzAdv" min="10" max="49" step="1" value="20"><div class="hint">Больше аванс — ниже удорожание</div></div>
+<div class="lz-f"><label>Срок лизинга <b id="lzTermV">36 мес.</b></label><div class="lz-seg" id="lzTerm"><button data-v="12">12</button><button data-v="24">24</button><button data-v="36" class="on">36</button><button data-v="48">48</button><button data-v="60">60</button></div></div>
+<div class="lz-f"><label id="lzFuelL">Расход топлива <b id="lzFuelV">18 000 л/мес</b></label><input type="range" id="lzFuel" min="2000" max="200000" step="1000" value="18000"><div class="hint" id="lzFuelH">Сколько литров автопарк выбирает за месяц</div></div>
+<div class="lz-f"><label id="lzDeltaL">Выгода на литре <b id="lzDeltaV">6,0 ₽/л</b></label><input type="range" id="lzDelta" min="1" max="15" step="0.5" value="6"><div class="hint" id="lzDeltaH">Разница между оптовой ценой и АЗС на трассе</div></div>
+</div>
+<div class="lz-out">
+<div><div class="lz-lbl">Платёж в месяц</div><div class="lz-hero-val" id="lzMonthly">— <small>₽</small></div></div>
+<div class="lz-rows">
+<div class="lz-row"><span>Аванс при подписании</span><span id="lzAdvSum">—</span></div>
+<div class="lz-row"><span>Всего по договору</span><span id="lzTotal">—</span></div>
+<div class="lz-row"><span>Удорожание за срок</span><span id="lzOver">—</span></div>
+<div class="lz-row pos"><span>Налоговый эффект (НДС + прибыль)</span><span id="lzTax">—</span></div>
+<div class="lz-row pos"><span id="lzSaveL">Экономия на топливе в месяц</span><span id="lzSave">—</span></div>
+</div>
+<div class="lz-bars">
+<div class="lz-bar pay"><div class="bt"><span>Платёж по лизингу</span><b id="lzBarPayV">—</b></div><div class="btrack"><div class="bfill" id="lzBarPay"></div></div></div>
+<div class="lz-bar save"><div class="bt"><span id="lzBarSaveL">Экономия на топливе</span><b id="lzBarSaveV">—</b></div><div class="btrack"><div class="bfill" id="lzBarSave"></div></div></div>
+</div>
+<div class="lz-verdict" id="lzVerdict">—</div>
+<div class="btn-row"><a href="#cta" class="pill pill-primary">Запросить расчёт под эти цифры</a></div>
+<p class="lz-note">Расчёт ориентировочный: ставка удорожания зависит от аванса, срока и вашей отчётности. Налоговый эффект показан для ОСНО.</p>
+</div>
+</div>
+</div></div></section>
+<section class="section aurora"><div class="veil"></div><div class="wrap"><div class="col">
+<p class="t-eyebrow" style="color:var(--signal-blue)">Три шага</p>
+<h2 class="big-claim" style="margin-top:14px">От заявки до работающей станции — 45 дней</h2>
+<div class="steps3">
+<div class="step3"><div class="n">01</div><h3>Спецификация</h3><p>Выбираете модель и комплектацию — считаем стоимость в тот же день.</p></div>
+<div class="step3"><div class="n">02</div><h3>Одобрение — 2–3 дня</h3><p>Передаём спецификацию партнёру-лизингодателю. Он оплачивает станцию, вы вносите аванс.</p></div>
+<div class="step3"><div class="n">03</div><h3>Станция у вас</h3><p>Изготовление и поставка 40–45 дней. Дальше платежи по графику — станция уже работает.</p></div>
+</div>
+</div></div></section>
+<section class="section aurora"><div class="veil"></div><div class="wrap"><div class="col"><div class="two-col">
+<div>
+<p class="t-eyebrow" style="color:var(--signal-blue)">Почему лизинг</p>
+<h2 class="big-claim" style="margin-top:14px">Деньги остаются в обороте, а топливо — дешевле</h2>
+</div>
+<div class="tick">
+<div>Аванс от 20% вместо полной суммы — оборотные средства не замораживаются</div>
+<div>Платежи идут в расходы, амортизация с коэффициентом до ×3</div>
+<div>Специальная цена станции для лизинговых сделок</div>
+<div>Для агросектора — госпрограмма «Росагролизинг» с мягкими условиями</div>
+<div>Гарантия и сервис те же, что при прямой покупке</div>
+</div>
+</div></div></div></section>
+<section class="section ice"><div class="wrap"><div class="col"><div class="center stack" style="margin-bottom:40px"><p class="t-eyebrow reveal">Частые вопросы</p></div><div class="faq-list reveal d1">
+<div class="faq-item"><button class="faq-q">Какой нужен аванс?<span class="plus"></span></button><div class="faq-a"><div class="faq-a-inner">Обычно от 20% стоимости станции. Точный процент определяет лизинговая компания по вашей заявке.</div></div></div>
+<div class="faq-item"><button class="faq-q">Есть ли льготный лизинг для сельхозпредприятий?<span class="plus"></span></button><div class="faq-a"><div class="faq-a-inner">Да, госпрограмма через АО «Росагролизинг». Уточните у нас, подходит ли ваша сделка.</div></div></div>
+<div class="faq-item"><button class="faq-q">Когда станция станет моей?<span class="plus"></span></button><div class="faq-a"><div class="faq-a-inner">По завершении договора — как правило, за символический выкупной платёж.</div></div></div>
+<div class="faq-item"><button class="faq-q">Действует ли гарантия при лизинге?<span class="plus"></span></button><div class="faq-a"><div class="faq-a-inner">Да, гарантийные обязательства не зависят от схемы оплаты.</div></div></div>
+</div></div></div></section>
+<section class="section dark-2" id="cta"><div class="wrap"><div class="col"><div class="stack" style="text-align:center;margin-bottom:10px"><h2 class="t-heading-lg reveal" style="color:var(--frost)">Дайте параметры — вернёмся с условиями</h2><p class="t-sub light reveal d1">Посчитаем стоимость станции и согласуем лизинг с партнёрами под ваш случай.</p></div><form class="cta-form reveal d2" onsubmit="return false"><div class="field-input"><input type="text" placeholder="Имя"></div><div class="field-input"><input type="tel" placeholder="Телефон"></div><textarea placeholder="Город и модель"></textarea><div class="cta-submit"><button class="pill pill-primary">Рассчитать лизинг</button><span class="cta-alt">Или позвоните: <b>8 812 219 34 85</b></span></div></form></div></div></section>
+<footer class="footer"><div class="wrap"><div class="foot-grid"><div class="foot-brand"><div class="brand"><img src="assets/logo-mark.png" alt="ИнтеллектКАЗС" style="width:30px;height:30px"><span class="word">Интеллект<b>КАЗС</b></span></div><p>Заводская АЗС для вашего автопарка. Под ключ за 45 дней. Производство — Санкт-Петербург.</p></div><div class="foot-col"><h5>КАЗС</h5><a href="vedomstvennaya.html">Ведомственная</a><a href="kommercheskaya.html">Коммерческая</a><a href="kazs-open.html">Открытый тех. отсек</a><a href="kazs-premium.html">Коммерческий</a></div><div class="foot-col"><h5>Оборудование</h5><a href="trk-topaz.html">ТРК</a><a href="reservoirs-rgs.html">Резервуары</a><a href="automation-terminal.html">Терминалы</a><a href="automation-scada.html">SCADA</a></div><div class="foot-col"><h5>Услуги</h5><a href="epc-pod-klyuch.html">EPC под ключ</a><a href="services-design.html">Проектирование</a><a href="services-service.html">Сервис 24/7</a><a href="calculator.html">Калькулятор</a></div><div class="foot-col"><h5>Знания</h5><a href="projects.html">Кейсы</a><a href="faq.html">FAQ</a><a href="objections.html">Возражения</a><a href="proizvodstvo.html">О компании</a></div></div><div class="foot-bottom"><span>ИнтеллектКАЗС · производство КАЗС и АЗС · Санкт-Петербург · 8 812 219 34 85</span><span><a href="#">Политика обработки ПД</a> · © 2026 ИнтеллектКАЗС</span></div></div></footer>
+<script src="app.js"></script>
+<script>(function(){
+var E=function(i){return document.getElementById(i)};
+var term=36, mode='fleet';
+var f0=function(n){return Math.round(n).toLocaleString('ru-RU')};
+function applyMode(){
+ var fleet=mode==='fleet';
+ E('lzFuelL').firstChild.nodeValue=fleet?'Расход топлива ':'Объём продаж ';
+ E('lzDeltaL').firstChild.nodeValue=fleet?'Выгода на литре ':'Наценка на литре ';
+ E('lzFuelH').textContent=fleet?'Сколько литров автопарк выбирает за месяц':'Сколько литров вы продаёте через станцию за месяц';
+ E('lzDeltaH').textContent=fleet?'Разница между оптовой ценой и АЗС на трассе':'Разница между закупкой и вашей ценой на колонке';
+ E('lzSaveL').textContent=fleet?'Экономия на топливе в месяц':'Валовая прибыль в месяц';
+ E('lzBarSaveL').textContent=fleet?'Экономия на топливе':'Прибыль со станции';
+ E('shotFleet').classList.toggle('on',fleet);
+ E('shotSale').classList.toggle('on',!fleet);
+ E('capK').textContent=fleet?'Свой автопарк':'Продажа топлива';
+ E('capT').textContent=fleet?'Открытое исполнение':'Коммерческая КАЗС';
+ E('capD').textContent=fleet?'Минимальная цена входа — быстрее окупается на собственном расходе.':'Облицовка, стела с ценами, оплата картой — станция для клиентов.';
+}
+function calc(){
+ var price=+E('lzPrice').value, adv=+E('lzAdv').value, fuel=+E('lzFuel').value, delta=+E('lzDelta').value;
+ E('lzPriceV').textContent=f0(price)+' ₽';
+ E('lzAdvV').textContent=adv+'%';
+ E('lzTermV').textContent=term+' мес.';
+ E('lzFuelV').textContent=f0(fuel)+' л/мес';
+ E('lzDeltaV').textContent=delta.toFixed(1).replace('.',',')+' ₽/л';
+ var advSum=price*adv/100, fin=price-advSum, years=term/12;
+ var rate=0.115-(adv-20)*0.0011+(years-3)*0.004; if(rate<0.06)rate=0.06;
+ var payments=fin*(1+rate*years), monthly=payments/term, total=advSum+payments, over=total-price;
+ var vat=total/1.22*0.22, profit=(total-vat)*0.25, tax=vat+profit;
+ var save=fuel*delta, net=save-monthly;
+ E('lzMonthly').innerHTML=f0(monthly)+' <small>₽</small>';
+ E('lzAdvSum').textContent=f0(advSum)+' ₽';
+ E('lzTotal').textContent=f0(total)+' ₽';
+ E('lzOver').textContent='+'+f0(over)+' ₽ · '+Math.round(over/price*100)+'%';
+ E('lzTax').textContent='до '+f0(tax)+' ₽';
+ E('lzSave').textContent=f0(save)+' ₽';
+ var mx=Math.max(monthly,save);
+ E('lzBarPay').style.width=(monthly/mx*100)+'%';
+ E('lzBarSave').style.width=(save/mx*100)+'%';
+ E('lzBarPayV').textContent=f0(monthly)+' ₽';
+ E('lzBarSaveV').textContent=f0(save)+' ₽';
+ var v=E('lzVerdict'), fleet=mode==='fleet';
+ if(net>0){
+  var pay=advSum/save, ptxt=pay<1?'меньше месяца':Math.ceil(pay)+' мес.';
+  v.className='lz-verdict';
+  v.innerHTML=(fleet?'Топливо закрывает платёж целиком':'Станция закрывает платёж целиком')+': сверху остаётся <b>+'+f0(net)+' ₽ в месяц</b>. Аванс возвращается за <b>'+ptxt+'</b>, за срок договора — <b>+'+f0(net*term)+' ₽</b>.';
+ }else{
+  v.className='lz-verdict warn';
+  v.innerHTML='Платёж выше выгоды на '+f0(-net)+' ₽ в месяц. Увеличьте срок лизинга — или проверьте объём: станция выходит в плюс от <b>'+f0(monthly/delta)+' л/мес</b>.';
+ }
+}
+['lzPrice','lzAdv','lzFuel','lzDelta'].forEach(function(i){E(i).addEventListener('input',calc)});
+E('lzTerm').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(this.querySelectorAll('button'),function(x){x.classList.remove('on')});b.classList.add('on');term=+b.dataset.v;calc()});
+E('lzMode').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;[].forEach.call(this.querySelectorAll('button'),function(x){x.classList.remove('on')});b.classList.add('on');mode=b.dataset.m;applyMode();calc()});
+applyMode();calc();
+})();</script></body></html>

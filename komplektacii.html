@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Комплектации КАЗС — БАЗА, ПРО, МАКС, УЛЬТРА | ИнтеллектКАЗС</title>
+<meta name="description" content="Четыре уровня оснащения контейнерной АЗС: БАЗА, ПРО, МАКС, УЛЬТРА. Состав каждой комплектации, рекомендации по применению и продуктовая матрица моделей КАЗС.">
+<link rel="stylesheet" href="styles.css">
+<style>
+.kh{position:relative;overflow:hidden;background:var(--carbon);color:var(--frost);padding:clamp(96px,13vw,150px) 0 clamp(56px,7vw,84px);isolation:isolate}
+.kh::before{content:"";position:absolute;inset:0;z-index:0;opacity:.55;background:linear-gradient(150deg,rgba(41,151,255,.34) 0%,rgba(123,104,238,.22) 30%,rgba(29,29,31,0) 52%,rgba(0,179,164,.2) 74%,rgba(41,151,255,.26) 100%)}
+.kh .orb{position:absolute;z-index:0;border-radius:50%;filter:blur(90px);mix-blend-mode:screen;pointer-events:none}
+.kh .o1{width:min(58vw,680px);height:min(58vw,680px);left:-12%;top:-18%;background:radial-gradient(circle,rgba(41,151,255,.9),rgba(41,151,255,0) 68%);animation:khDrift 24s ease-in-out infinite alternate}
+.kh .o2{width:min(46vw,540px);height:min(46vw,540px);right:-8%;bottom:-24%;background:radial-gradient(circle,rgba(123,104,238,.8),rgba(123,104,238,0) 70%);animation:khDrift 31s ease-in-out infinite alternate-reverse}
+@keyframes khDrift{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(6%,5%,0) scale(1.12)}}
+.kh .wrap{position:relative;z-index:1}
+.kh-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(32px,5vw,72px);align-items:end}
+@media(max-width:900px){.kh-grid{grid-template-columns:1fr}}
+.kh h1{font-size:clamp(38px,6vw,72px);line-height:1.03;letter-spacing:-2px;font-weight:600}
+.kh h1 i{font-style:normal;color:var(--signal-blue)}
+.kh .lead{font-size:clamp(17px,1.8vw,21px);line-height:1.5;color:rgba(245,245,247,.72);font-weight:300;margin-top:22px;max-width:52ch;text-wrap:pretty}
+.formula{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:30px}
+.formula .fx{padding:9px 16px;border-radius:980px;border:1px solid rgba(245,245,247,.24);font-size:14px;letter-spacing:.2px;backdrop-filter:blur(8px)}
+.formula .fx.m{background:rgba(245,245,247,.1)}
+.formula .fx.g{border-color:var(--signal-blue);color:var(--signal-blue)}
+.formula .op{color:rgba(245,245,247,.4);font-size:18px}
+.kh-ex{display:flex;flex-direction:column;gap:10px}
+.kh-ex .exlbl{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:rgba(245,245,247,.5);font-weight:600;margin-bottom:4px}
+.kh-ex a{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;border-radius:14px;background:rgba(245,245,247,.06);border:1px solid rgba(245,245,247,.12);font-size:16px;font-weight:500;transition:background .3s,transform .3s,border-color .3s}
+.kh-ex a span{font-family:var(--font-mono);font-size:12px;color:rgba(245,245,247,.55)}
+.kh-ex a:hover{background:rgba(245,245,247,.13);border-color:rgba(41,151,255,.6);transform:translateX(4px)}
+.tiers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+@media(max-width:880px){.tiers{grid-template-columns:1fr}}
+.tier{position:relative;border:1px solid var(--hairline);border-radius:22px;background:#fff;padding:clamp(26px,3vw,38px);display:flex;flex-direction:column;gap:20px;overflow:hidden;transition:transform .5s var(--ease),box-shadow .5s var(--ease),border-color .5s}
+.tier::after{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:linear-gradient(90deg,var(--signal-blue),rgba(123,104,238,.9),rgba(0,179,164,.9));transform:scaleX(0);transform-origin:left;transition:transform .7s var(--ease)}
+.tier:hover{transform:translateY(-6px);box-shadow:0 24px 60px -28px rgba(0,0,0,.35);border-color:#d5d9de}
+.tier:hover::after{transform:scaleX(1)}
+.tier.flag{background:#17140d;color:var(--frost);border-color:#3a2f16;overflow:hidden;isolation:isolate}
+.tier.flag>*{position:relative;z-index:2}
+.tier.flag::before{content:"";position:absolute;inset:-30%;z-index:0;filter:blur(58px);opacity:.85;background:conic-gradient(from 0deg at 50% 50%,#8a5a12,#f3c76b,#fff3cf,#d99a2b,#7a4a0d,#e8b95c,#fff0c4,#8a5a12);animation:goldSpin 22s linear infinite}
+.tier.flag::after{content:"";position:absolute;inset:0;z-index:1;height:auto;transform:none;background:linear-gradient(160deg,rgba(23,20,13,.62) 0%,rgba(23,20,13,.86) 46%,rgba(23,20,13,.72) 100%),radial-gradient(120% 80% at 82% 8%,rgba(255,236,183,.28),transparent 62%);transition:opacity .7s var(--ease)}
+.tier.flag:hover::after{opacity:.86}
+@keyframes goldSpin{to{transform:rotate(360deg)}}
+.tier.flag .lvl{color:#f0cf8d}
+.tier.flag .kic{background:rgba(255,231,175,.1);border-color:rgba(255,231,175,.3)}
+.tier.flag .kic svg{color:#ffdf9e}
+.tier.flag .spec-list li svg{color:#ffd27f}
+.tier.flag .rec span{background:rgba(255,231,175,.12);color:#f7e4bb}
+.tier-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.tier h2{font-size:clamp(26px,3vw,34px);font-weight:600;letter-spacing:-.8px;line-height:1}
+.tier .lvl{font-family:var(--font-mono);font-size:12px;letter-spacing:1px;color:var(--mist);margin-bottom:10px}
+.tier.flag .lvl{color:rgba(245,245,247,.55)}
+.tier .tag{font-size:17px;font-weight:500;line-height:1.35;letter-spacing:-.2px;margin-top:12px;color:var(--smoke);text-wrap:pretty}
+.tier.flag .tag{color:rgba(245,245,247,.9)}
+.tier .desc{font-size:15px;line-height:1.55;color:var(--ash);text-wrap:pretty}
+.tier.flag .desc{color:rgba(245,245,247,.62)}
+.tier h4{font-size:12px;text-transform:uppercase;letter-spacing:.5px;font-weight:600;color:var(--mist);margin-bottom:12px}
+.tier.flag h4{color:rgba(245,245,247,.5)}
+.spec-list{display:flex;flex-direction:column;gap:9px}
+.spec-list li{display:flex;gap:11px;align-items:flex-start;font-size:15px;line-height:1.4;list-style:none}
+.spec-list li svg{flex:0 0 auto;width:17px;height:17px;margin-top:2px;color:var(--apple-blue)}
+.tier.flag .spec-list li svg{color:var(--signal-blue)}
+.spec-list li.off{color:var(--mist)}
+.spec-list li.off svg{color:var(--pebble)}
+.tier.flag .spec-list li.off{color:rgba(245,245,247,.42)}
+.rec{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:4px}
+.rec span{font-size:13px;padding:6px 13px;border-radius:980px;background:var(--ice);color:var(--smoke)}
+.tier.flag .rec span{background:rgba(245,245,247,.1);color:rgba(245,245,247,.8)}
+.kic{width:62px;height:62px;flex:0 0 auto;border-radius:18px;display:grid;place-items:center;background:var(--ice);border:1px solid var(--hairline)}
+.tier.flag .kic{background:rgba(245,245,247,.08);border-color:rgba(245,245,247,.16)}
+.kic svg{width:34px;height:34px;overflow:visible}
+.kic svg [data-draw]{stroke-dasharray:var(--len,120);stroke-dashoffset:var(--len,120);animation:kDraw 2.6s var(--ease) forwards;animation-delay:.25s}
+@keyframes kDraw{to{stroke-dashoffset:0}}
+.kic svg .fl{animation:kFloat 3.4s ease-in-out infinite}
+.kic svg .sp{transform-origin:center;animation:kSpin 9s linear infinite}
+.kic svg .pu{transform-origin:center;animation:kPulse 2.4s ease-in-out infinite}
+.kic svg .pu2{transform-origin:center;animation:kPulse 2.4s ease-in-out infinite;animation-delay:.5s}
+.kic svg .bar1{animation:kBar 1.9s ease-in-out infinite}
+.kic svg .bar2{animation:kBar 1.9s ease-in-out infinite;animation-delay:.22s}
+.kic svg .bar3{animation:kBar 1.9s ease-in-out infinite;animation-delay:.44s}
+.kic svg .nd{animation:kNeedle 3.6s cubic-bezier(.5,0,.3,1) infinite;transform-origin:12px 19px}
+@keyframes kFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+@keyframes kSpin{to{transform:rotate(360deg)}}
+@keyframes kPulse{0%,100%{opacity:.25;transform:scale(.82)}50%{opacity:1;transform:scale(1.06)}}
+@keyframes kBar{0%,100%{transform:scaleY(.45)}50%{transform:scaleY(1)}}
+@keyframes kNeedle{0%,100%{transform:rotate(-52deg)}45%{transform:rotate(46deg)}60%{transform:rotate(28deg)}}
+@media(prefers-reduced-motion:reduce){.kic svg *{animation:none!important;stroke-dashoffset:0!important}}
+.mx{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--hairline);border-radius:16px;overflow:hidden}
+.mx th,.mx td{padding:16px 18px;text-align:center;font-size:15px;border-bottom:1px solid var(--hairline)}
+.mx th{font-size:12px;text-transform:uppercase;letter-spacing:.6px;color:var(--mist);font-weight:600;background:var(--ice)}
+.mx th:first-child,.mx td:first-child{text-align:left;font-weight:500}
+.mx tr:last-child td{border-bottom:none}
+.mx td .ok{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:rgba(0,113,227,.1);color:var(--apple-blue);font-size:12px;font-weight:600}
+.mx tbody tr{transition:background .3s}
+.mx tbody tr:hover{background:var(--ice)}
+.mx td .no{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#f0f0f2;color:var(--mist);font-size:12px;font-weight:600}
+.nord{position:relative;overflow:hidden;background:#0b1220;color:var(--frost);border-radius:26px;padding:clamp(30px,4vw,54px);display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(26px,4vw,52px);align-items:center}
+@media(max-width:880px){.nord{grid-template-columns:1fr}}
+.nord::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 85% 10%,rgba(41,151,255,.35),transparent 60%);pointer-events:none}
+.nord>*{position:relative}
+.nord h3{font-size:clamp(26px,3vw,36px);font-weight:600;letter-spacing:-.7px}
+.nord .badge{display:inline-flex;align-items:center;gap:9px;font-family:var(--font-mono);font-size:12px;letter-spacing:1.4px;color:#9fd0ff;margin-bottom:14px}
+.nord p{color:rgba(245,245,247,.7);font-size:16px;line-height:1.55;margin-top:14px;max-width:44ch}
+.nord .spec-list li{color:rgba(245,245,247,.9)}
+.nord .spec-list li svg{color:#9fd0ff}
+.snow{position:absolute;width:5px;height:5px;border-radius:50%;background:rgba(200,228,255,.75);animation:snowFall linear infinite}
+@keyframes snowFall{0%{transform:translateY(-20px) translateX(0);opacity:0}12%{opacity:.9}100%{transform:translateY(420px) translateX(26px);opacity:0}}
+.kbar{position:sticky;bottom:0;z-index:40;background:rgba(245,245,247,.86);backdrop-filter:blur(14px);border-top:1px solid var(--hairline)}
+.kbar .in{max-width:var(--page-max);margin:0 auto;padding:14px 40px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.kbar .note{font-size:14px;color:var(--ash)}
+@media(max-width:740px){.kbar .in{padding:12px 22px}.kbar .note{display:none}}
+.back{display:inline-flex;align-items:center;gap:8px}
+.back::after{content:none}
+.back svg{width:15px;height:15px;transition:transform .3s var(--ease)}
+.back:hover svg{transform:translateX(-3px)}
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-mark.png" alt="ИнтеллектКАЗС">
+      <span class="word">Интеллект<b>КАЗС</b></span>
+    </a>
+    <div class="nav-links"><div class="nav-item"><a href="index.html">КАЗС <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="drop-free" href="kazs-besplatno.html">КАЗС Бесплатно<small>Совместная программа с ЛУКОЙЛ</small></a><a href="kommercheskaya.html">Коммерческая КАЗС<small>Продавать топливо через АЗС</small></a><a class="simple" href="soon.html">Индивидуальный дизайн</a><a href="vedomstvennaya.html">Ведомственная КАЗС<small>Для собственного автопарка</small></a><div class="drop-head">Модельный ряд</div><a class="simple" href="kazs-open.html">Открытый тех. отсек</a><a class="simple" href="kazs-monoblock.html">Моноблок</a><a class="simple" href="kazs-suitcase.html">Чемодан</a><a class="simple" href="kazs-profile.html">Контейнер профлист</a><a class="simple" href="kazs-premium.html">Контейнер коммерческий</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="reservoirs-rgs.html">Резервуары <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="reservoirs-rgs.html">РГС — горизонтальные</a><a class="simple" href="reservoirs-rvs.html">РВС — вертикальные</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="trk-topaz.html">ТРК <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="trk-topaz.html">Топаз</a><a class="simple" href="trk-kvant.html">Квант</a><a class="simple" href="trk-sanki.html">Sanki</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="automation-terminal.html">Автоматизация <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="automation-terminal.html">Терминал самообслуживания</a><a class="simple" href="automation-scada.html">Промышленная автоматизация (SCADA)</a><a class="simple" href="automation-monitoring.html">Удалённый мониторинг и учёт</a><a class="simple" href="automation-smart-azs.html">ПО «Смарт-АЗС»</a><a class="simple" href="automation-plexpoint.html">PlexPoint</a><a class="simple" href="automation-buk-tsg.html">БУК TS-G</a><a class="simple" href="soon.html">ПО ТОПАЗ</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="epc-pod-klyuch.html">Услуги <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="epc-pod-klyuch.html">EPC под ключ</a><a class="simple" href="services-design.html">Проектирование</a><a class="simple" href="services-installation.html">Монтаж и ПНР</a><a class="simple" href="services-service.html">Сервис 24/7</a><a class="simple" href="services-modernization.html">Модернизация старых АЗС</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="configurator.html">Инструменты <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="configurator.html">3D-конфигуратор КАЗС</a><a class="simple" href="calculator.html">Калькулятор окупаемости</a><a class="simple" href="calculator-tco.html">Калькулятор TCO 5 лет</a><a class="simple" href="wizard.html">Визард «Какой КАЗС нужен»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="znaniya.html">Знания <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="projects.html">Кейсы</a><a class="simple" href="faq.html">FAQ</a><a class="simple" href="objections.html">Возражения</a><a class="simple" href="docs.html">Нормативка</a><a class="simple" href="glossary.html">Глоссарий</a><a class="simple" href="industries.html">Отрасли</a><a class="simple" href="blog.html">Блог</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="proizvodstvo.html">О компании <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="proizvodstvo.html">Производство</a><a class="simple" href="about-team.html">Команда</a><a class="simple" href="about-certificates.html">Сертификаты</a><a class="simple" href="about-quality.html">Контроль качества</a><a class="simple" href="contacts.html">Контакты</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div></div>
+    <div class="nav-cta">
+      <div class="nav-contact"><a href="tel:+78122193485" class="nav-phone mono">8 812 219 34 85</a><a href="mailto:info@ikazs.ru" class="nav-mail mono">info@ikazs.ru</a></div>
+      <button class="pill pill-primary" data-call>Заказать звонок</button>
+      <button class="nav-burger" aria-label="Меню"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+
+<header class="kh" data-screen-label="Комплектации — хиро">
+  <div class="orb o1"></div><div class="orb o2"></div>
+  <div class="wrap">
+    <div class="kh-grid">
+      <div>
+        <p class="t-eyebrow reveal" style="color:var(--signal-blue)">Уровни оснащения</p>
+        <h1 class="reveal d1" style="margin-top:16px">Сначала модель.<br>Потом <i>комплектация</i>.</h1>
+        <p class="lead reveal d2">Модель отвечает за конструкцию и внешний вид станции, комплектация — за оборудование внутри. Комплектации БАЗА, ПРО и МАКС доступны для всех пяти моделей, флагманская УЛЬТРА — для Премиум и Люкс. Соберите станцию под свой бюджет и поток клиентов.</p>
+        <div class="formula reveal d2"><span class="fx m">Модель</span><span class="op">+</span><span class="fx g">Комплектация</span><span class="op">=</span><span class="fx">Ваша станция</span></div>
+      </div>
+      <div class="kh-ex reveal d2">
+        <div class="exlbl">Например</div>
+        <a href="#pro">КАЗС МОНО ПРО<span>02</span></a>
+        <a href="#maks">КАЗС БИЗНЕС МАКС<span>03</span></a>
+        <a href="#ultra">КАЗС ПРЕМИУМ УЛЬТРА<span>04</span></a>
+        <a href="#maks">КАЗС ЛЮКС МАКС<span>03</span></a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section class="section" data-screen-label="Четыре комплектации">
+  <div class="wrap">
+    <div class="col center stack" style="margin-bottom:46px;text-align:center">
+      <p class="t-eyebrow reveal">Четыре комплектации</p>
+      <h2 class="t-heading reveal d1" style="margin-top:10px">От первой станции до федеральной сети</h2>
+    </div>
+    <div class="tiers">
+      <article class="tier reveal" id="baza">
+        <div class="tier-top"><div><div class="lvl">УРОВЕНЬ 01</div><h2><span style="opacity:.45;font-weight:400;font-size:.62em;display:block;letter-spacing:-.2px;margin-bottom:4px">Комплектация</span>БАЗА</h2></div><div class="kic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><g class="fl"><path data-draw style="--len:70" d="M3 8.5L12 4l9 4.5-9 4.5-9-4.5z"/><path data-draw style="--len:44" d="M3 13.5l9 4.5 9-4.5" opacity=".55"/></g><circle class="pu" cx="19.5" cy="5.5" r="2" fill="currentColor" stroke="none"/></svg></div></div>
+        <p class="tag">Всё необходимое для запуска коммерческой АЗС.</p>
+        <p class="desc">Минимально необходимое оснащение, соответствующее требованиям СП 156. Оптимальный выбор для проектов с ограниченным бюджетом, где приоритет — быстрый запуск бизнеса и возможность дальнейшей модернизации.</p>
+        <div><h4>Состав комплектации</h4><ul class="spec-list"><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Оборудование согласно требованиям СП 156</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Датчик верхнего уровня</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Базовая система безопасности</span></li><li class="off"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg><span>Без уровнемера</span></li><li class="off"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5.5 5.5l9 9M14.5 5.5l-9 9"/></svg><span>Без системы автоматизации</span></li></ul></div>
+        <div><h4>Рекомендуется для</h4><div class="rec"><span>Первая коммерческая КАЗС</span><span>Небольшие населённые пункты</span><span>Ведомственные объекты</span></div></div>
+      </article>
+      <article class="tier reveal d1" id="pro">
+        <div class="tier-top"><div><div class="lvl">УРОВЕНЬ 02</div><h2><span style="opacity:.45;font-weight:400;font-size:.62em;display:block;letter-spacing:-.2px;margin-bottom:4px">Комплектация</span>ПРО</h2></div><div class="kic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect data-draw style="--len:56" x="4" y="3" width="16" height="14" rx="2.5"/><path class="bar1" d="M7.5 12.5v-2.5" stroke-width="2"/><path class="bar2" d="M11 12.5v-4.5" stroke-width="2"/><path class="bar3" d="M14.5 12.5v-3.5" stroke-width="2"/><path d="M8 20.5h8" opacity=".5"/><circle class="pu" cx="17" cy="6.5" r="1.4" fill="currentColor" stroke="none"/></svg></div></div>
+        <p class="tag">Оптимальное решение для автоматической торговли топливом.</p>
+        <p class="desc">Самая востребованная комплектация: современная автоматизация, надёжное оборудование и разумная стоимость. Позволяет организовать полноценную круглосуточную продажу топлива без операторов.</p>
+        <div><h4>Состав комплектации</h4><ul class="spec-list"><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Уровнемер Escort</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Насос 25 м³/ч</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Терминал самообслуживания 17″</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Промышленный компьютер Intel Core i3</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Банковский терминал</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>АСУ «Смарт АЗС»</span></li></ul></div>
+        <div><h4>Рекомендуется для</h4><div class="rec"><span>Большинство коммерческих АЗС</span><span>Первая автоматическая станция</span><span>Небольшие сетевые проекты</span></div></div>
+      </article>
+      <article class="tier reveal" id="maks">
+        <div class="tier-top"><div><div class="lvl">УРОВЕНЬ 03</div><h2><span style="opacity:.45;font-weight:400;font-size:.62em;display:block;letter-spacing:-.2px;margin-bottom:4px">Комплектация</span>МАКС</h2></div><div class="kic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path data-draw style="--len:34" d="M3.5 19a9 9 0 1117 0"/><path class="nd" d="M12 19l4.5-6" stroke-width="2"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/><path class="pu" d="M20.5 8.5l1.6-1.6" opacity=".7"/></svg></div></div>
+        <p class="tag">Высокая производительность для интенсивной эксплуатации.</p>
+        <p class="desc">Для объектов с высоким потоком клиентов. Более производительное оборудование, расширенные способы оплаты и профессиональная автоматизация увеличивают пропускную способность станции.</p>
+        <div><h4>Состав комплектации</h4><ul class="spec-list"><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Уровнемер ПМП-201</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Насос 45 м³/ч</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>ТРК КВАНТ или ТОПАЗ</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>АСУ «Смарт АЗС»</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Терминал самообслуживания 17″, Intel Core i5</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Банковские и RFID-карты</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Сканер и купюроприёмник</span></li></ul></div>
+        <div><h4>Рекомендуется для</h4><div class="rec"><span>АЗС с высокой проходимостью</span><span>Сетевые операторы</span><span>Транспорт и логистика</span></div></div>
+      </article>
+      <article class="tier flag reveal d1" id="ultra">
+        <div class="tier-top"><div><div class="lvl">УРОВЕНЬ 04</div><h2><span style="opacity:.45;font-weight:400;font-size:.62em;display:block;letter-spacing:-.2px;margin-bottom:4px">Комплектация</span>УЛЬТРА</h2></div><div class="kic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle class="pu" cx="12" cy="12" r="3.2" fill="currentColor" stroke="none"/><g class="sp"><circle data-draw style="--len:56" cx="12" cy="12" r="7" stroke-dasharray="9 5"/></g><g class="pu2"><circle cx="12" cy="12" r="10.2" stroke-dasharray="4 7" opacity=".6"/></g></svg></div></div>
+        <p class="tag">Максимальная автоматизация и оборудование мирового уровня.</p>
+        <p class="desc">Флагманская комплектация для современных автоматических АЗС, где важны максимальная надёжность, высокая скорость обслуживания и расширенные возможности удалённого управления.</p>
+        <div><h4>Состав комплектации</h4><ul class="spec-list"><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Уровнемер Struna+ или Veeder-Root</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Насос 45 м³/ч</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>ТРК Gilbarco, Tokheim или Sanki</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Автоматическое переключение линий наполнения</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Терминал 32″, Intel Core i5</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Банковские и RFID-карты, купюроприёмник, сканер</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Видеонаблюдение и громкоговорящая связь</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>АСУ «Бук TS G»</span></li></ul></div>
+        <div><h4>Рекомендуется для</h4><div class="rec"><span>Федеральные и региональные сети</span><span>Высоконагруженные объекты</span><span>Инвесторы новых АЗС</span></div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0" data-screen-label="Опция НОРД">
+  <div class="wrap">
+    <div class="nord reveal">
+      <span class="snow" style="left:3.0%;animation-duration:7.0s;animation-delay:0.0s"></span><span class="snow" style="left:9.4%;animation-duration:8.7s;animation-delay:0.6s"></span><span class="snow" style="left:15.8%;animation-duration:10.4s;animation-delay:1.1s"></span><span class="snow" style="left:22.2%;animation-duration:12.1s;animation-delay:1.7s"></span><span class="snow" style="left:28.6%;animation-duration:13.8s;animation-delay:2.2s"></span><span class="snow" style="left:35.0%;animation-duration:7.0s;animation-delay:2.8s"></span><span class="snow" style="left:41.4%;animation-duration:8.7s;animation-delay:3.3s"></span><span class="snow" style="left:47.8%;animation-duration:10.4s;animation-delay:3.9s"></span><span class="snow" style="left:54.2%;animation-duration:12.1s;animation-delay:4.4s"></span><span class="snow" style="left:60.6%;animation-duration:13.8s;animation-delay:5.0s"></span><span class="snow" style="left:67.0%;animation-duration:7.0s;animation-delay:5.5s"></span><span class="snow" style="left:73.4%;animation-duration:8.7s;animation-delay:6.1s"></span><span class="snow" style="left:79.8%;animation-duration:10.4s;animation-delay:6.6s"></span><span class="snow" style="left:86.2%;animation-duration:12.1s;animation-delay:7.2s"></span><span class="snow" style="left:92.6%;animation-duration:13.8s;animation-delay:7.7s"></span><span class="snow" style="left:99.0%;animation-duration:7.0s;animation-delay:8.3s"></span>
+      <div>
+        <div class="badge"><span class="kic" style="width:38px;height:38px;border-radius:12px;background:rgba(159,208,255,.12);border-color:rgba(159,208,255,.28)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="width:22px;height:22px"><g class="sp"><path d="M12 2v20M3.3 7l17.4 10M20.7 7L3.3 17"/></g><circle class="pu" cx="12" cy="12" r="2.6" fill="currentColor" stroke="none"/></svg></span>ДОПОЛНИТЕЛЬНАЯ ОПЦИЯ</div>
+        <h3>Исполнение «НОРД»</h3>
+        <p>Специальное исполнение для эксплуатации в районах Крайнего Севера и регионах с экстремально низкими температурами. Добавляется к любой модели и любому уровню оснащения.</p>
+      </div>
+      <ul class="spec-list"><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Сталь с повышенной ударной вязкостью</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Усиленный силовой каркас</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Обогрев резервуаров</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Обогрев технологических трубопроводов</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Обогрев топливораздаточной колонки</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Утепление технологических отсеков</span></li><li><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 10.5l4 4 8-9"/></svg><span>Низкотемпературные кабели и комплектующие</span></li></ul>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="padding-top:0" data-screen-label="Продуктовая матрица">
+  <div class="wrap">
+    <div class="col center stack" style="margin-bottom:34px;text-align:center">
+      <p class="t-eyebrow reveal">Продуктовая матрица</p>
+      <h2 class="t-heading reveal d1" style="margin-top:10px">Модель — плюс уровень оснащения</h2>
+      <p class="t-sub reveal d2" style="margin-top:14px">Сначала вы выбираете класс станции, затем уровень оборудования. БАЗА, ПРО и МАКС — на любой модели; УЛЬТРА — на Премиум и Люкс.</p>
+    </div>
+    <div class="reveal d1" style="overflow-x:auto">
+      <table class="mx"><thead><tr><th>Модель</th><th>База</th><th>Про</th><th>Макс</th><th>Ультра</th></tr></thead><tbody><tr><td>КАЗС Стандарт</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td><td><span class="no">✕</span></td></tr><tr><td>КАЗС Моно</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td><td><span class="no">✕</span></td></tr><tr><td>КАЗС Бизнес</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td><td><span class="no">✕</span></td></tr><tr><td>КАЗС Премиум</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td></tr><tr><td>КАЗС Люкс</td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td><td><span class="ok">✓</span></td></tr></tbody></table>
+    </div>
+    <p class="reveal d2" style="margin-top:18px;font-size:14px;color:var(--mist);text-align:center">Комплектация УЛЬТРА поставляется только на моделях Премиум и Люкс. Опция «НОРД» доступна для всех сочетаний. Точный состав фиксируется в спецификации к договору.</p>
+  </div>
+</section>
+
+<div class="kbar" data-screen-label="Панель действий">
+  <div class="in">
+    <a class="ghost back" href="kommercheskaya.html#models"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4l-6 6 6 6M5 10h11"/></svg>Назад к моделям</a>
+    <span class="note">Подберём комплектацию под ваш поток клиентов и бюджет</span>
+    <a class="pill pill-primary" href="kommercheskaya.html#cta">Заказать КАЗС</a>
+  </div>
+</div>
+
+<footer class="footer" data-screen-label="Футер">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="brand"><img src="assets/logo-mark.png" alt="ИнтеллектКАЗС" style="width:30px;height:30px"><span class="word">Интеллект<b>КАЗС</b></span></div>
+        <p>Контейнерные АЗС для топливного бизнеса. Под ключ за 45 дней. Производство — Санкт-Петербург.</p>
+      </div>
+      <div class="foot-col"><h5>КАЗС</h5><a href="vedomstvennaya.html">Ведомственная</a><a href="kommercheskaya.html">Коммерческая</a><a href="#models">Модельный ряд</a><a href="#calc">Калькулятор доходности</a></div>
+      <div class="foot-col"><h5>Оборудование</h5><a href="trk-topaz.html">ТРК</a><a href="automation-terminal.html">Терминалы самообслуживания</a><a href="automation-scada.html">АСУ и SCADA</a></div>
+      <div class="foot-col"><h5>Услуги</h5><a href="epc-pod-klyuch.html">EPC под ключ</a><a href="services-service.html">Сервис 24/7</a><a href="calculator-leasing.html">Лизинг</a></div>
+      <div class="foot-col"><h5>Знания</h5><a href="#cases">Кейсы</a><a href="#faq">FAQ</a><a href="proizvodstvo.html">О компании</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>ИнтеллектКАЗС · производство КАЗС и АЗС · Санкт-Петербург · <a href="tel:+78122193485">8 812 219 34 85</a> · <a href="mailto:info@ikazs.ru">info@ikazs.ru</a></span>
+      <span><a href="#">Политика обработки ПД</a> · © 2026 ИнтеллектКАЗС</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

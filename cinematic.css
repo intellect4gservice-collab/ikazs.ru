@@ -1,0 +1,261 @@
+/* ============================================================
+   ИнтеллектКАЗС — Скролл-кино (scroll-scrubbing intro)
+   Pinned stage; camera, weather and captions are driven by
+   scroll position. Built to be swapped for ONE continuous
+   king.ai video later (see cinematic.js — .cine-video branch).
+   ============================================================ */
+
+.cinematic {
+  position: relative;
+  background: #000;
+  /* height is set by cinematic.js from scene count */
+}
+
+.cine-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  min-height: 560px;
+  overflow: hidden;
+  background: #0a0a0b;
+}
+
+/* ---- Scenes (crossfaded by scroll) ---- */
+.cine-scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  will-change: opacity;
+}
+.cine-scene .cine-media { position: absolute; inset: 0; overflow: hidden; }
+.cine-scene .cine-cam {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  will-change: transform;
+  transform: scale(1.05);
+}
+
+/* ---- Scrubbed video clips ---- */
+.cine-scene .cine-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  will-change: transform, opacity, filter;
+  background: #0a0a0b;
+}
+.cine-scene[data-bg="light"] .cine-video { background: #eceff3; }
+
+/* White studio scenes (iso render on light sweep) */
+.cine-scene.is-white .cine-media {
+  background:
+    radial-gradient(120% 90% at 50% 38%, #ffffff 0%, #f3f5f8 55%, #e4e8ee 100%);
+}
+.cine-scene.is-white .cine-cam {
+  object-fit: contain;
+  padding: clamp(40px, 8vh, 120px) clamp(20px, 6vw, 120px);
+}
+
+/* Environment scenes get a legibility scrim toward the caption side */
+.cine-scrim {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+}
+.cine-scrim.left {
+  background: linear-gradient(90deg, rgba(0,0,0,0.74) 0%, rgba(0,0,0,0.42) 34%, rgba(0,0,0,0.06) 62%, transparent 100%),
+              linear-gradient(0deg, rgba(0,0,0,0.55) 0%, transparent 38%);
+}
+.cine-scrim.white {
+  background: linear-gradient(90deg, rgba(255,255,255,0.0) 40%, rgba(255,255,255,0.55) 100%);
+}
+
+/* ---- Weather: snow ---- */
+.cine-snow { position: absolute; inset: -20% 0 0 0; z-index: 3; pointer-events: none; }
+.cine-snow span {
+  position: absolute; top: -10%;
+  width: 100%; height: 120%;
+  background-repeat: repeat;
+}
+.cine-snow .s1 {
+  background-image: radial-gradient(2.2px 2.2px at 30px 40px, rgba(255,255,255,0.95) 50%, transparent 51%),
+                    radial-gradient(1.6px 1.6px at 120px 160px, rgba(255,255,255,0.8) 50%, transparent 51%),
+                    radial-gradient(2px 2px at 220px 90px, rgba(255,255,255,0.9) 50%, transparent 51%);
+  background-size: 260px 260px;
+  animation: snowfall 9s linear infinite;
+}
+.cine-snow .s2 {
+  background-image: radial-gradient(1.4px 1.4px at 60px 120px, rgba(255,255,255,0.7) 50%, transparent 51%),
+                    radial-gradient(1.8px 1.8px at 180px 40px, rgba(255,255,255,0.85) 50%, transparent 51%),
+                    radial-gradient(1.2px 1.2px at 280px 200px, rgba(255,255,255,0.6) 50%, transparent 51%);
+  background-size: 320px 320px;
+  animation: snowfall 14s linear infinite;
+  opacity: 0.8;
+}
+@keyframes snowfall {
+  0%   { transform: translate3d(0,-12%,0); }
+  100% { transform: translate3d(-40px,12%,0); }
+}
+
+/* ---- Weather: summer sun ---- */
+.cine-sun {
+  position: absolute; z-index: 3; pointer-events: none;
+  left: 8%; top: 18%; width: 46vw; height: 46vw; max-width: 620px; max-height: 620px;
+  background: radial-gradient(circle, rgba(255,236,196,0.55) 0%, rgba(255,214,140,0.22) 38%, transparent 66%);
+  filter: blur(2px);
+  animation: sunbreathe 7s ease-in-out infinite;
+}
+@keyframes sunbreathe { 0%,100% { transform: scale(1); opacity: .85; } 50% { transform: scale(1.08); opacity: 1; } }
+
+/* ---- Exploded scene (blueprint feel + drifting component chips) ---- */
+.cine-scene.is-explode { --ex: 0; }
+.cine-scene.is-explode .cine-media {
+  background: radial-gradient(120% 90% at 50% 42%, #ffffff 0%, #eef1f5 60%, #dde2e9 100%);
+}
+.cine-blueprint {
+  position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background-image: linear-gradient(rgba(41,151,255,0.10) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(41,151,255,0.10) 1px, transparent 1px);
+  background-size: 46px 46px;
+  opacity: calc(var(--ex) * 0.9);
+  transition: opacity .2s linear;
+}
+.cine-chip {
+  position: absolute; z-index: 4;
+  left: 50%; top: 50%;
+  transform: translate(-50%,-50%) translate(calc(var(--cx) * var(--ex)), calc(var(--cy) * var(--ex)));
+  opacity: calc((var(--ex) - 0.12) * 1.6);
+  display: flex; align-items: center; gap: 9px;
+  background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--hairline);
+  border-radius: 980px;
+  padding: 8px 15px 8px 11px;
+  box-shadow: 0 10px 26px rgba(0,0,0,0.1);
+  white-space: nowrap;
+  will-change: transform, opacity;
+}
+.cine-chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--signal-blue); flex: 0 0 auto; }
+.cine-chip span { font-size: 14px; font-weight: 600; letter-spacing: -0.2px; color: var(--carbon); }
+@media (max-width: 740px) { .cine-chip span { font-size: 12px; } .cine-chip { padding: 6px 12px 6px 9px; } }
+
+/* ---- Captions (editorial, left, blue accent bar) ---- */
+.cine-caps { position: absolute; inset: 0; z-index: 30; pointer-events: none; }
+.cine-cap {
+  position: absolute;
+  left: clamp(22px, 6vw, 96px);
+  bottom: clamp(86px, 16vh, 168px);
+  max-width: min(560px, 78vw);
+  opacity: 0;
+  will-change: opacity, transform;
+  color: #fff;
+}
+.cine-shout { position: absolute; z-index: 5; top: clamp(74px, 12vh, 110px); left: clamp(22px, 6vw, 96px); font-size: clamp(28px, 3.6vw, 48px); line-height: 1; font-weight: 900; letter-spacing: -1px; color: #f26a1b; text-transform: uppercase; white-space: nowrap; }
+.cine-cap .bar { width: 46px; height: 3px; background: var(--signal-blue); margin-bottom: 18px; }
+.cine-cap.lower { bottom: clamp(44px, 8vh, 90px); }
+.cine-cap .num {
+  font-family: var(--font-mono); font-size: 13px; letter-spacing: 1px;
+  color: var(--signal-blue); margin-bottom: 12px; font-weight: 500;
+}
+.cine-cap h1, .cine-cap h2 {
+  font-size: clamp(28px, 4.4vw, 54px); line-height: 1.06; letter-spacing: -1px;
+  font-weight: 600; margin-bottom: 16px;
+  text-wrap: balance;
+}
+.cine-cap p.lead {
+  font-size: clamp(16px, 1.7vw, 21px); line-height: 1.42; font-weight: 300;
+  color: rgba(255,255,255,0.86); max-width: 46ch;
+  text-wrap: pretty;
+}
+.cine-cap.on-light { color: var(--carbon); }
+.cine-cap.on-light p.lead { color: var(--ash); }
+
+/* Lowered caption (slide 05) — sits near the bottom, clear of the station */
+.cine-cap.low { bottom: clamp(34px, 6vh, 72px); }
+
+/* Highlighted brand fragment + lead emphasis */
+.cine-cap .hl { color: var(--signal-blue); font-weight: 700; }
+.cine-cap p.lead b { color: inherit; font-weight: 700; }
+.cine-cap.on-light p.lead b { color: var(--carbon); }
+.cine-cap p.lead b.big { font-size: 1.5em; font-weight: 800; letter-spacing: -1px; }
+.cine-cap.lead-dark p.lead { color: var(--carbon); }
+
+/* Feature list (slide 02) */
+.cine-list {
+  list-style: none; margin: 6px 0 0; padding: 0;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 11px;
+}
+.cine-list li {
+  position: relative; width: fit-content; padding-left: 24px;
+  font-size: clamp(16px, 1.7vw, 21px); line-height: 1.3; font-weight: 400;
+  color: #fff;
+}
+.cine-list li::before {
+  content: ""; position: absolute; left: 0; top: 0.6em;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--signal-blue);
+}
+.cine-cap:not(.on-light) .cine-list li { text-shadow: 0 1px 20px rgba(0,0,0,0.6); }
+
+/* Contrast plate — for captions over dark clips */
+.cine-cap.plate {
+  color: #fff;
+  background: rgba(12, 14, 18, 0.46);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  backdrop-filter: blur(16px) saturate(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  padding: clamp(20px, 3vh, 30px) clamp(22px, 2.6vw, 34px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+.cine-cap.plate p.lead { color: rgba(255, 255, 255, 0.9); }
+.cine-cap .cine-cta {
+  pointer-events: auto;
+  display: inline-flex; margin-top: 24px;
+  background: var(--apple-blue); color: #fff;
+  border-radius: 980px; padding: 12px 24px; font-size: 16px;
+  transition: background .3s var(--ease), transform .3s var(--ease);
+}
+.cine-cap .cine-cta:hover { background: #0077ed; transform: translateY(-1px); }
+
+/* text shadow only for captions over photography */
+.cine-cap:not(.on-light) h1, .cine-cap:not(.on-light) h2 { text-shadow: 0 2px 30px rgba(0,0,0,0.4); }
+.cine-cap:not(.on-light) p.lead { text-shadow: 0 1px 20px rgba(0,0,0,0.5); }
+
+/* ---- HUD: scene counter + scroll cue + dot rail ---- */
+.cine-num-hud {
+  position: absolute; z-index: 32;
+  top: clamp(78px, 13vh, 116px); left: clamp(22px, 6vw, 96px);
+  font-family: var(--font-mono); font-size: 14px; letter-spacing: 1px;
+  color: rgba(255,255,255,0.92); mix-blend-mode: difference;
+}
+.cine-num-hud .tot { opacity: 0.5; }
+.cine-rail {
+  position: absolute; z-index: 32;
+  right: clamp(18px, 4vw, 44px); top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: 13px;
+}
+.cine-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: rgba(255,255,255,0.32);
+  border: 1px solid rgba(255,255,255,0.5);
+  cursor: pointer; padding: 0; transition: transform .3s var(--ease), background .3s var(--ease);
+  mix-blend-mode: difference;
+}
+.cine-dot.on { background: var(--signal-blue); border-color: var(--signal-blue); transform: scale(1.35); mix-blend-mode: normal; }
+.cine-cue {
+  position: absolute; z-index: 32; bottom: clamp(26px, 4vh, 40px); left: 50%; transform: translateX(-50%);
+  font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase;
+  color: rgba(255,255,255,0.62); mix-blend-mode: difference;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transition: opacity .4s var(--ease);
+}
+.cine-cue .arrow { width: 1px; height: 26px; background: linear-gradient(rgba(255,255,255,0.7), transparent); animation: cuepulse 1.8s var(--ease) infinite; }
+@keyframes cuepulse { 0%,100% { opacity: .3; transform: scaleY(.7); transform-origin: top; } 50% { opacity: 1; transform: scaleY(1); } }
+
+@media (max-width: 740px) {
+  .cine-cap { left: 22px; right: 22px; bottom: clamp(70px, 13vh, 120px); max-width: none; }
+  .cine-rail { right: 14px; gap: 10px; }
+  .cine-num-hud { left: 22px; top: 70px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cine-snow, .cine-sun, .cine-cue .arrow { animation: none; }
+}

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Бриф — кино-интро коммерческой КАЗС · ИнтеллектКАЗС</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --apple-blue:#0071e3; --link-blue:#0066cc; --signal-blue:#2997ff;
+    --carbon:#1d1d1f; --frost:#f5f5f7; --ice:#f4f8fb; --ash:#707070; --mist:#858585;
+    --pebble:#e2e2e5; --hairline:#d2d2d7; --success:#30d158;
+    --font:'Inter',ui-sans-serif,system-ui,sans-serif;
+    --mono:'JetBrains Mono',ui-monospace,monospace;
+    --ease:cubic-bezier(.25,.1,.25,1);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  body{font-family:var(--font);color:var(--carbon);background:#e6e6e9;line-height:1.5;letter-spacing:-0.01em;}
+
+  .page{
+    width:210mm; min-height:297mm; margin:24px auto; background:#fff;
+    padding:22mm 20mm; position:relative;
+    box-shadow:0 6px 40px rgba(0,0,0,.14);
+  }
+  .page + .page{margin-top:0;}
+
+  /* ---- type ---- */
+  .kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--signal-blue);font-weight:600;}
+  h1{font-size:38px;line-height:1.04;font-weight:600;letter-spacing:-.025em;margin:14px 0 0;text-wrap:balance;}
+  h2{font-size:21px;font-weight:600;letter-spacing:-.02em;margin:0;}
+  h3{font-size:15px;font-weight:600;letter-spacing:-.01em;}
+  p{text-wrap:pretty;}
+  .lead{font-size:15.5px;color:var(--ash);font-weight:300;max-width:64ch;margin-top:14px;line-height:1.55;}
+  .mono{font-family:var(--mono);}
+
+  /* ---- cover ---- */
+  .brandbar{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--hairline);padding-bottom:14px;}
+  .brandbar .word{font-size:15px;font-weight:600;letter-spacing:-.02em;}
+  .brandbar .word b{color:var(--signal-blue);font-weight:600;}
+  .brandbar .meta{font-family:var(--mono);font-size:10.5px;color:var(--mist);text-align:right;line-height:1.7;}
+
+  .section-head{display:flex;align-items:baseline;gap:14px;margin:0 0 18px;}
+  .section-head .no{font-family:var(--mono);font-size:12px;color:var(--signal-blue);font-weight:600;padding-top:2px;}
+  .section{margin-top:40px;}
+
+  /* ---- spec grid ---- */
+  .specs{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:8px;overflow:hidden;margin-top:6px;}
+  .spec{background:#fff;padding:16px 18px;}
+  .spec .k{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mist);}
+  .spec .v{font-size:15px;font-weight:500;margin-top:6px;letter-spacing:-.01em;}
+  .spec .v small{display:block;font-size:12.5px;font-weight:400;color:var(--ash);margin-top:3px;letter-spacing:0;}
+
+  /* ---- principle list ---- */
+  .principles{display:flex;flex-direction:column;gap:14px;margin-top:6px;}
+  .principle{display:grid;grid-template-columns:26px 1fr;gap:14px;align-items:start;}
+  .principle .dot{width:9px;height:9px;border-radius:50%;background:var(--signal-blue);margin:7px auto 0;}
+  .principle h3{margin-bottom:3px;}
+  .principle p{font-size:13.5px;color:var(--ash);line-height:1.5;}
+
+  /* ---- timeline strip ---- */
+  .timeline{margin-top:8px;border:1px solid var(--hairline);border-radius:8px;padding:18px 18px 14px;background:var(--ice);}
+  .tl-bar{position:relative;height:8px;border-radius:6px;background:#fff;border:1px solid var(--hairline);overflow:hidden;}
+  .tl-seg{position:absolute;top:0;bottom:0;}
+  .tl-hold{background:var(--signal-blue);opacity:.9;}
+  .tl-trans{background:repeating-linear-gradient(90deg,var(--pebble),var(--pebble) 3px,#fff 3px,#fff 6px);}
+  .tl-ticks{display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:9.5px;color:var(--mist);}
+  .tl-legend{display:flex;gap:18px;margin-top:12px;font-size:11px;color:var(--ash);}
+  .tl-legend span{display:inline-flex;align-items:center;gap:7px;}
+  .tl-legend i{width:16px;height:8px;border-radius:3px;display:inline-block;}
+
+  /* ---- shot cards ---- */
+  .shot{display:grid;grid-template-columns:74mm 1fr;gap:16px;border:1px solid var(--hairline);border-radius:10px;overflow:hidden;margin-bottom:14px;background:#fff;break-inside:avoid;}
+  .shot-still{position:relative;background:#0a0a0b;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:118px;}
+  .shot-still.studio{background:radial-gradient(120% 90% at 50% 40%,#fff 0%,#f0f3f7 60%,#e2e7ee 100%);}
+  .shot-still img{width:100%;height:100%;object-fit:cover;display:block;}
+  .shot-still.studio img{object-fit:contain;padding:14px 16px;mix-blend-mode:multiply;}
+  .shot-still .stop-no{position:absolute;top:10px;left:11px;font-family:var(--mono);font-size:11px;font-weight:600;color:#fff;background:rgba(0,0,0,.42);backdrop-filter:blur(4px);padding:3px 8px;border-radius:5px;}
+  .shot-still.studio .stop-no{color:var(--carbon);background:rgba(255,255,255,.7);}
+  .shot-still .tag{position:absolute;bottom:10px;left:11px;font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:rgba(0,0,0,.4);padding:3px 7px;border-radius:4px;}
+  .shot-still.studio .tag{color:var(--ash);background:rgba(255,255,255,.72);}
+
+  .shot-body{padding:15px 18px 16px 2px;display:flex;flex-direction:column;gap:9px;}
+  .shot-time{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .shot-time .range{font-family:var(--mono);font-size:11px;color:var(--carbon);font-weight:600;}
+  .shot-time .key{font-family:var(--mono);font-size:9.5px;color:var(--mist);}
+  .shot-cap-title{font-size:17px;font-weight:600;letter-spacing:-.02em;}
+  .shot-cap-lead{font-size:12.5px;color:var(--ash);margin-top:-3px;}
+  .shot-rows{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin-top:4px;}
+  .shot-rows dt{font-family:var(--mono);font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--mist);padding-top:2px;}
+  .shot-rows dd{font-size:12.5px;line-height:1.45;color:var(--carbon);}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:500;padding:3px 9px;border-radius:980px;border:1px solid var(--hairline);}
+  .pill.light{background:#fff;color:var(--carbon);}
+  .pill.light i{width:8px;height:8px;border-radius:50%;background:var(--carbon);border:1px solid var(--mist);}
+  .pill.dark{background:var(--carbon);color:#fff;border-color:var(--carbon);}
+  .pill.dark i{width:8px;height:8px;border-radius:50%;background:#fff;}
+
+  /* ---- delivery / dev ---- */
+  .note{border:1px solid var(--hairline);border-left:3px solid var(--signal-blue);border-radius:8px;padding:16px 18px;background:var(--ice);margin-top:6px;}
+  .note h3{margin-bottom:8px;}
+  .note p, .note li{font-size:13px;color:var(--ash);line-height:1.55;}
+  .note ul{margin:6px 0 0 18px;}
+  .note li{margin-bottom:4px;}
+  code{font-family:var(--mono);font-size:11.5px;background:#fff;border:1px solid var(--hairline);border-radius:4px;padding:1px 5px;color:var(--carbon);}
+  .codeblock{font-family:var(--mono);font-size:11px;line-height:1.65;background:var(--carbon);color:#e8e8ea;border-radius:8px;padding:14px 16px;margin-top:10px;white-space:pre;overflow:auto;}
+  .codeblock .c{color:#6f7177;}
+  .codeblock .b{color:var(--signal-blue);}
+
+  .footer{margin-top:34px;padding-top:14px;border-top:1px solid var(--hairline);display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;color:var(--mist);}
+
+  @media print{
+    body{background:#fff;}
+    .page{margin:0;box-shadow:none;width:auto;min-height:auto;padding:16mm 15mm;}
+    .page{page-break-after:always;}
+    .page:last-child{page-break-after:auto;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ PAGE 1 — COVER + SPEC + PRINCIPLES ============ -->
+<div class="page">
+  <div class="brandbar">
+    <span class="word">Интеллект<b>КАЗС</b></span>
+    <div class="meta">БРИФ · ВИДЕО-ПРОДАКШН<br>v1.0 · 22.06.2026</div>
+  </div>
+
+  <span class="kicker" style="margin-top:30px;display:block">Кино-интро · коммерческая КАЗС</span>
+  <h1>Один непрерывный ролик.<br>Шесть остановок камеры.</h1>
+  <p class="lead">Ролик встроен в первый экран лендинга и проигрывается <b>по скроллу</b> — кадр привязан к положению страницы (<span class="mono">currentTime = прогресс × длительность</span>). Поэтому нужен <b>один сплошной рендер без склеек</b>: на стыке отдельных файлов в момент перемотки появляется рывок. Ниже — концепция, тех-требования и покадровая раскадровка для шести смысловых остановок.</p>
+
+  <div class="section">
+    <div class="section-head"><span class="no">01</span><h2>Технические требования</h2></div>
+    <div class="specs">
+      <div class="spec"><div class="k">Формат</div><div class="v">MP4 · H.264 (+ WebM/VP9)<small>один файл, без аудио · muted · playsinline</small></div></div>
+      <div class="spec"><div class="k">Разрешение</div><div class="v">1920×1080, 16:9<small>+ облегчённая версия 1280×720 для моб.</small></div></div>
+      <div class="spec"><div class="k">Длительность</div><div class="v">≈ 14 секунд<small>30 fps · 6 остановок камеры</small></div></div>
+      <div class="spec"><div class="k">Вес файла</div><div class="v">≤ 8–12 МБ<small>иначе скролл-скрабинг тормозит на телефоне</small></div></div>
+      <div class="spec"><div class="k">Кодирование</div><div class="v">ключевые кадры почаще<small>GOP ≤ 12 кадров — для плавной перемотки по скроллу</small></div></div>
+      <div class="spec"><div class="k">Плакат-кадр</div><div class="v">poster.jpg = кадр 0<small>сцена 01, студия — показывается до загрузки видео</small></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="no">02</span><h2>Главная идея и язык камеры</h2></div>
+    <div class="principles">
+      <div class="principle"><div class="dot"></div><div><h3>Станция — в центре, мир меняется вокруг</h3><p>КАЗС остаётся главным героем кадра на всём протяжении. Меняется не объект, а среда: белая студия → утренний город → зима → снова студия. Это снимает проблему «склейки разных локаций» — переходы делаются растворением окружения, а не монтажной склейкой.</p></div></div>
+      <div class="principle"><div class="dot"></div><div><h3>Камера движется непрерывно, но «дышит» на остановках</h3><p>Между остановками — плавный облёт/наезд. На каждой остановке движение почти замирает на ~0,6 сек, чтобы подпись успевала прочитаться. Резких рывков и закрученных облётов избегаем — премиальная, спокойная подача.</p></div></div>
+      <div class="principle"><div class="dot"></div><div><h3>Студийные остановки — на белом, средовые — на фото</h3><p>Подписи 01, 04, 05, 06 ложатся тёмным текстом на светлый студийный фон. Подписи 02 и 03 — белым текстом поверх городской и зимней сцены (под них в кадре нужна притенённая левая нижняя зона для читаемости).</p></div></div>
+      <div class="principle"><div class="dot"></div><div><h3>Свет — холодный нейтральный, один синий акцент</h3><p>Палитра бренда: нейтральный фрост-белый и графит, единственный акцент — синий (контур подсветки станции, ценовое табло, блики на терминале). Никакого пёстрого цвета.</p></div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="no">03</span><h2>Тайминг (общая дорожка ≈ 14 сек)</h2></div>
+    <div class="timeline">
+      <div class="tl-bar">
+        <!-- 6 holds + 5 transitions across 14s; positions in % of 14s -->
+        <div class="tl-seg tl-hold"  style="left:0%;    width:14.3%"></div>
+        <div class="tl-seg tl-trans" style="left:14.3%; width:10%"></div>
+        <div class="tl-seg tl-hold"  style="left:24.3%; width:11.4%"></div>
+        <div class="tl-seg tl-trans" style="left:35.7%; width:8.6%"></div>
+        <div class="tl-seg tl-hold"  style="left:44.3%; width:10%"></div>
+        <div class="tl-seg tl-trans" style="left:54.3%; width:8.6%"></div>
+        <div class="tl-seg tl-hold"  style="left:62.9%; width:10%"></div>
+        <div class="tl-seg tl-trans" style="left:72.9%; width:5.7%"></div>
+        <div class="tl-seg tl-hold"  style="left:78.6%; width:8.6%"></div>
+        <div class="tl-seg tl-trans" style="left:87.2%; width:4.3%"></div>
+        <div class="tl-seg tl-hold"  style="left:91.5%; width:8.5%"></div>
+      </div>
+      <div class="tl-ticks"><span>0с · 01</span><span>03 · ~6с</span><span>05 · ~11с</span><span>14с · 06</span></div>
+      <div class="tl-legend">
+        <span><i class="tl-hold" style="background:var(--signal-blue)"></i> остановка под подпись (~1,5 с)</span>
+        <span><i class="tl-trans" style="background:repeating-linear-gradient(90deg,var(--pebble),var(--pebble) 3px,#fff 3px,#fff 6px)"></i> переход / движение камеры</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer"><span>ИнтеллектКАЗС</span><span>Бриф кино-интро · стр. 1 / 3</span></div>
+</div>
+
+<!-- ============ PAGE 2 — SHOTS 1–3 ============ -->
+<div class="page">
+  <div class="brandbar">
+    <span class="word">Интеллект<b>КАЗС</b></span>
+    <div class="meta">РАСКАДРОВКА · ОСТАНОВКИ 01–03</div>
+  </div>
+
+  <div class="section" style="margin-top:24px">
+    <div class="section-head"><span class="no">04</span><h2>Раскадровка — 6 остановок</h2></div>
+
+    <!-- STOP 1 -->
+    <div class="shot">
+      <div class="shot-still studio">
+        <span class="stop-no">01</span>
+        <img src="assets/flagship.png" alt="Изометрия станции в студии">
+        <span class="tag">Референс-кадр</span>
+      </div>
+      <div class="shot-body">
+        <div class="shot-time"><span class="range mono">00:00 → 02:00</span><span class="key mono">ключ-кадр 01:00</span></div>
+        <div class="shot-cap-title">Наша новая интеллектуальная станция ИнтеллектКАЗС</div>
+        <div class="shot-cap-lead">Зарабатывайте на продаже топлива. А мы вам поможем.</div>
+        <dl class="shot-rows">
+          <dt>Среда</dt><dd>Белая студия, мягкий верхний свет, лёгкая тень-«подушка» под станцией.</dd>
+          <dt>Камера</dt><dd>Медленный наезд (dolly-in) ¾-изометрия → чуть фронтальнее. Старт ролика.</dd>
+          <dt>В кадре</dt><dd>Станция целиком, синий контур подсветки и ценовое табло включаются на ключ-кадре.</dd>
+          <dt>Текст</dt><dd><span class="pill light"><i></i>тёмный на светлом</span></dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- STOP 2 -->
+    <div class="shot">
+      <div class="shot-still">
+        <span class="stop-no">02</span>
+        <img src="assets/city-morning.png" alt="Станция в утреннем городе">
+        <span class="tag">Референс-кадр</span>
+      </div>
+      <div class="shot-body">
+        <div class="shot-time"><span class="range mono">03:10 → 05:00</span><span class="key mono">ключ-кадр 04:05</span></div>
+        <div class="shot-cap-title">Стильная</div>
+        <div class="shot-cap-lead">Притягивает внимание и вызывает доверие.</div>
+        <dl class="shot-rows">
+          <dt>Среда</dt><dd>Студия растворяется в утренний город: тёплый рассветный свет, мягкое солнце слева.</dd>
+          <dt>Камера</dt><dd>Плавный пролёт вправо (pan-right), станция остаётся в центре-правее.</dd>
+          <dt>В кадре</dt><dd>Станция в городской застройке, аккуратные блики на облицовке, лёгкое движение фона.</dd>
+          <dt>Текст</dt><dd><span class="pill dark"><i></i>белый на фото</span> &nbsp;притенить левую-нижнюю зону кадра</dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- STOP 3 -->
+    <div class="shot">
+      <div class="shot-still">
+        <span class="stop-no">03</span>
+        <img src="assets/case-snow.png" alt="Станция зимой">
+        <span class="tag">Референс-кадр</span>
+      </div>
+      <div class="shot-body">
+        <div class="shot-time"><span class="range mono">06:00 → 07:30</span><span class="key mono">ключ-кадр 06:50</span></div>
+        <div class="shot-cap-title">Вызывает доверие у водителей</div>
+        <div class="shot-cap-lead">Рост продаж обеспечен.</div>
+        <dl class="shot-rows">
+          <dt>Среда</dt><dd>Город сменяется зимой: лёгкий снегопад, морозная дымка, станция работает и подсвечена.</dd>
+          <dt>Камера</dt><dd>Плавный пролёт влево (pan-left), снежинки летят в объём, светится фриз и табло.</dd>
+          <dt>В кадре</dt><dd>Заправляющийся автомобиль/силуэт у колонки — ощущение живой, востребованной точки.</dd>
+          <dt>Текст</dt><dd><span class="pill dark"><i></i>белый на фото</span> &nbsp;притенить левую-нижнюю зону кадра</dd>
+        </dl>
+      </div>
+    </div>
+
+  </div>
+  <div class="footer"><span>ИнтеллектКАЗС</span><span>Бриф кино-интро · стр. 2 / 3</span></div>
+</div>
+
+<!-- ============ PAGE 3 — SHOTS 4–6 + DELIVERY + DEV ============ -->
+<div class="page">
+  <div class="brandbar">
+    <span class="word">Интеллект<b>КАЗС</b></span>
+    <div class="meta">РАСКАДРОВКА · ОСТАНОВКИ 04–06</div>
+  </div>
+
+  <div class="section" style="margin-top:24px">
+    <!-- STOP 4 -->
+    <div class="shot">
+      <div class="shot-still studio">
+        <span class="stop-no">04</span>
+        <img src="assets/terminal.png" alt="Терминал самообслуживания">
+        <span class="tag">Референс-кадр</span>
+      </div>
+      <div class="shot-body">
+        <div class="shot-time"><span class="range mono">08:00 → 09:30</span><span class="key mono">ключ-кадр 08:45</span></div>
+        <div class="shot-cap-title">Автоматическая</div>
+        <div class="shot-cap-lead">Без операторов. Без сбоев. Без перерывов.</div>
+        <dl class="shot-rows">
+          <dt>Среда</dt><dd>Возврат в белую студию, наезд на терминал самообслуживания крупно.</dd>
+          <dt>Камера</dt><dd>Наезд (zoom-in) на экран терминала, лёгкий параллакс, синий интерфейс «дышит».</dd>
+          <dt>В кадре</dt><dd>Экран 32″, иконки оплаты (карта, QR, наличные), индикатор работы 24/7.</dd>
+          <dt>Текст</dt><dd><span class="pill light"><i></i>тёмный на светлом</span></dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- STOP 5 -->
+    <div class="shot">
+      <div class="shot-still studio">
+        <span class="stop-no">05</span>
+        <img src="assets/flagship.png" alt="Облицовка станции крупно">
+        <span class="tag">Референс-кадр</span>
+      </div>
+      <div class="shot-body">
+        <div class="shot-time"><span class="range mono">10:20 → 11:40</span><span class="key mono">ключ-кадр 11:00</span></div>
+        <div class="shot-cap-title">Премиальная облицовка</div>
+        <div class="shot-cap-lead">Композитные материалы. Металлокассеты.</div>
+        <dl class="shot-rows">
+          <dt>Среда</dt><dd>Студия, скользящий боковой свет, чтобы читалась фактура панелей и стыки кассет.</dd>
+          <dt>Камера</dt><dd>Медленный проезд вдоль грани станции (zoom/slide), акцент на поверхности.</dd>
+          <dt>В кадре</dt><dd>Крупно угол облицовки: композитная панель + металлокассета, аккуратный шов, блик.</dd>
+          <dt>Текст</dt><dd><span class="pill light"><i></i>тёмный на светлом</span></dd>
+        </dl>
+      </div>
+    </div>
+
+    <!-- STOP 6 -->
+    <div class="shot">
+      <div class="shot-still studio">
+        <span class="stop-no">06</span>
+        <img src="assets/flagship.png" alt="Станция в разборе">
+        <span class="tag">Референс — разлёт деталей</span>
+      </div>
+      <div class="shot-body">
+        <div class="shot-time"><span class="range mono">12:40 → 14:00</span><span class="key mono">ключ-кадр 13:20</span></div>
+        <div class="shot-cap-title">Высококачественная сборка из лучших материалов</div>
+        <div class="shot-cap-lead">Создано в соответствии с СП 156.</div>
+        <dl class="shot-rows">
+          <dt>Среда</dt><dd>Студия + тонкая синяя чертёжная сетка проявляется на фоне (blueprint).</dd>
+          <dt>Камера</dt><dd>Станция разлетается на узлы (explode): резервуар, ТРК, терминал, уровнемер, насосный отсек, обшивка. Камера чуть отъезжает.</dd>
+          <dt>В кадре</dt><dd>Подписи-выноски к узлам. Финальный кадр-кнопка: «Рассчитать доходность».</dd>
+          <dt>Текст</dt><dd><span class="pill light"><i></i>тёмный на светлом</span> &nbsp;+ CTA-кнопка</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><span class="no">05</span><h2>Поставка и интеграция</h2></div>
+    <div class="note">
+      <h3>Что прислать</h3>
+      <ul>
+        <li><code>cine.mp4</code> (H.264, 1080p) + <code>cine-720.mp4</code> + <code>cine.webm</code></li>
+        <li><code>poster.jpg</code> — кадр 0 (студия, сцена 01) для предзагрузки</li>
+        <li>Тайм-код листа остановок (6 ключ-кадров) — чтобы точно посадить подписи</li>
+        <li>Исходный проект/рендер без подписей — текст накладывает сайт поверх видео</li>
+      </ul>
+    </div>
+    <div class="note" style="margin-top:12px">
+      <h3>Как ролик встаёт на сайт (для разработчика)</h3>
+      <p>Шесть блоков-картинок в секции <code>.cinematic</code> заменяются одним видео — движок уже умеет скраббить его по скроллу. Подписи и точки-навигация остаются как есть.</p>
+      <div class="codeblock"><span class="c">&lt;!-- вместо шести .cine-scene с img --&gt;</span>
+&lt;div class=<span class="b">"cine-scene"</span>&gt;
+  &lt;video class=<span class="b">"cine-video"</span> muted playsinline
+         preload=<span class="b">"auto"</span> poster=<span class="b">"poster.jpg"</span>&gt;
+    &lt;source src=<span class="b">"cine.webm"</span> type=<span class="b">"video/webm"</span>&gt;
+    &lt;source src=<span class="b">"cine.mp4"</span>  type=<span class="b">"video/mp4"</span>&gt;
+  &lt;/video&gt;
+&lt;/div&gt;
+<span class="c">// cinematic.js уже делает: video.currentTime = прогресс × duration</span></div>
+    </div>
+  </div>
+
+  <div class="footer"><span>ИнтеллектКАЗС · 8 812 219 34 85 · Санкт-Петербург</span><span>Бриф кино-интро · стр. 3 / 3</span></div>
+</div>
+
+</body>
+</html>
