@@ -85,7 +85,9 @@
   }
 
   /* ---- FAQ accordion ---- */
+  const faqTap = window.matchMedia('(hover: none)').matches || 'ontouchstart' in window;
   document.querySelectorAll('.faq-item').forEach((item) => {
+    if (!faqTap) return;                       /* на десктопе ответ живёт на hover */
     const q = item.querySelector('.faq-q');
     const a = item.querySelector('.faq-a');
     q.addEventListener('click', () => {

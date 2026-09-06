@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /uploads/
+Disallow: /scraps/
+Disallow: /screenshots/
+Disallow: /_ds/
+Disallow: /wizard.html
+Disallow: /soon.html
+
+Sitemap: https://ikazs.ru/sitemap.xml

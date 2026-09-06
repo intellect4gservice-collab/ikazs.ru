@@ -1,0 +1,262 @@
+/* ============================================================
+   ИнтеллектКАЗС — МОБИЛЬНЫЙ СЛОЙ
+   Подключается ПОСЛЕ styles.css (и после page-стилей).
+   Правит: тач-поведение вместо hover, inline-сетки, таблицы,
+   тап-таргеты, меню-аккордеон, липкую CTA-панель, объём анимаций.
+   Всё внутри медиазапросов — десктоп не затрагивается.
+   ============================================================ */
+
+/* ---------- 1. Контент, который жил только на :hover ---------- */
+@media (hover:none){
+  /* Главная: описания плиток — читаемая карточка вместо hover-раскрытия */
+  .strip-txt{grid-template-rows:auto auto!important}
+  .strip-txt span{opacity:1!important}
+  .model-media.zoom-track:hover img{transform:scale(1.05)!important}
+  .flip{cursor:pointer}
+}
+
+/* ---------- 2. Inline-сетки со страниц без медиазапросов ---------- */
+@media (max-width:900px){
+  [style*="grid-template-columns:repeat(3"],[style*="grid-template-columns: repeat(3"],
+  [style*="grid-template-columns:repeat(4"],[style*="grid-template-columns: repeat(4"],
+  [style*="grid-template-columns:repeat(5"],[style*="grid-template-columns: repeat(5"],
+  [style*="grid-template-columns:repeat(6"],[style*="grid-template-columns: repeat(6"]{grid-template-columns:repeat(2,1fr)!important}
+  [style*="width:760px"],[style*="width: 760px"],[style*="width:980px"],[style*="min-width:760px"]{width:auto!important;max-width:100%!important;min-width:0!important}
+}
+@media (max-width:640px){
+  [style*="grid-template-columns:repeat"],[style*="grid-template-columns: repeat"],
+  [style*="grid-template-columns:1fr 1fr"],[style*="grid-template-columns: 1fr 1fr"],
+  [style*="grid-template-columns:1.05fr"],[style*="grid-template-columns:1fr 0."],
+  [style*="grid-template-columns:0.9"],[style*="grid-template-columns:1.2fr"]{grid-template-columns:1fr!important}
+}
+
+/* ---------- 3. Таблицы: горизонтальный скролл внутри блока ---------- */
+@media (max-width:740px){
+  .m-tbl{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:22px 0;scrollbar-width:thin;border:1px solid var(--hairline);border-radius:8px;background:#fff}
+  .m-tbl>table{min-width:100%;width:max-content;margin:0}
+  .cmp-table th,.cmp-table td{padding:14px 12px;font-size:14px}
+  .article-table th,.article-table td{padding:11px 12px;font-size:14px}
+  .ttx td{padding:13px 6px;font-size:15px}
+}
+
+/* ---------- 4. Типографика и тап-таргеты (минимум 44px) ---------- */
+@media (max-width:740px){
+  /* Длинные русские слова не должны рвать вёрстку */
+  h1,h2,h3,h4,.t-hero,.t-display,.t-heading-lg,.t-heading,.t-heading-sm{overflow-wrap:break-word;hyphens:auto}
+  .t-hero{font-size:clamp(30px,8.6vw,42px);letter-spacing:-.7px}
+  .t-display{font-size:clamp(27px,7.4vw,34px);letter-spacing:0}
+  .t-heading-lg{font-size:clamp(25px,6.6vw,32px);letter-spacing:-.3px}
+  .t-heading{font-size:clamp(23px,6vw,29px)}
+  .t-heading-sm{font-size:20px}
+  .t-sub{font-size:16.5px}
+  .article p,.article ul,.lead-col p{font-size:16px;line-height:1.62}
+  .foot-col a,.sm-col a{font-size:14px;padding:5px 0}
+  .foot-bottom,.foot-bottom a,.st-foot,.st-foot a{font-size:13px}
+  .nav-burger{width:44px;height:44px;align-items:center;justify-content:center}
+  .nav-cta .pill-primary{display:none}   /* дублируется липкой панелью снизу */
+  .nav-cta{gap:8px}
+  .nav .pill{min-height:38px;padding:9px 16px}
+  .pill{min-height:44px}
+  .btn-row{gap:10px}
+  .btn-row .pill{flex:1 1 auto;justify-content:center}
+  .faq-q{padding:16px 4px;min-height:56px;font-size:17px}
+  .cmp-toggle button{min-height:44px}
+  .toc a{padding:4px 0}
+}
+
+/* ---------- 4b. Телефон и почта в шапке — всегда ---------- */
+@media (max-width:1180px){
+  .nav-contact{display:flex!important}
+  .nav-phone{display:block!important}
+  .nav .pill{white-space:nowrap;line-height:1.2;padding:8px 15px;min-height:34px}
+}
+@media (max-width:740px){
+  .nav-contact{gap:0}
+  .nav-phone{display:block!important;font-size:13px;font-weight:500}
+  .nav-mail{font-size:11px}
+  .nav-cta{gap:10px}
+  .brand img{width:26px;height:26px}
+  .brand .word{font-size:16px}
+}
+@media (max-width:400px){
+  .brand .word{display:none}
+}
+
+/* ---------- 5. Меню: светлый ящик-накладка с блюром + аккордеон ---------- */
+@media (max-width:1040px){
+  /* backdrop-filter на .nav делал её containing block для position:fixed —
+     из-за этого панель обрезалась до высоты шапки. Снимаем на время открытия. */
+  .nav.open{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+    background:rgba(255,255,255,.93)!important;border-bottom:1px solid var(--hairline)!important}
+  .nav.open .brand .word{color:var(--carbon)!important}
+  .nav.open .brand .word b{color:var(--signal-blue)!important}
+  .nav.open .nav-burger span{background:var(--carbon)!important}
+  .nav.open .nav-phone{color:var(--carbon)!important}
+  .nav.open .nav-mail{color:var(--ash)!important}
+  .nav.open .nav-burger{position:relative;z-index:3}
+  /* страница за ящиком: затемнение + блюр, видно, что открыто окно */
+  .nav.open::after{content:"";position:fixed;left:0;right:0;top:51px;bottom:0;z-index:1;
+    background:rgba(0,0,0,.3);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+  /* сам ящик — уже экрана, цвет как у десктопного дропдауна */
+  .nav.open .nav-links{
+    position:fixed!important;top:51px;right:0;left:auto!important;bottom:0;z-index:2;
+    width:min(84vw,392px);height:auto;max-height:none;
+    background:rgba(255,255,255,.93)!important;
+    -webkit-backdrop-filter:saturate(180%) blur(18px);backdrop-filter:saturate(180%) blur(18px);
+    border-left:1px solid var(--hairline);box-shadow:-26px 0 60px rgba(0,0,0,.22);
+    padding:14px 26px calc(94px + env(safe-area-inset-bottom))!important;
+    overflow-y:auto;overscroll-behavior:contain;
+  }
+  .nav.open .nav-item>a,.nav.open .nav-links>a{
+    display:flex!important;width:100%;
+    color:var(--carbon)!important;border-bottom:1px solid var(--hairline)!important;
+    padding:15px 2px!important;min-height:52px;font-size:16px}
+  .nav.open .nav-item:last-child>a{border-bottom:none!important}
+  .nav.open .nav-item.m-exp>a{color:var(--link-blue)!important}
+  .nav.open .nav-item>a .caret{transition:transform .3s cubic-bezier(.4,0,.2,1);font-size:12px;opacity:.5;color:var(--mist)}
+  .nav.open .nav-item.m-exp>a .caret{transform:rotate(180deg)}
+  .nav.open .drop{
+    display:block!important;max-height:0!important;overflow:hidden!important;
+    background:transparent!important;padding:0 0 0 16px!important;
+    border:none!important;box-shadow:none!important;
+    transition:max-height .34s cubic-bezier(.4,0,.2,1)!important;
+  }
+  .nav.open .nav-item.m-exp .drop{max-height:1600px!important;padding-bottom:10px!important}
+  .nav.open .drop.mega{flex-direction:column}
+  .nav.open .drop-col{min-width:0;width:100%}
+  .nav.open .drop a,.nav.open .drop a.simple{
+    padding:11px 2px!important;min-height:44px;display:flex;flex-direction:column;justify-content:center;
+    color:var(--ash)!important;background:transparent!important;font-size:15px}
+  .nav.open .drop a small{color:var(--mist)!important;font-size:12.5px}
+  .nav.open .drop a.cur,.nav.open .drop a:hover{color:var(--carbon)!important;background:transparent!important}
+  .nav.open .drop a.drop-free{color:#e0182d!important}
+  .nav.open .drop a.drop-free small{color:#e0182d!important}
+  .nav.open .drop-head{color:var(--mist)!important;padding:10px 2px 4px!important}
+  .nav.open .drop-div{background:var(--hairline)!important;margin:8px 0 4px}
+  /* блок «Условия покупки … Поставщикам» — только в «О компании» */
+  .nav.open .drop-col.drop-buy{display:none!important;border-left:none!important;padding-left:0!important}
+  .nav.open .nav-item.m-about .drop-col.drop-buy{
+    display:flex!important;border-top:1px solid var(--hairline);margin-top:6px;padding-top:6px!important}
+  .nav-scrim{display:none}
+  /* орб консультанта и его плашка не должны лежать поверх ящика */
+  .nav.open ~ .cons-orb,.nav.open ~ .cons-cap,.nav.open ~ .chat-panel{
+    opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+}
+
+/* ---------- 6. Липкая CTA-панель ---------- */
+.m-cta{display:none}
+@media (max-width:740px){
+  .m-cta{
+    position:fixed;left:0;right:0;bottom:0;z-index:290;display:flex;gap:8px;
+    padding:9px 12px calc(9px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.93);-webkit-backdrop-filter:blur(14px) saturate(1.6);backdrop-filter:blur(14px) saturate(1.6);
+    border-top:1px solid var(--hairline);
+    transition:transform .28s cubic-bezier(.4,0,.2,1);
+  }
+  .m-cta.m-hide{transform:translateY(115%)}
+  .m-cta>*{flex:1;min-height:48px;border-radius:980px;display:flex;align-items:center;justify-content:center;gap:7px;font-size:15px;font-weight:500;letter-spacing:-.2px}
+  .m-cta .m-call{background:var(--apple-blue);color:#fff}
+  .m-cta .m-tel{background:#fff;border:1px solid var(--hairline);color:var(--carbon)}
+  .m-cta svg{width:17px;height:17px;flex:none}
+  body{padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+  .cons-orb{bottom:calc(82px + env(safe-area-inset-bottom))!important;width:52px;height:52px;font-size:20px}
+  .cons-orb-mark{width:34px;height:34px}
+  .chat-panel{bottom:calc(144px + env(safe-area-inset-bottom))!important;right:12px;left:12px;width:auto;height:min(66svh,470px)}
+}
+@media (max-width:560px){
+  .call-modal{padding:28px 22px;border-radius:18px}
+  .call-modal h3{font-size:23px}
+  .call-modal .field-input input{font-size:16px}
+}
+
+/* ---------- 7. Меньше движения (выбор: «минимум») ---------- */
+@media (max-width:900px){
+  .dust{display:none}                                  /* 32 blur-элемента в анимации */
+  .nav-cta .pill-primary::before{animation:none;opacity:.34;filter:blur(8px)}
+  .st-top h1{animation:none;background:none;-webkit-background-clip:initial;background-clip:initial;color:#0b0d0f}
+  .reveal{transition-duration:.42s;transform:translateY(12px)}
+  .reveal.d1,.reveal.d2,.reveal.d3,.reveal.d4{transition-delay:0s}
+  .geo-dot::after{animation:none;opacity:.3}
+  .cons-orb{animation-duration:18s}
+  .call-ov::before{animation:none}
+  .cine-snow span,.cine-sun,.cine-cue .arrow{animation:none}
+  .model-card:hover,.case:hover,.lcard:hover{transform:none}
+  .nav{transition:none}
+}
+
+/* ---------- 8. Высоты: svh вместо vh, разумные пропорции ---------- */
+@media (max-width:900px){
+  section,.section,.footer{overflow-x:clip}   /* декоративные blur-пятна не растягивают страницу */
+  .hero{min-height:86svh}
+  .banner{min-height:0;padding:64px 0}
+  .banner-inner .col-l{max-width:none}
+  .model-card{min-height:0}
+  .case-media{height:200px}
+  .geo-field{height:320px;margin-top:32px}
+  .phero{padding:118px 0 56px}
+  .split-media,.ph-slot{min-height:220px}
+  .section{padding:clamp(52px,9vw,80px) 0}
+  .calc-result{padding:26px}
+  .flip{height:auto;min-height:240px}
+}
+
+/* ---------- 9. Главная: плитки-полосы ---------- */
+/* Ниже 1040px рендер должен УМЕНЬШАТЬСЯ вместе с плиткой, а не обрезаться:
+   cover → contain на белом, крупный zoom-кроп отключается. */
+@media (max-width:1040px){
+  .strip{height:auto!important;min-height:0!important;aspect-ratio:4/3;display:flex;flex-direction:column}
+  .strip-media,.strip-media.zoom,.strip-media.fit,.strip-media.inset{
+    position:relative!important;inset:auto!important;flex:1 1 auto;min-height:0;width:100%;
+    background-size:contain!important;background-repeat:no-repeat!important;
+    background-position:center center!important;background-color:#fff!important}
+  .strip-media video,.strip-media.zoom video,.strip-media.inset video{
+    object-fit:contain!important;object-position:center center!important;
+    transform:none!important;background:#fff!important}
+  /* подпись — своей строкой в потоке, рендер вписывается в остаток плитки */
+  .strip-row{position:relative!important;inset:auto!important;flex:0 0 auto;width:100%;padding:0!important;align-items:flex-end}
+  .strip-idx{display:none}
+  .strip-go{display:none}
+  .strip-txt{display:block!important;width:100%;background:rgba(255,255,255,.94);
+    -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+    padding:11px 18px 13px;border-top:1px solid rgba(0,0,0,.06)}
+  .strip-txt h2{color:#0b0d0f!important;text-shadow:none!important;font-size:clamp(18px,2.2vw,22px)}
+  .strip-txt span{display:block;opacity:1!important;padding-top:4px!important;
+    color:#5b636d!important;text-shadow:none!important;font-size:14px;max-width:none}
+}
+@media (max-width:860px){
+  .strip{aspect-ratio:16/11}
+  .strip-txt h2{font-size:19px}
+  .strip-txt span{font-size:13.5px}
+  .strip-txt{padding:13px 16px 15px}
+  .st-top h1{font-size:25px;max-width:none}
+  .st-top p{font-size:14.5px;max-width:none}
+  .st-rail{gap:12px}
+}
+
+/* ---------- 10. Кино-секция: стопка клипов вместо скролл-скраба ---------- */
+html.m-cine-off .cinematic{height:auto!important;background:#0a0a0b;padding-bottom:8px}
+html.m-cine-off .cine-stage{position:static!important;height:auto!important;min-height:0!important;display:block}
+html.m-cine-off .cine-scene{position:relative!important;inset:auto!important;opacity:1!important;
+  width:100%;height:min(calc(100vw*9/16),72svh);background:#0a0a0b;overflow:hidden}
+html.m-cine-off .cine-scene[data-bg="light"]{background:#eceff3}
+html.m-cine-off .cine-video{position:absolute!important;inset:0;width:100%;height:100%;object-fit:cover;will-change:auto}
+html.m-cine-off .cine-cap{position:relative!important;inset:auto!important;left:auto!important;right:auto!important;
+  bottom:auto!important;top:auto!important;opacity:1!important;transform:none!important;
+  max-width:none!important;color:#f5f5f7!important;padding:26px 22px 34px;background:#0a0a0b;pointer-events:auto}
+html.m-cine-off .cine-cap.plate{background:#0a0a0b;border:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none;border-radius:0}
+html.m-cine-off .cine-cap h1,html.m-cine-off .cine-cap h2{color:#f5f5f7!important;text-shadow:none!important;font-size:clamp(24px,6.4vw,32px)!important}
+html.m-cine-off .cine-cap p.lead,html.m-cine-off .cine-cap .cine-list li{color:rgba(245,245,247,.82)!important;text-shadow:none!important;font-size:16px!important}
+html.m-cine-off .cine-cap .cine-cta{margin-top:20px}
+html.m-cine-off .cine-snow,html.m-cine-off .cine-sun,html.m-cine-off .cine-blueprint,html.m-cine-off .cine-chip{display:none}
+
+/* ---------- 11. Пропорциональные медиа-боксы на внутренних страницах ---------- */
+@media (max-width:1040px){
+  .phero-media{aspect-ratio:4/3;min-height:0}
+  .phero-media img{width:100%;height:100%;object-fit:contain;padding:14px}
+  .split-media:has(img.contain){aspect-ratio:4/3;min-height:0}
+  .split-media img.contain{width:100%;height:100%;object-fit:contain;padding:14px}
+  .model-media{height:auto;aspect-ratio:4/3;padding:16px}
+  .model-media img{width:100%;height:100%;object-fit:contain}
+  .showcase .stage img{width:100%;height:auto}
+  .ph-slot{min-height:200px}
+}

@@ -1,0 +1,29 @@
+# .htaccess для intellectservice.org
+# Кладётся в КОРЕНЬ сайта intellectservice.org, ЗАМЕНЯЯ старый .htaccess от Drupal.
+# Старый переименуйте в .htaccess.drupal.bak — не удаляйте, пока не убедитесь, что редирект работает.
+
+AddDefaultCharset UTF-8
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+
+# Оставить доступным подтверждение прав Яндекс.Вебмастера и Let's Encrypt
+RewriteRule ^\.well-known/ - [L]
+RewriteRule ^yandex_[0-9a-f]+\.html$ - [L]
+
+# Постраничные соответствия (301). Раскомментировать и дополнить по мере надобности.
+# RewriteRule ^node/12/?$ https://ikazs.ru/kommercheskaya.html [R=301,L]
+# RewriteRule ^kontakty/?$ https://ikazs.ru/contacts.html [R=301,L]
+# RewriteRule ^uslugi/?$ https://ikazs.ru/services-epc.html [R=301,L]
+# RewriteRule ^o-kompanii/?$ https://ikazs.ru/proizvodstvo.html [R=301,L]
+
+# Всё остальное — на главную ikazs.ru
+RewriteRule ^(.*)$ https://ikazs.ru/ [R=301,L]
+</IfModule>
+
+# PHP на этом домене больше не исполняется — Drupal 7 заглушен
+<FilesMatch "\.(php|phtml|php[0-9]|inc|module|install|engine|theme|profile)$">
+Require all denied
+</FilesMatch>
+
+Options -Indexes
