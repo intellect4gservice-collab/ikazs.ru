@@ -1,0 +1,78 @@
+# ikazs.ru — Apache (Джино, общий хостинг)
+AddDefaultCharset UTF-8
+
+# ---- HTTPS + канонический хост без www ----
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://ikazs.ru/$1 [R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.ikazs\.ru$ [NC]
+RewriteRule ^(.*)$ https://ikazs.ru/$1 [R=301,L]
+
+# ---- Адреса без .html: /kommercheskaya открывает kommercheskaya.html ----
+# (редирект .html -> без .html пока выключен; ссылки в коде остаются с .html)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+</IfModule>
+
+# ---- Сжатие ----
+<IfModule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript application/json image/svg+xml
+</IfModule>
+
+# ---- Кэш ----
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType text/html "access plus 0 seconds"
+ExpiresByType text/css "access plus 7 days"
+ExpiresByType application/javascript "access plus 7 days"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/webp "access plus 1 year"
+ExpiresByType image/svg+xml "access plus 1 year"
+ExpiresByType video/mp4 "access plus 1 year"
+ExpiresByType video/webm "access plus 1 year"
+ExpiresByType model/gltf-binary "access plus 7 days"
+ExpiresByType model/vnd.usdz+zip "access plus 7 days"
+</IfModule>
+<IfModule mod_headers.c>
+<FilesMatch "\.(png|jpe?g|webp|svg|mp4|webm|woff2?)$">
+Header set Cache-Control "public, max-age=31536000, immutable"
+Header set Accept-Ranges bytes
+</FilesMatch>
+<FilesMatch "\.(css|js|jsx)$">
+Header set Cache-Control "public, max-age=604800"
+</FilesMatch>
+<FilesMatch "\.html$">
+Header set Cache-Control "public, max-age=0, must-revalidate"
+</FilesMatch>
+Header set X-Content-Type-Options "nosniff"
+Header set Referrer-Policy "strict-origin-when-cross-origin"
+Header always unset X-Powered-By
+</IfModule>
+
+# ---- Типы файлов ----
+<IfModule mod_mime.c>
+AddType video/mp4 .mp4
+AddType video/webm .webm
+AddType image/svg+xml .svg
+AddType font/woff2 .woff2
+AddType text/jsx .jsx
+AddType model/gltf-binary .glb
+AddType model/vnd.usdz+zip .usdz
+</IfModule>
+
+# ---- Закрыть служебное, если случайно попало на сервер ----
+<FilesMatch "\.(md|docx|xlsx|log|sh|yml|napkin)$">
+Require all denied
+</FilesMatch>
+RedirectMatch 404 ^/(uploads|scraps|screenshots|_ds|\.git|\.github)(/|$)
+
+# ---- Индекс и листинги ----
+DirectoryIndex index.html
+Options -Indexes
+ErrorDocument 404 /soon.html
