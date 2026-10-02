@@ -151,7 +151,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .nav-scrim { position: fixed; inset: 51px 0 0 0; z-index: 80; background: rgba(0,0,0,0.22); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity .32s var(--ease), visibility .32s var(--ease); }
 .nav-scrim.on { opacity: 1; visibility: visible; }
 .nav-item:hover .drop { opacity: 1; visibility: visible; transform: none; }
-.drop a { display: block; padding: 11px 14px; border-radius: 8px; color: var(--carbon); font-size: 14px; font-weight: 500; transition: background .2s; min-width: 200px; }
+.drop a { display: block; padding: 9px 14px; border-radius: 8px; color: var(--carbon); font-size: 14px; font-weight: 500; transition: background .2s; min-width: 200px; }
 .drop a small { display: block; font-size: 12px; font-weight: 400; color: var(--mist); margin-top: 2px; }
 .drop a:hover { background: var(--frost); }
 .drop a.cur { background: var(--frost); }
@@ -159,13 +159,15 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .drop.wide { min-width: 0; }
 .drop-head { width: 100%; flex: 0 0 auto; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--mist); padding: 10px 14px 6px; font-weight: 600; }
 .drop-div { width: 100%; flex: 0 0 auto; height: 1px; background: var(--hairline); margin: 10px 0 6px; }
-.drop a.simple { padding: 9px 14px; font-weight: 400; font-size: 14px; min-width: 180px; }
+.drop a.simple { padding: 6px 14px; font-weight: 400; font-size: 13px; min-width: 180px; }
 .drop a.simple:hover { color: var(--link-blue); }
 .drop a.drop-free { color: #e0182d; font-weight: 600; }
 .drop a.drop-free small { color: #e0182d; opacity: .8; }
 .drop a.drop-free:hover { background: rgba(224,24,45,.08); color: #c30f22; }
 .nav.open .drop a.drop-free { color: #e0182d; }
 .nav.open .drop a.drop-free:hover { background: rgba(224,24,45,.12); }
+/* «КАЗС бесплатно» временно скрыт из меню до согласования с ЛУКОЙЛ — чтобы вернуть, удалить строку ниже */
+.drop a.drop-free { display: none !important; }
 @media (max-width: 1180px) { .nav-phone { display: none; } .nav-links { gap: 20px; } }
 @media (max-width: 1040px) {
   .nav-links { display: none; }
@@ -230,7 +232,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 /* ============================================================
    HERO
    ============================================================ */
-.hero { position: relative; min-height: 100vh; display: flex; align-items: flex-end; color: var(--frost); overflow: hidden; }
+.hero { position: relative; min-height: calc(100vh / var(--z,1)); display: flex; align-items: flex-end; color: var(--frost); overflow: hidden; }
 .hero-bg { position: absolute; inset: 0; z-index: 0; }
 .hero-bg img { width: 100%; height: 100%; object-fit: cover; }
 .hero-bg::after {
@@ -347,7 +349,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 /* ============================================================
    FEATURE BANNER (full-bleed image + overlay)
    ============================================================ */
-.banner { position: relative; min-height: 78vh; display: flex; align-items: center; color: var(--frost); overflow: hidden; }
+.banner { position: relative; min-height: calc(78vh / var(--z,1)); display: flex; align-items: center; color: var(--frost); overflow: hidden; }
 .banner img.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
 .banner::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.25) 55%, transparent 100%); z-index: 0; }
 .banner.center-grad::after { background: linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 60%); }
@@ -429,16 +431,16 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
    ============================================================ */
 .faq-list { border-top: 1px solid var(--hairline); }
 .faq-item { border-bottom: 1px solid var(--hairline); }
-.faq-q { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 15px 4px; text-align: left; font-size: 18px; font-weight: 500; letter-spacing: -0.3px; transition: opacity .3s var(--ease), transform .3s var(--ease); transform-origin: left center; }
+.faq-q { width: 100%; cursor: default; display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 15px 4px; text-align: left; font-size: 18px; font-weight: 500; letter-spacing: -0.3px; transition: opacity .3s var(--ease), transform .3s var(--ease); transform-origin: left center; }
 .faq-q .plus { position: relative; width: 18px; height: 18px; flex-shrink: 0; }
 .faq-q .plus::before, .faq-q .plus::after { content: ""; position: absolute; background: var(--mist); transition: transform .3s var(--ease); }
 .faq-q .plus::before { width: 18px; height: 1.5px; top: 8px; }
 .faq-q .plus::after { width: 1.5px; height: 18px; left: 8px; }
 .faq-item.open .plus::after { transform: rotate(90deg); opacity: 0; }
-.faq-a { display: grid; grid-template-rows: 0fr; max-height: none !important; overflow: hidden; transition: grid-template-rows .42s var(--ease); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .42s var(--ease); }
 .faq-a-inner { min-height: 0; }
-.faq-item.open .faq-a { grid-template-rows: 1fr; }
-@media (hover: hover) { .faq-item:hover .faq-a { grid-template-rows: 1fr; } .faq-item:hover .plus::after { transform: rotate(90deg); opacity: 0; } .faq-item:hover .faq-q { opacity: .5; transform: scale(.965); } }
+.faq-item.open .faq-a { max-height: 520px; }
+@media (hover: hover) { .faq-item:hover .faq-a { max-height: 520px; } .faq-item:hover .plus::after { transform: rotate(90deg); opacity: 0; } .faq-item:hover .faq-q { color: var(--link-blue); } }
 .faq-a-inner { padding: 0 4px 18px; font-size: 16px; color: var(--ash); line-height: 1.55; max-width: 760px; }
 
 /* ============================================================
@@ -620,7 +622,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .cons-orb-mark { width: 40px; height: 40px; object-fit: contain; display: block; pointer-events: none; padding: 5px; border-radius: 50%; background: #fff; box-shadow: 0 1px 6px rgba(4,20,40,.22); }
 .cons-cap { position: fixed; right: 98px; bottom: 39px; z-index: 300; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px); border: 1px solid var(--hairline); border-radius: 980px; padding: 9px 15px; font-size: 13px; font-weight: 500; color: var(--carbon); box-shadow: 0 6px 20px rgba(0,0,0,.14); white-space: nowrap; transition: opacity .25s, transform .25s; }
 .cons-cap.hide { opacity: 0; transform: translateX(8px); pointer-events: none; }
-.chat-panel { position: fixed; right: 24px; bottom: 98px; width: 350px; max-width: calc(100vw - 32px); height: 470px; max-height: calc(100vh - 140px); background: #fff; border: 1px solid var(--hairline); border-radius: 20px; box-shadow: 0 28px 64px rgba(0,0,0,.24); z-index: 301; display: flex; flex-direction: column; overflow: hidden; opacity: 0; visibility: hidden; transform: translateY(14px) scale(.97); transition: opacity .3s var(--ease), transform .3s var(--ease), visibility .3s; }
+.chat-panel { position: fixed; right: 24px; bottom: 98px; width: 350px; max-width: calc(100vw - 32px); height: 470px; max-height: calc(calc(100vh / var(--z,1)) - 140px); background: #fff; border: 1px solid var(--hairline); border-radius: 20px; box-shadow: 0 28px 64px rgba(0,0,0,.24); z-index: 301; display: flex; flex-direction: column; overflow: hidden; opacity: 0; visibility: hidden; transform: translateY(14px) scale(.97); transition: opacity .3s var(--ease), transform .3s var(--ease), visibility .3s; }
 .chat-panel.open { opacity: 1; visibility: visible; transform: none; }
 .chat-head { padding: 15px 16px; border-bottom: 1px solid var(--hairline); display: flex; align-items: center; gap: 11px; }
 .chat-head .dot { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(120deg, #2997ff, #a855f7, #ff5470, #ffb347); background-size: 320% 320%; animation: ai-shift 6s ease infinite; }
@@ -651,3 +653,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .field-input select { flex: 1; border: none; outline: none; background: none; padding: 13px 15px; font-size: 15px; font-family: inherit; color: var(--carbon); cursor: pointer; -webkit-appearance: none; appearance: none; }
 .cta-form .field-input input, .cta-form .field-input select, .cta-form textarea { color: var(--ash); }
 .cta-form textarea { min-height: 122px; }
+
+/* Масштаб 80% на десктопе (как браузерный зум 80%) */
+:root{--z:1}
+@media (min-width:1025px){:root{--z:.8}body{zoom:.8}}

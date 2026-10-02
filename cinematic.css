@@ -14,8 +14,8 @@
 .cine-stage {
   position: sticky;
   top: 0;
-  height: 100vh;
-  height: 100svh;
+  height: calc(100vh / var(--z,1));
+  height: calc(100svh / var(--z,1));
   min-height: 560px;
   overflow: hidden;
   background: #0a0a0b;

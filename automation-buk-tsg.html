@@ -1,25 +1,662 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Контроллер «БУК TS-G» — ИнтеллектКАЗС</title><meta name="description" content="Контроллер коммуникационного сервера БУК TS-G для систем автоматизации АЗС: подключение ТРК и уровнемеров, первичный независимый учёт топлива, реестр российского ПО."><link rel="stylesheet" href="styles.css">
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Коммуникационный сервер «БУК TS-G»: сопряжение ТРК и уровнемеров АЗС | ИнтеллектКАЗС</title>
+<meta name="description" content="Контроллер коммуникационного сервера «БУК TS-G» производства ООО «Нефтепродукттехника»: свыше 30 моделей ТРК, уровнемеров и стел цен, независимый первичный учёт топлива, Linux и PostgreSQL, реестр российского ПО № 4324. Поставка и ПНР — ИнтеллектКАЗС, дилер.">
+<link rel="stylesheet" href="styles.css">
 <style>
-.flist{display:grid;gap:13px;margin-top:6px;padding:0}
-.flist li{list-style:none;display:flex;gap:13px;font-size:16px;color:var(--smoke);line-height:1.5}
-.flist li::before{content:"";flex:none;width:7px;height:7px;margin-top:9px;border-radius:50%;background:var(--signal-blue)}
-.pl-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-.pl-chip{border:1px solid var(--hairline);border-radius:999px;padding:9px 17px;font-size:14px;background:#fff;color:var(--smoke)}
-.pl-chip b{font-weight:600}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:6px 56px}
-@media(max-width:760px){.two-col{grid-template-columns:1fr}}
-.subhead{font-size:13px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--mist);margin-bottom:16px}
-</style></head><body><nav class="nav" id="nav">
+.shine{background:linear-gradient(90deg,var(--carbon) 0%,#0071e3 22%,#00b3a4 36%,var(--carbon) 55%,var(--carbon) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:shine 9s linear infinite}
+.shine-l{background:linear-gradient(90deg,#f5f5f7 0%,#2997ff 20%,#7bffe4 34%,#c9a4ff 46%,#f5f5f7 62%,#f5f5f7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:220% 100%;animation:shine 11s linear infinite}
+@keyframes shine{from{background-position:0% 50%}to{background-position:-200% 50%}}
+a{color:var(--link-blue)}a:hover{color:var(--apple-blue)}
+.gsec{position:relative;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);mix-blend-mode:screen;pointer-events:none;will-change:transform}
+@keyframes bA{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(9vw,6vw,0) scale(1.18)}}
+@keyframes bB{0%{transform:translate3d(0,0,0) scale(1.12)}100%{transform:translate3d(-8vw,5vw,0) scale(.92)}}
+
+/* HERO */
+#eh{background:#0b0b0d;color:var(--frost);padding:clamp(96px,11vw,152px) 0 clamp(66px,7vw,104px)}
+#eh .b1{width:54vw;height:54vw;left:-16vw;top:-22vw;background:radial-gradient(circle at 50% 50%,rgba(41,151,255,.85),transparent 66%);animation:bA 27s ease-in-out infinite alternate}
+#eh .b2{width:44vw;height:44vw;right:-10vw;top:-6vw;background:radial-gradient(circle at 50% 50%,rgba(163,120,255,.72),transparent 68%);animation:bB 33s ease-in-out infinite alternate}
+#eh .b3{width:58vw;height:58vw;left:28vw;bottom:-34vw;background:radial-gradient(circle at 50% 50%,rgba(0,214,190,.5),transparent 68%);animation:bA 37s ease-in-out infinite alternate-reverse}
+#eh .veil{position:absolute;inset:0;background:rgba(6,6,8,.56)}
+#eh .wrap{position:relative;z-index:2}
+#eh .crumbs{font-size:13px;color:rgba(245,245,247,.5);margin-bottom:26px}
+#eh .crumbs a{color:rgba(245,245,247,.5)}#eh .crumbs a:hover{color:var(--frost)}
+#eh h1{font-size:clamp(38px,5.6vw,70px);font-weight:600;letter-spacing:-2.3px;line-height:1.04;max-width:19ch}
+#eh .lead{font-size:clamp(17px,1.5vw,20px);line-height:1.55;color:rgba(245,245,247,.74);max-width:60ch;margin-top:24px}
+#eh .epc{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+#eh .epc span{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;border:1px solid rgba(255,255,255,.24);border-radius:20px;padding:8px 15px;color:rgba(245,245,247,.78);transition:.3s}
+#eh .epc span:hover{background:var(--frost);color:#0b0b0d;border-color:var(--frost);transform:translateY(-2px)}
+#eh .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.13);border-radius:12px;overflow:hidden;margin-top:52px}
+#eh .st{background:rgba(10,10,12,.72);backdrop-filter:blur(8px);padding:26px 24px;transition:background .35s}
+#eh .st:hover{background:rgba(41,151,255,.16)}
+#eh .st .v{font-family:var(--font-mono);font-size:clamp(26px,2.9vw,38px);font-weight:600;letter-spacing:-1.4px;line-height:1}
+#eh .st .v em{font-style:normal;font-size:.5em;letter-spacing:0;color:rgba(245,245,247,.55);margin-left:5px}
+#eh .st .k{font-size:13px;color:rgba(245,245,247,.6);margin-top:9px;line-height:1.35}
+@media(max-width:900px){#eh .stats{grid-template-columns:repeat(2,1fr)}}
+
+/* WHO */
+#who{padding:clamp(70px,8vw,110px) 0}
+.whogrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden;margin-top:46px}
+.who{position:relative;background:#fff;padding:30px 26px 28px;min-height:172px;display:flex;flex-direction:column;gap:9px;isolation:isolate;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.who::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .45s;background:linear-gradient(140deg,rgba(41,151,255,.14),rgba(0,214,190,.12) 45%,rgba(180,140,255,.14))}
+.who:hover{transform:translateY(-6px)}
+.who:hover::before{opacity:1}
+.who .n{font-family:var(--font-mono);font-size:11px;color:var(--mist);letter-spacing:.5px;transition:color .3s}
+.who:hover .n{color:var(--link-blue)}
+.who h3{font-size:18px;font-weight:600;letter-spacing:-.3px;line-height:1.25}
+.who p{font-size:13.5px;line-height:1.5;color:var(--ash);margin-top:auto}
+@media(max-width:1000px){.whogrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.whogrid{grid-template-columns:1fr}}
+
+/* ECONOMY */
+#econ{background:var(--ice);padding:clamp(70px,8vw,110px) 0}
+.egrid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.enum{display:flex;flex-direction:column;gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+.en{background:#fff;padding:22px 26px;display:flex;align-items:baseline;justify-content:space-between;gap:20px;transition:background .35s,padding-left .4s cubic-bezier(.22,1,.36,1)}
+.en:hover{background:linear-gradient(90deg,rgba(41,151,255,.1),rgba(255,255,255,0));padding-left:34px}
+.en .v{font-family:var(--font-mono);font-size:26px;font-weight:600;letter-spacing:-1px;white-space:nowrap}
+.en .k{font-size:14px;color:var(--ash);line-height:1.4;text-align:right}
+@media(max-width:900px){.egrid{grid-template-columns:1fr;gap:34px}}
+
+/* COMPARE */
+#vs{background:#111114;color:var(--frost);padding:clamp(70px,8vw,110px) 0}
+#vs::before{content:"";position:absolute;inset:-25%;pointer-events:none;opacity:.46;filter:blur(84px);background:radial-gradient(42% 40% at 14% 10%,rgba(41,151,255,.5),transparent 70%),radial-gradient(44% 44% at 86% 66%,rgba(150,110,255,.44),transparent 70%),radial-gradient(38% 38% at 55% 108%,rgba(0,214,190,.34),transparent 70%)}
+#vs .wrap{position:relative;z-index:1}
+.cmp{margin-top:44px;border:1px solid rgba(255,255,255,.14);border-radius:14px;overflow:hidden;background:rgba(9,9,11,.6);backdrop-filter:blur(10px)}
+.crow{display:grid;grid-template-columns:1.05fr 1fr 1fr;align-items:stretch;border-bottom:1px solid rgba(255,255,255,.09);transition:background .35s}
+.crow:last-child{border-bottom:0}
+.crow.h{background:rgba(255,255,255,.05)}
+.crow.h div{font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:rgba(245,245,247,.5);padding:15px 24px}
+.crow.h .good{color:#7bffe4}
+.crow div{padding:19px 24px;font-size:15px;line-height:1.45}
+.crow .k{color:rgba(245,245,247,.62);border-right:1px solid rgba(255,255,255,.09)}
+.crow .bad{color:rgba(245,245,247,.55);border-right:1px solid rgba(255,255,255,.09);transition:color .3s}
+.crow .good{color:#fff;font-weight:500;position:relative;overflow:hidden}
+.crow .good::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 25%,rgba(123,255,228,.22) 48%,transparent 70%);transform:translateX(-110%)}
+.crow:not(.h):hover{background:rgba(255,255,255,.06)}
+.crow:not(.h):hover .k{color:#fff}
+.crow:not(.h):hover .bad{color:rgba(245,245,247,.4);text-decoration:line-through;text-decoration-color:rgba(255,120,120,.5)}
+.crow:not(.h):hover .good::after{animation:sw 1s cubic-bezier(.4,0,.2,1)}
+@keyframes sw{from{transform:translateX(-110%)}to{transform:translateX(120%)}}
+.vsnote{margin-top:26px;font-size:15px;line-height:1.6;color:rgba(245,245,247,.7);max-width:78ch}
+.vsnote b{color:#fff;font-weight:600}
+@media(max-width:820px){.crow{grid-template-columns:1fr}.crow .k,.crow .bad{border-right:0}}
+
+/* STAGES */
+#stages{padding:clamp(70px,8vw,110px) 0}
+.stg{margin-top:48px;display:flex;flex-direction:column;gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+.stage{background:#fff;display:grid;grid-template-columns:96px 1fr 220px;gap:0;align-items:stretch;cursor:default;transition:background .4s}
+.stage:hover{background:#fbfcfe}
+.stage .idx{position:relative;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:15px;font-weight:600;color:var(--mist);border-right:1px solid var(--hairline);overflow:hidden;transition:color .35s}
+.stage .idx::before{content:"";position:absolute;inset:0;opacity:0;transform:scale(.6);transition:opacity .45s,transform .55s cubic-bezier(.22,1,.36,1);background:linear-gradient(150deg,#2997ff,#7bffe4 45%,#c9a4ff)}
+.stage:hover .idx{color:#fff}
+.stage:hover .idx::before{opacity:1;transform:none}
+.stage .idx span{position:relative}
+.stage .mid{padding:26px 30px}
+.stage h3{font-size:21px;font-weight:600;letter-spacing:-.4px;transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.stage:hover h3{transform:translateX(6px)}
+.stage p{font-size:14.5px;line-height:1.55;color:var(--ash);margin-top:8px;max-width:74ch}
+.stage .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.stage .tags i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.3px;text-transform:uppercase;color:var(--ash);border:1px solid var(--hairline);border-radius:16px;padding:5px 11px;transition:.3s}
+.stage:hover .tags i{border-color:rgba(41,151,255,.4);color:var(--link-blue)}
+.stage .dur{border-left:1px solid var(--hairline);padding:26px 26px;display:flex;flex-direction:column;justify-content:center;gap:5px}
+.stage .dur .v{font-family:var(--font-mono);font-size:23px;font-weight:600;letter-spacing:-.8px}
+.stage .dur .k{font-size:12px;color:var(--mist);text-transform:uppercase;letter-spacing:.4px}
+.stage .bar{height:5px;border-radius:4px;background:#e6ebf1;margin-top:10px;overflow:hidden}
+.stage .bar i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,#2997ff,#25d6c0);transition:width 1.1s cubic-bezier(.22,1,.36,1)}
+.stage.in .bar i{width:var(--w)}
+@media(max-width:900px){.stage{grid-template-columns:1fr}.stage .idx{height:44px;border-right:0;border-bottom:1px solid var(--hairline)}.stage .dur{border-left:0;border-top:1px solid var(--hairline)}}
+
+/* CASE */
+#case{background:var(--carbon);color:var(--frost);padding:clamp(66px,7vw,100px) 0}
+#case::before{content:"";position:absolute;inset:-30%;pointer-events:none;opacity:.4;filter:blur(90px);background:radial-gradient(40% 40% at 22% 24%,rgba(41,151,255,.5),transparent 70%),radial-gradient(42% 42% at 78% 72%,rgba(123,255,228,.34),transparent 70%)}
+#case .wrap{position:relative;z-index:1}
+#case .cg{display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:center}
+#case .t-eyebrow{color:#7bffe4}
+#case h2{font-size:clamp(25px,2.9vw,36px);font-weight:600;letter-spacing:-1.1px;line-height:1.2;margin-top:12px}
+#case p{font-size:16px;line-height:1.65;color:rgba(245,245,247,.74);margin-top:18px;max-width:68ch}
+#case .facts{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.13);border-radius:12px;overflow:hidden}
+#case .f{background:rgba(12,12,14,.8);padding:18px 22px;transition:background .35s,transform .45s cubic-bezier(.22,1,.36,1)}
+#case .f:hover{background:rgba(41,151,255,.18);transform:translateX(5px)}
+#case .f .v{font-family:var(--font-mono);font-size:22px;font-weight:600;letter-spacing:-.8px}
+#case .f .k{font-size:12.5px;color:rgba(245,245,247,.58);margin-top:4px}
+@media(max-width:900px){#case .cg{grid-template-columns:1fr;gap:32px}}
+
+/* NORMS */
+#norms{background:var(--ice);padding:clamp(70px,8vw,110px) 0}
+.ngrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px}
+.norm{position:relative;background:#fff;border:1px solid var(--hairline);border-radius:12px;padding:26px 24px;overflow:hidden;isolation:isolate;transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .45s,border-color .4s}
+.norm::before{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;transform:scaleX(0);transform-origin:left;transition:transform .55s cubic-bezier(.22,1,.36,1);background:linear-gradient(90deg,#2997ff,#7bffe4,#c9a4ff)}
+.norm:hover{transform:translateY(-5px);box-shadow:0 22px 50px rgba(20,30,45,.12);border-color:rgba(41,151,255,.35)}
+.norm:hover::before{transform:none}
+.norm .code{font-family:var(--font-mono);font-size:12px;letter-spacing:.4px;color:var(--link-blue);font-weight:600}
+.norm h3{font-size:16.5px;font-weight:600;letter-spacing:-.3px;margin-top:10px;line-height:1.3}
+.norm p{font-size:13.5px;line-height:1.5;color:var(--ash);margin-top:8px}
+@media(max-width:900px){.ngrid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.ngrid{grid-template-columns:1fr}}
+
+/* PRICE */
+#price{background:#0e0e11;color:var(--frost);padding:clamp(70px,8vw,110px) 0}
+#price::before{content:"";position:absolute;inset:-28%;pointer-events:none;opacity:.4;filter:blur(88px);background:radial-gradient(40% 40% at 80% 14%,rgba(41,151,255,.52),transparent 70%),radial-gradient(42% 42% at 18% 78%,rgba(180,140,255,.44),transparent 70%)}
+#price .wrap{position:relative;z-index:1}
+.pbars{margin-top:44px;display:flex;flex-direction:column;gap:2px}
+.pb{position:relative;padding:20px 24px;border-radius:10px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:18px;overflow:hidden;transition:background .35s}
+.pb .fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:10px;opacity:.9;transition:width 1.3s cubic-bezier(.22,1,.36,1),filter .35s}
+.pb.in .fill{width:var(--w)}
+.pb:nth-child(1) .fill{background:linear-gradient(90deg,rgba(41,151,255,.85),rgba(41,151,255,.15))}
+.pb:nth-child(2) .fill{background:linear-gradient(90deg,rgba(37,214,192,.85),rgba(37,214,192,.14))}
+.pb:nth-child(3) .fill{background:linear-gradient(90deg,rgba(177,140,255,.85),rgba(177,140,255,.14))}
+.pb:nth-child(4) .fill{background:linear-gradient(90deg,rgba(255,196,71,.85),rgba(255,196,71,.14))}
+.pb span,.pb b{position:relative;z-index:1}
+.pb span{font-size:16px;font-weight:500;min-width:0}
+.pb span em{display:block;font-style:normal;font-size:13px;color:rgba(245,245,247,.6);margin-top:4px}
+.pb b{font-family:var(--font-mono);font-size:22px;font-weight:600;letter-spacing:-.8px;white-space:nowrap}
+.pb:hover{background:rgba(255,255,255,.05)}
+.pb:hover .fill{filter:brightness(1.25) saturate(1.2)}
+.pnote{margin-top:26px;font-size:14.5px;line-height:1.6;color:rgba(245,245,247,.62);max-width:80ch}
+
+/* SAVE */
+#save{padding:clamp(70px,8vw,110px) 0}
+.saverows{margin-top:44px;display:flex;flex-direction:column;gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+.sr{background:#fff;display:grid;grid-template-columns:1fr 1fr;align-items:stretch;transition:background .35s}
+.sr:hover{background:#fff}
+.sr .l{padding:22px 26px;font-size:16px;font-weight:500;letter-spacing:-.2px;border-right:1px solid var(--hairline);display:flex;align-items:center;gap:12px}
+.sr .l::before{content:"";width:8px;height:8px;border-radius:50%;background:#d8dee6;flex:none;transition:background .35s,box-shadow .35s}
+.sr:hover .l::before{background:#ff6b6b;box-shadow:0 0 0 5px rgba(255,107,107,.16)}
+.sr .r{padding:22px 26px;font-size:15px;line-height:1.5;color:var(--ash);opacity:.45;transform:translateX(-10px);transition:opacity .45s,transform .5s cubic-bezier(.22,1,.36,1),color .35s}
+.sr:hover .r{opacity:1;transform:none;color:var(--carbon)}
+@media(max-width:820px){.sr{grid-template-columns:1fr}.sr .l{border-right:0}.sr .r{opacity:1;transform:none}}
+
+/* FAQ */
+#efaq{background:var(--ice);padding:clamp(70px,8vw,110px) 0}
+.acc{margin-top:40px;border-top:1px solid var(--hairline)}
+.acc details{border-bottom:1px solid var(--hairline)}
+.acc summary{list-style:none;cursor:pointer;padding:24px 44px 24px 0;position:relative;font-size:19px;font-weight:500;letter-spacing:-.3px;transition:color .3s,padding-left .4s cubic-bezier(.22,1,.36,1)}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"";position:absolute;right:8px;top:50%;width:11px;height:11px;border-right:2px solid var(--mist);border-bottom:2px solid var(--mist);transform:translateY(-70%) rotate(45deg);transition:transform .4s cubic-bezier(.22,1,.36,1),border-color .3s}
+.acc summary:hover{color:var(--link-blue);padding-left:8px}
+.acc summary:hover::after{border-color:var(--link-blue)}
+.acc details[open] summary::after{transform:translateY(-20%) rotate(225deg);border-color:var(--carbon)}
+.acc .a{padding:0 60px 26px 0;font-size:16px;line-height:1.65;color:var(--ash);animation:accIn .5s cubic-bezier(.22,1,.36,1)}
+@keyframes accIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+
+/* CTA */
+#ecta{background:var(--carbon);color:var(--frost);padding:clamp(66px,7vw,100px) 0;text-align:center}
+#ecta::before{content:"";position:absolute;inset:-30%;pointer-events:none;opacity:.42;filter:blur(90px);background:radial-gradient(38% 40% at 26% 22%,rgba(41,151,255,.55),transparent 70%),radial-gradient(40% 42% at 74% 74%,rgba(123,255,228,.34),transparent 70%),radial-gradient(36% 38% at 55% 108%,rgba(180,140,255,.4),transparent 70%)}
+#ecta .wrap{position:relative;z-index:1}
+#ecta h2{font-size:clamp(27px,3.1vw,40px);font-weight:600;letter-spacing:-1.2px;max-width:24ch;margin:0 auto;line-height:1.15}
+#ecta p{font-size:16.5px;color:rgba(245,245,247,.7);margin:18px auto 32px;max-width:62ch;line-height:1.6}
+#ecta .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+#ecta .g{position:relative;z-index:0;isolation:isolate;display:inline-block}
+#ecta .g::before{content:"";position:absolute;inset:-6px -10px;z-index:-1;border-radius:980px;background:linear-gradient(110deg,transparent 8%,#2997ff 26%,#7bffe4 44%,#c9a4ff 60%,#2997ff 76%,transparent 92%);background-size:220% 100%;filter:blur(9px);opacity:.65;animation:shine 7s linear infinite;transition:opacity .35s}
+#ecta .g:hover::before{opacity:1}
+
+/* slider */
+.sld{margin-top:44px;position:relative}
+.sld-vp{overflow:hidden;border-radius:14px}
+.sld-tr{display:flex;gap:18px;transition:transform .72s cubic-bezier(.22,1,.36,1);will-change:transform}
+.sl{flex:0 0 calc((100% - 18px)/2);background:linear-gradient(180deg,#fff,#eef0f3);border:1px solid var(--hairline);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:opacity .6s ease,filter .6s ease}
+.sl.off{opacity:.42;filter:saturate(.55)}
+.sl figure{margin:0;overflow:hidden;background:#e9ecf1}
+.sl img{width:100%;display:block;aspect-ratio:16/10;object-fit:cover;transform:scale(1.02);transition:transform 1.1s cubic-bezier(.22,1,.36,1)}
+.sl:hover img{transform:scale(1.07)}
+.sl .cap{padding:16px 20px;border-top:1px solid var(--hairline);background:#fff;display:flex;gap:12px;align-items:flex-start;min-height:74px}
+.sl .cap i{font-style:normal;font-family:var(--font-mono);font-size:12px;color:var(--mist);flex:none;padding-top:2px;letter-spacing:.5px}
+.sl .cap span{font-size:14px;line-height:1.5;color:var(--ash);text-wrap:pretty}
+.sld-bar{display:flex;align-items:center;gap:22px;margin-top:24px}
+.sld-dots{display:flex;gap:8px;flex:1}
+.sld-dots button{flex:1;height:3px;border:none;padding:0;background:var(--hairline);border-radius:2px;cursor:pointer;position:relative;overflow:hidden;transition:background .3s}
+.sld-dots button::after{content:"";position:absolute;inset:0;background:var(--carbon);transform:scaleX(0);transform-origin:left;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.sld-dots button.on::after{transform:scaleX(1)}
+.sld-nav{display:flex;align-items:center;gap:10px;flex:none}
+.sld-count{font-family:var(--font-mono);font-size:13px;color:var(--mist);letter-spacing:.5px;min-width:74px;white-space:nowrap;text-align:right}
+.sld-nav .ar{width:44px;height:44px;border-radius:50%;border:1px solid var(--hairline);background:#fff;color:var(--carbon);font-size:16px;line-height:1;display:grid;place-items:center;cursor:pointer;transition:background .28s,color .28s,border-color .28s,transform .28s}
+.sld-nav .ar:hover:not(:disabled){background:var(--carbon);border-color:var(--carbon);color:#fff;transform:translateY(-2px)}
+.sld-nav .ar:disabled{opacity:.3;cursor:default}
+@media(max-width:900px){.sl{flex:0 0 100%}.sld-tr{gap:14px}.sl{flex:0 0 calc(100% - 0px)}}
+
+/* architecture */
+.arch{display:grid;gap:26px;margin-top:44px}
+.arow{display:grid;grid-template-columns:1fr;gap:clamp(22px,2.6vw,34px);background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:clamp(20px,2.4vw,32px)}
+.arow .an{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.arow .an i{font-style:normal;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.6px;color:var(--link-blue);border:1px solid rgba(0,113,227,.3);border-radius:999px;padding:4px 11px}
+.arow h3{font-size:clamp(21px,2vw,26px);letter-spacing:-.7px;line-height:1.2;margin:0 0 16px}
+.arow .lede{font-size:16px;line-height:1.6;color:var(--ash);text-wrap:pretty;margin:0 0 22px}
+.arow>figure{max-width:720px;width:100%;margin:0 auto!important}
+.alist{display:grid;gap:0 clamp(24px,3vw,44px);grid-template-columns:1fr 1fr;border-top:1px solid var(--hairline)}
+.alist .ai{display:grid;grid-template-columns:minmax(0,.42fr) minmax(0,1fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--hairline);transition:padding-left .35s cubic-bezier(.22,1,.36,1)}
+.alist .ai:hover{padding-left:8px}
+.alist .ai b{font-size:14px;font-weight:600;letter-spacing:-.1px;line-height:1.4}
+.alist .ai span{font-size:14.5px;line-height:1.55;color:var(--ash);text-wrap:pretty}
+@media(max-width:1000px){.alist{grid-template-columns:1fr}}
+@media(max-width:900px){.alist .ai{grid-template-columns:1fr;gap:4px}}
+.af{margin:0;background:#fff;border:1px solid var(--hairline);border-radius:14px;overflow:hidden;cursor:zoom-in;transition:box-shadow .45s,transform .5s cubic-bezier(.22,1,.36,1)}
+.af:hover{transform:translateY(-4px);box-shadow:0 24px 54px rgba(20,30,45,.14)}
+.af .ph{background:linear-gradient(180deg,#fbfcfe,#f1f4f8);padding:18px}
+.af img{width:100%;display:block;border-radius:8px}
+.af figcaption{padding:16px 20px 18px;border-top:1px solid var(--hairline)}
+.af figcaption b{display:block;font-size:15.5px;letter-spacing:-.2px;margin-bottom:5px}
+.af figcaption span{font-size:13.5px;line-height:1.5;color:var(--ash)}
+.af figcaption i{font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--link-blue);letter-spacing:.5px;display:block;margin-top:8px}
+.lb{position:fixed;inset:0;z-index:999;background:rgba(12,16,24,.9);display:none;place-items:center;padding:24px;cursor:zoom-out;backdrop-filter:blur(6px)}
+.lb.on{display:grid}
+.lb img{max-width:min(760px,92vw);max-height:calc(92vh / var(--z,1));border-radius:10px;background:#fff}
+/* ecosystem */
+.eco{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:44px}
+.ec{background:#fff;border:1px solid var(--hairline);border-radius:14px;padding:30px 32px;transition:border-color .4s,box-shadow .45s,transform .5s cubic-bezier(.22,1,.36,1)}
+.ec:hover{transform:translateY(-4px);border-color:rgba(0,113,227,.35);box-shadow:0 22px 48px rgba(20,30,45,.1)}
+.ec .tag{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--link-blue)}
+.ec h3{font-size:20px;letter-spacing:-.5px;margin:10px 0 12px}
+.ec p{font-size:15px;line-height:1.6;color:var(--ash);text-wrap:pretty}
+.ec ul{margin:16px 0 0;padding:0;display:grid;gap:9px}
+.ec li{list-style:none;display:flex;gap:11px;font-size:14.5px;line-height:1.5;color:var(--ash)}
+.ec li::before{content:"";flex:none;width:6px;height:6px;margin-top:8px;border-radius:50%;background:var(--link-blue)}
+.dt{margin-top:18px;border-top:1px solid var(--hairline);padding-top:4px}
+.dt summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0 2px;font-size:13.5px;font-family:var(--font-mono);letter-spacing:.4px;color:var(--link-blue);transition:color .3s}
+.dt summary::-webkit-details-marker{display:none}
+.dt summary::after{content:"+";font-family:var(--font-mono);font-size:17px;line-height:1;color:var(--link-blue)}
+.dt[open] summary::after{content:"–"}
+.dt summary:hover{color:var(--carbon)}
+.dt[open] summary{margin-bottom:6px}
+.stage .dt{border-top:none;padding-top:0;margin-top:2px}
+.stage .dt summary{padding:6px 0}
+.stage .dt p{font-size:15px;line-height:1.6;color:var(--ash);margin:2px 0 12px;text-wrap:pretty;max-width:72ch}
+@media(max-width:900px){.eco{grid-template-columns:1fr}}
+/* dealer strip */
+#deal{background:#fff;border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);padding:clamp(44px,5vw,68px) 0}
+.dgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(28px,4vw,60px);align-items:center}
+.dfacts{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+.dfacts div{background:#fff;padding:22px 24px}
+.dfacts .v{font-family:var(--font-mono);font-size:24px;font-weight:600;letter-spacing:-1px}
+.dfacts .k{font-size:13px;color:var(--ash);margin-top:6px;line-height:1.4}
+@media(max-width:900px){.dgrid{grid-template-columns:1fr;gap:28px}}
+/* spec rows reuse .sr */
+.sr .l.mono{font-family:var(--font-mono);font-size:14.5px}
+</style>
+<link rel="stylesheet" href="mobile.css"></head>
+<body>
+<nav class="nav" id="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html">
       <img src="assets/logo-mark.png" alt="ИнтеллектКАЗС">
       <span class="word">Интеллект<b>КАЗС</b></span>
     </a>
-    <div class="nav-links"><div class="nav-item"><a href="index.html">КАЗС <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="drop-free" href="kazs-besplatno.html">КАЗС Бесплатно<small>Совместная программа с ЛУКОЙЛ</small></a><a href="kommercheskaya.html">Коммерческая КАЗС<small>Продавать топливо через АЗС</small></a><a class="simple" href="soon.html">Индивидуальный дизайн</a><a href="vedomstvennaya.html">Ведомственная КАЗС<small>Для собственного автопарка</small></a><div class="drop-head">Модельный ряд</div><a class="simple" href="kazs-open.html">Открытый тех. отсек</a><a class="simple" href="kazs-monoblock.html">Моноблок</a><a class="simple" href="kazs-suitcase.html">Чемодан</a><a class="simple" href="kazs-profile.html">Контейнер профлист</a><a class="simple" href="kazs-premium.html">Контейнер коммерческий</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="reservoirs-rgs.html">Резервуары <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="reservoirs-rgs.html">РГС — горизонтальные</a><a class="simple" href="reservoirs-rvs.html">РВС — вертикальные</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="trk-topaz.html">ТРК <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="trk-topaz.html">Топаз</a><a class="simple" href="trk-kvant.html">Квант</a><a class="simple" href="trk-sanki.html">Sanki</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="automation-terminal.html">Автоматизация <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="automation-terminal.html">Терминал самообслуживания</a><a class="simple" href="automation-scada.html">Промышленная автоматизация (SCADA)</a><a class="simple" href="automation-monitoring.html">Удалённый мониторинг и учёт</a><a class="simple" href="automation-smart-azs.html">ПО «Смарт-АЗС»</a><a class="simple" href="automation-plexpoint.html">PlexPoint</a><a class="simple" href="automation-buk-tsg.html">БУК TS-G</a><a class="simple" href="soon.html">ПО ТОПАЗ</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="epc-pod-klyuch.html">Услуги <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="epc-pod-klyuch.html">EPC под ключ</a><a class="simple" href="services-design.html">Проектирование</a><a class="simple" href="services-installation.html">Монтаж и ПНР</a><a class="simple" href="services-service.html">Сервис 24/7</a><a class="simple" href="services-modernization.html">Модернизация старых АЗС</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="configurator.html">Инструменты <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="configurator.html">3D-конфигуратор КАЗС</a><a class="simple" href="calculator.html">Калькулятор окупаемости</a><a class="simple" href="calculator-tco.html">Калькулятор TCO 5 лет</a><a class="simple" href="wizard.html">Визард «Какой КАЗС нужен»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="znaniya.html">Знания <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="projects.html">Кейсы</a><a class="simple" href="faq.html">FAQ</a><a class="simple" href="objections.html">Возражения</a><a class="simple" href="docs.html">Нормативка</a><a class="simple" href="glossary.html">Глоссарий</a><a class="simple" href="industries.html">Отрасли</a><a class="simple" href="blog.html">Блог</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="proizvodstvo.html">О компании <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="proizvodstvo.html">Производство</a><a class="simple" href="about-team.html">Команда</a><a class="simple" href="about-certificates.html">Сертификаты</a><a class="simple" href="about-quality.html">Контроль качества</a><a class="simple" href="contacts.html">Контакты</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div></div>
+    <div class="nav-links"><div class="nav-item"><a href="index.html">КАЗС <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="drop-free" href="kazs-besplatno.html">КАЗС Бесплатно<small>Совместная программа с ЛУКОЙЛ</small></a><a href="kommercheskaya.html">Коммерческая КАЗС<small>Продавать топливо через АЗС</small></a><a class="simple" href="soon.html">Индивидуальный дизайн</a><a href="kontejnernaya-azs.html">Ведомственная КАЗС<small>Контейнерная АЗС для своего автопарка</small></a><a href="kazs40-ar.html">3D-модель КАЗС<small>Дополненная реальность: станция у вас на участке</small></a><div class="drop-head">Модельный ряд</div><a class="simple" href="kazs-open.html">КАЗС Стандарт</a><a class="simple" href="kazs-monoblock.html">КАЗС Моно</a><a class="simple" href="kazs-suitcase.html">КАЗС Бизнес</a><a class="simple" href="kazs-profile.html">КАЗС Профлист</a><a class="simple" href="kazs-sea-container.html">КАЗС Морской контейнер</a><a class="simple" href="kazs-premium.html">КАЗС Премиум</a><a class="simple" href="soon.html">КАЗС Люкс</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="reservoirs-rgs.html">Резервуары <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="reservoirs-rgs.html">РГС — горизонтальные</a><a class="simple" href="reservoirs-rvs.html">РВС — вертикальные</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="trk-topaz.html">ТРК <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="trk-topaz.html">Топаз</a><a class="simple" href="trk-kvant.html">Квант</a><a class="simple" href="trk-sanki.html">Sanki</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="automation-terminal.html">Автоматизация <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="automation-terminal.html">Терминал самообслуживания</a><a class="simple" href="automation-scada.html">Промышленная автоматизация (SCADA)</a><a class="simple" href="automation-smart-azs.html">ПО «Смарт-АЗС»</a><a class="simple" href="automation-buk-tsg.html">БУК TS-G</a><a class="simple" href="automation-kmazs.html">КМАЗС и КМАЗС-ОФИС</a><a class="simple" href="automation-topaz.html">ПО «Топаз-Автономный налив»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="epc-pod-klyuch.html">Услуги <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="epc-pod-klyuch.html">EPC под ключ</a><a class="simple" href="services-design.html">Проектирование</a><a class="simple" href="services-installation.html">Монтаж и ПНР</a><a class="simple" href="services-service.html">Сервис 24/7</a><a class="simple" href="services-modernization.html">Модернизация старых АЗС</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="configurator.html">Инструменты <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="configurator.html">3D-конфигуратор КАЗС</a><a class="simple" href="calculator.html">Калькулятор окупаемости</a><a class="simple" href="calculator-tco.html">Калькулятор TCO 5 лет</a><a class="simple" href="wizard.html">Визард «Какой КАЗС нужен»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="znaniya.html">Знания <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="projects.html">Кейсы</a><a class="simple" href="faq.html">FAQ</a><a class="simple" href="sp-156.html">СП 156</a><a class="simple" href="glossary.html">Глоссарий</a><a class="simple" href="industries.html">Отрасли</a><a class="simple" href="blog.html">Блог</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="proizvodstvo.html">О компании <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="proizvodstvo.html">Производство</a><a class="simple" href="about-team.html">Команда</a><a class="simple" href="about-certificates.html">Сертификаты</a><a class="simple" href="about-quality.html">Контроль качества</a><a class="simple" href="contacts.html">Контакты</a><a class="simple" href="lk.html">Личный кабинет клиента</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div></div>
     <div class="nav-cta">
       <div class="nav-contact"><a href="tel:+78122193485" class="nav-phone mono">8 812 219 34 85</a><a href="mailto:info@ikazs.ru" class="nav-mail mono">info@ikazs.ru</a></div>
       <button class="pill pill-primary" data-call>Заказать звонок</button>
       <button class="nav-burger" aria-label="Меню"><span></span><span></span><span></span></button>
     </div>
   </div>
-</nav><header class="phero" data-screen-label="БУК TS-G"><div class="wrap"><div class="phero-grid"><div><div class="crumbs reveal"><a href="index.html">Главная</a> / Автоматизация / БУК TS-G</div><p class="t-eyebrow reveal" style="color:var(--signal-blue)">Автоматизация · Контроллер</p><h1 class="t-heading-lg reveal d1" style="margin:14px 0 18px">Контроллер коммуникационного сервера «БУК&nbsp;TS-G»</h1><p class="t-sub reveal d2">Коммутирующее устройство для подключения технологического оборудования АЗС — ТРК, уровнемеров, стел цен — и ведения первичного независимого учёта движения топлива.</p><div class="btn-row reveal d3"><a href="contacts.html" class="pill pill-primary">Запросить КП</a><a href="automation-scada.html" class="pill pill-outline">Смотреть SCADA</a></div></div><div class="phero-media reveal d2"><div class="ph-slot" style="min-height:360px;font-family:var(--font-mono);color:var(--mist);font-size:13px">[ контроллер БУК TS-G · корпус 640×220×120 ]</div></div></div></div></header><section class="section ice"><div class="wrap"><div class="lead-col reveal"><p class="t-eyebrow">Что это</p><p>«БУК TS-G» подключает к системе автоматизации АЗС разнородное оборудование разных производителей через сменные интерфейсные модули на DIN-рейке: топливораздаточные колонки, уровнемеры, стелы цен и прочее.</p><p>Параллельно контроллер ведёт собственную независимую базу данных всех транзакций ТРК и показаний уровнемеров — это первичный учёт для задач безопасности, выявления злоупотреблений и мониторинга. Программное обеспечение включено в Единый реестр российского ПО, реестровый № 4324.</p></div></div></section><section class="section "><div class="wrap"><div class="col center stack" style="margin-bottom:48px"><p class="t-eyebrow reveal">Возможности</p><h2 class="t-heading reveal d1">Один узел — весь объект</h2></div><div class="adv-grid"><div class="adv reveal"><div class="n mono" style="font-size:12px;color:var(--mist)">01</div><h3>Первичный независимый учёт</h3><p>Полная первичная информация по всем транзакциям ТРК и показаниям уровнемеров хранится в базе контроллера.</p></div><div class="adv reveal d1"><div class="n mono" style="font-size:12px;color:var(--mist)">02</div><h3>Оборудование любого типа</h3><p>Сменные интерфейсные модули под ТРК/ГРК и уровнемеры разных производителей и протоколов.</p></div><div class="adv reveal d2"><div class="n mono" style="font-size:12px;color:var(--mist)">03</div><h3>IP-модуль питания</h3><p>Опциональное управление электропитанием оборудования: до 12 каналов, канал до 5 А.</p></div><div class="adv reveal"><div class="n mono" style="font-size:12px;color:var(--mist)">04</div><h3>Тревоги на e-mail</h3><p>Подтоварная вода, критический остаток, заказ топлива, ошибки ТРК и уровнемера — на почту.</p></div><div class="adv reveal d1"><div class="n mono" style="font-size:12px;color:var(--mist)">05</div><h3>Web-отчётность</h3><p>Отчёты о движении топлива локально или удалённо через обычный браузер.</p></div><div class="adv reveal d2"><div class="n mono" style="font-size:12px;color:var(--mist)">06</div><h3>Удалённое обслуживание</h3><p>Настройка и дистанционное обновление ПО контроллера через интернет.</p></div></div></div></section><section class="section"><div class="wrap"><div class="split"><div class="split-text reveal"><p class="t-eyebrow" style="margin-bottom:14px">IP-модуль управления питанием</p><h2 class="t-heading-sm" style="margin-bottom:20px">Не только связь, но и управление</h2><ul class="flist"><li>Автоматическая перезагрузка питания ТРК по заданным параметрам — например, при «подвисании» электроники.</li><li>Управление фонарями ТРК: индикация окончания заправки, снятия пистолета, оплаты клиентом.</li><li>Управление электромагнитными клапанами сливных горловин — клапан открывается только у нужного резервуара, исключая ошибочный слив.</li><li>Управление шлагбаумами АЗС и прочим оборудованием.</li></ul></div><div class="split-media reveal d1"><div class="ph-slot" style="min-height:320px;width:100%;font-family:var(--font-mono);color:var(--mist);font-size:13px">[ интерфейсные модули на DIN-рейке ]</div></div></div></div></section><section class="section ice"><div class="wrap"><div class="col"><div class="center stack" style="margin-bottom:36px"><p class="t-eyebrow reveal">Совместимость</p><h2 class="t-heading reveal d1">Поддерживаемое оборудование</h2></div><div class="two-col"><div class="reveal"><div class="subhead">ТРК / ГРК — до 4 типов одновременно</div><div class="pl-chips"><span class="pl-chip"><b>Tankanlagen Salzkotten</b> · <span class="mono" style="color:var(--ash)">Kienzle</span></span><span class="pl-chip"><b>Gilbarco Veeder-Root</b> · <span class="mono" style="color:var(--ash)">Two-Wire</span></span><span class="pl-chip"><b>Wayne Dresser</b> · <span class="mono" style="color:var(--ash)">Dart Line</span></span><span class="pl-chip"><b>Scheidt&Bachmann</b> · <span class="mono" style="color:var(--ash)">V11</span></span><span class="pl-chip"><b>EnE</b> · <span class="mono" style="color:var(--ash)">EnE</span></span><span class="pl-chip"><b>Tokheim</b> · <span class="mono" style="color:var(--ash)">ориг.</span></span><span class="pl-chip"><b>ТОПАЗ</b> · <span class="mono" style="color:var(--ash)">АЗТ 2.0</span></span><span class="pl-chip"><b>ADAST</b> · <span class="mono" style="color:var(--ash)">АЗТ 2.0</span></span><span class="pl-chip"><b>ТАТСУНО С-Бенч</b> · <span class="mono" style="color:var(--ash)">АЗТ 2.0</span></span><span class="pl-chip"><b>FAS</b> · <span class="mono" style="color:var(--ash)">Kienzle</span></span><span class="pl-chip"><b>Шельф</b> · <span class="mono" style="color:var(--ash)">АЗТ 2.0</span></span></div></div><div class="reveal d1" style="margin-top:8px"><div class="subhead" style="margin-top:26px">Уровнемеры — до 2 типов</div><div class="pl-chips"><span class="pl-chip"><b>Veeder-Root</b></span><span class="pl-chip"><b>Струна-М</b></span><span class="pl-chip"><b>Струна+</b></span><span class="pl-chip"><b>OPW</b></span><span class="pl-chip"><b>Сенсор</b></span></div><p style="color:var(--ash);font-size:14px;margin-top:22px;line-height:1.55">Возможна доработка контроллера под другие типы ТРК, уровнемеров и стел цены. Подключение систем автоматизации — по оригинальному протоколу «БУК TS-G» или по «Doms POS Protocol» (Ethernet).</p></div></div></div></div></section><section class="section ice"><div class="wrap"><div class="col"><p class="t-eyebrow reveal" style="margin-bottom:14px;text-align:center">Технические характеристики</p><table class="ttx reveal"><tr><td>Корпус</td><td>настенный, металл, 640×220×120 мм</td></tr><tr><td>Охлаждение</td><td>пассивное или активное</td></tr><tr><td>Оперативная память</td><td>DDR4 8 ГБ / 16 ГБ (опц.)</td></tr><tr><td>Накопитель</td><td>SSD 500 ГБ / 2×SSD 500 ГБ RAID (опц.)</td></tr><tr><td>Модули ТРК</td><td>до 4 типов, DIN-рейка</td></tr><tr><td>Модули уровнемеров</td><td>до 2 типов, DIN-рейка</td></tr><tr><td>IP-модуль питания</td><td>до 12 каналов, канал до 5 А</td></tr><tr><td>Интерфейсы</td><td>2×RJ45 LAN · HDMI/VGA/DisplayPort · 4×USB 3.2 · COM RS-232/422/485</td></tr><tr><td>ПО</td><td>Linux Debian 11+ · PostgreSQL</td></tr><tr><td>Реестр ПО</td><td>Единый реестр российского ПО, № 4324</td></tr><tr><td>Питание</td><td>220 В ± 5 %, 50 Гц</td></tr><tr><td>Эксплуатация</td><td>закрытые помещения, +5…+25 °C, влажность до 80 %</td></tr></table></div></div></section><section class="section"><div class="wrap"><div class="col center stack" style="margin-bottom:40px"><p class="t-eyebrow reveal">Смежные решения</p><h2 class="t-heading reveal d1">Автоматизация целиком</h2></div><div class="link-cards"><a class="lcard reveal" href="automation-scada.html"><h3>SCADA и АСУ</h3><p>Диспетчеризация топливной инфраструктуры, интеграция с 1С и API.</p><span class="ghost">Подробнее →</span></a><a class="lcard reveal" href="automation-monitoring.html"><h3>Удалённый мониторинг</h3><p>Остатки, расход и тревоги онлайн в кабинете и приложении.</p><span class="ghost">Подробнее →</span></a><a class="lcard reveal" href="automation-terminal.html"><h3>Терминал самообслуживания</h3><p>АЗС без оператора: оплата картой, QR и наличными.</p><span class="ghost">Подробнее →</span></a></div></div></section><section class="section dark-2" id="cta"><div class="wrap"><div class="col"><div class="stack" style="text-align:center;margin-bottom:10px"><h2 class="t-heading-lg reveal" style="color:var(--frost)">Получите КП за 1 час</h2><p class="t-sub light reveal d1">Оставьте контакты — инженер вернётся с расчётом и спецификацией в течение часа.</p></div><form class="cta-form reveal d2" onsubmit="return false"><div class="field-input"><input type="text" placeholder="Имя"></div><div class="field-input"><input type="tel" placeholder="Телефон"></div><textarea placeholder="Опишите задачу — инженер ответит в течение часа"></textarea><div class="cta-submit"><button class="pill pill-primary">Получить КП за 1 час</button><span class="cta-alt">Или позвоните: <b>8 812 219 34 85</b></span></div></form></div></div></section><footer class="footer"><div class="wrap"><div class="foot-grid"><div class="foot-brand"><div class="brand"><img src="assets/logo-mark.png" alt="ИнтеллектКАЗС" style="width:30px;height:30px"><span class="word">Интеллект<b>КАЗС</b></span></div><p>Заводская АЗС для вашего автопарка. Под ключ за 45 дней. Производство — Санкт-Петербург.</p></div><div class="foot-col"><h5>КАЗС</h5><a href="vedomstvennaya.html">Ведомственная</a><a href="kommercheskaya.html">Коммерческая</a><a href="kazs-open.html">Открытый тех. отсек</a><a href="kazs-premium.html">Коммерческий</a></div><div class="foot-col"><h5>Оборудование</h5><a href="trk-topaz.html">ТРК</a><a href="reservoirs-rgs.html">Резервуары</a><a href="automation-terminal.html">Терминалы</a><a href="automation-scada.html">SCADA</a></div><div class="foot-col"><h5>Услуги</h5><a href="epc-pod-klyuch.html">EPC под ключ</a><a href="services-design.html">Проектирование</a><a href="services-service.html">Сервис 24/7</a><a href="calculator.html">Калькулятор</a></div><div class="foot-col"><h5>Знания</h5><a href="projects.html">Кейсы</a><a href="faq.html">FAQ</a><a href="objections.html">Возражения</a><a href="proizvodstvo.html">О компании</a></div></div><div class="foot-bottom"><span>ИнтеллектКАЗС · производство КАЗС и АЗС · Санкт-Петербург · 8 812 219 34 85</span><span><a href="#">Политика обработки ПД</a> · © 2026 ИнтеллектКАЗС</span></div></div></footer><script src="app.js"></script></body></html>
+</nav>
+
+<section class="gsec" id="eh" data-screen-label="Хиро">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="veil"></div>
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">Главная</a> → <a href="automation-scada.html">Автоматизация</a> → БУК TS-G</p>
+    <h1 class="reveal">Коммуникационный сервер <span class="shine-l">«БУК TS-G»</span>. Один узел между оборудованием АЗС и системой автоматизации</h1>
+    <p class="lead reveal d1">Контроллер преобразует оригинальные протоколы ТРК, уровнемеров и стел цен в единый протокол управления по локальной сети — и параллельно ведёт собственную базу первичных данных о движении топлива, независимую от кассового ПО. Разработка и производство — ООО «Нефтепродукттехника», поставка, комплектация и пусконаладка — ИнтеллектКАЗС как дилер.</p>
+    <div class="epc reveal d1"><span>Linux Debian 11+</span><span>PostgreSQL</span><span>Реестр ПО № 4324</span><span>API DOMS PSS5000</span><span>Дилер «Нефтепродукттехника»</span></div>
+    <div class="stats reveal d2">
+      <div class="st"><div class="v">30<em>лет</em></div><div class="k">эксплуатации системы<br>«БУК TS-G» на объектах</div></div>
+      <div class="st"><div class="v">30+<em>моделей</em></div><div class="k">ТРК, уровнемеров и стел<br>разных производителей</div></div>
+      <div class="st"><div class="v">4<em>+2</em></div><div class="k">протокола ТРК и два типа<br>уровнемеров одновременно</div></div>
+      <div class="st"><div class="v">12<em>кан.</em></div><div class="k">управления электропитанием<br>оборудования, до 5 А</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="who" data-screen-label="Кому нужен">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Где применяется</p>
+      <h2 class="t-heading reveal d1">Когда на объекте разный «зоопарк» оборудования</h2>
+      <p class="t-sub reveal d2">А система автоматизации должна видеть один протокол.</p>
+    </div>
+    <div class="whogrid">
+      <div class="who reveal"><div class="n">01</div><h3>Сети АЗС</h3><p>Колонки и уровнемеры разных лет и брендов — единая АСУ ТП без замены парка.</p></div>
+      <div class="who reveal d1"><div class="n">02</div><h3>Ведомственные АЗС</h3><p>Отпуск топлива своему автопарку с первичным учётом по каждой транзакции.</p></div>
+      <div class="who reveal d2"><div class="n">03</div><h3>Автоматические АЗС</h3><p>Работа без персонала: телеметрия, удалённый контроль питания и процессов.</p></div>
+      <div class="who reveal d3"><div class="n">04</div><h3>Контейнерные АЗС</h3><p>Один настенный корпус в техпомещении вместо стойки с преобразователями.</p></div>
+      <div class="who reveal"><div class="n">05</div><h3>Замена DOMS PSS</h3><p>Совместимый API — сторонняя система автоматизации подключается как раньше.</p></div>
+      <div class="who reveal d1"><div class="n">06</div><h3>Служба безопасности</h3><p>Независимая от кассы база транзакций ТРК и показаний уровнемеров.</p></div>
+      <div class="who reveal d2"><div class="n">07</div><h3>Импортозамещение</h3><p>ПО в Едином реестре российских программ, реестровый № 4324.</p></div>
+      <div class="who reveal d3"><div class="n">08</div><h3>Модернизация АСУ ТП</h3><p>Наращивание функций объекта без остановки продаж и без смены ТРК.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="econ" data-screen-label="Первичный учёт">
+  <div class="wrap">
+    <div class="egrid">
+      <div class="stack">
+        <p class="t-eyebrow reveal">Зачем отдельный сервер</p>
+        <h2 class="t-heading reveal d1">Касса считает продажи. Контроллер <span class="shine">пишет литры</span></h2>
+        <p class="t-sub reveal d2">В базе данных контроллера хранится полная первичная информация от ТРК по всем заправкам, включая суммирующие электронные счётчики колонок, и полные данные уровнемера. Дополнительно ведётся глубокое логирование операций движения топлива и обмена с системой автоматизации. Расхождение между этими данными и кассовыми — то, что обычно ищет служба безопасности.</p>
+      </div>
+      <div class="enum reveal d1">
+        <div class="en"><span class="v">100 %</span><span class="k">транзакций ТРК<br>в собственной БД</span></div>
+        <div class="en"><span class="v">Счётчики</span><span class="k">суммирующие электронные<br>по каждой колонке</span></div>
+        <div class="en"><span class="v">Уровнемер</span><span class="k">уровень, температура,<br>подтоварная вода</span></div>
+        <div class="en"><span class="v">Выгрузка</span><span class="k">файловый обмен<br>с ИС заказчика</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="arch" data-screen-label="Архитектура">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Архитектура</p>
+      <h2 class="t-heading reveal d1">Где контроллер стоит в системе</h2>
+      <p class="t-sub reveal d2">АСУ ТП топливного объекта — это три яруса: полевое оборудование, объектовый уровень и офис. Ярусы говорят на разных языках, и контроллер — единственная точка перевода между ними. Нажмите на схему, чтобы увеличить.</p>
+    </div>
+    <div class="arch">
+
+      <div class="arow reveal">
+        <figure class="af" data-zoom="assets/buk/arch-levels.png" style="margin:0"><div class="ph"><img src="assets/buk/arch-levels.png" alt="Схема уровней: штаб-квартира предприятия и уровень АЗС, контроллер НПТ между TCP/IP-сетью и проприетарными протоколами"></div></figure>
+        <div>
+          <div class="an"><i>Схема 01</i><span style="font-size:13px;color:var(--mist);font-family:var(--font-mono)">Уровни системы</span></div>
+          <h3>Два уровня: объект и штаб-квартира предприятия</h3>
+          <p class="lede">Снизу вверх схема читается так: технологическое оборудование → контроллер → локальная сеть объекта → каналы обмена → центральные серверы. Контроллер стоит точно на границе между оранжевой полосой проприетарных протоколов и зелёной TCP/IP-сетью: всё, что ниже него, разговаривает заводскими протоколами конкретного производителя, всё, что выше, — по Ethernet.</p>
+          <div class="alist">
+            <div class="ai"><b>Полевой уровень</b><span>Резервуарный парк с уровнемерами, ТРК и стела цен. Каждая единица оборудования подключается своим интерфейсным модулем на DIN-рейке — до 4 протоколов ТРК и до 2 протоколов уровнемеров одновременно.</span></div>
+            <div class="ai"><b>Проприетарные протоколы</b><span>Kienzle, Two-Wire, Dart Line, V11, Tokheim, АЗТ 2.0 и другие. Это «нижняя граница»: система автоматизации их не видит и не должна знать, какая колонка стоит на объекте.</span></div>
+            <div class="ai"><b>Контроллер</b><span>Приводит все протоколы к единому виду, ведёт собственную базу транзакций ТРК и показаний уровнемеров, управляет электропитанием оборудования и рассылает тревоги.</span></div>
+            <div class="ai"><b>Уровень АЗС</b><span>По TCP/IP подключаются POS АРМ оператора-кассира, АРМ товароведа и киоск самообслуживания. Все они получают данные о заправках из одного источника.</span></div>
+            <div class="ai"><b>Уровень штаб-квартиры</b><span>Топливный процессинг, сервер бэк-офиса и мобильное приложение руководителя. Связь с объектом — по каналам обмена информацией через защищённый интернет.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="arow reveal d1">
+        <figure class="af" data-zoom="assets/buk/arch-topology.png" style="margin:0"><div class="ph"><img src="assets/buk/arch-topology.png" alt="Топология АСУ ТП: центральный офис, корпоративная сеть, локальная сеть АЗС, контроллер АСУ ТП, полевой уровень оборудования"></div></figure>
+        <div>
+          <div class="an"><i>Схема 02</i><span style="font-size:13px;color:var(--mist);font-family:var(--font-mono)">Топология связей</span></div>
+          <h3>Как физически связаны рабочие места и оборудование</h3>
+          <p class="lede">Та же система, но с точки зрения сетей и рабочих мест. Три шины: корпоративная сеть предприятия, локальная сеть объекта и полевой уровень. Контроллер АСУ ТП подключён к локальной сети АЗС и одновременно ко всему полевому оборудованию — поэтому при отказе связи с офисом объект продолжает отпускать топливо и накапливать данные локально.</p>
+          <div class="alist">
+            <div class="ai"><b>Корпоративная сеть</b><span>Центральный офис, рабочее место администратора, серверная и сетевая инфраструктура, удалённое рабочее место оператора. Через эту же сеть выполняется удалённая настройка, диагностика и обновление ПО контроллера.</span></div>
+            <div class="ai"><b>Обмен данными</b><span>Двусторонний: вниз идут цены, справочники и задания, вверх — транзакции, остатки в резервуарах, состояние оборудования и события.</span></div>
+            <div class="ai"><b>Локальная сеть АЗС</b><span>Кассовые места с фискальным регистратором и сканером, рабочее место оператора, терминал самообслуживания. Число рабочих мест ограничено только конфигурацией объекта.</span></div>
+            <div class="ai"><b>Полевой уровень</b><span>ТРК, панель оператора, резервуары с уровнемерами. Управление отпуском, опрос счётчиков и измерение уровня, температуры и подтоварной воды идут по отдельным линиям связи от контроллера.</span></div>
+            <div class="ai"><b>Что это даёт на практике</b><span>Замена колонки, добавление кассы, подключение терминала самообслуживания или смена системы автоматизации — это работа на одном ярусе. Остальные остаются нетронутыми.</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="gsec" id="vs" data-screen-label="Сравнение">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal" style="color:var(--signal-blue)">Чем отличается от типового контроллера</p>
+      <h2 class="t-heading reveal d1" style="color:var(--frost)">Расширенный функционал по сравнению с DOMS PSS5000</h2>
+      <p class="t-sub reveal d2" style="color:rgba(245,245,247,.66)">Наведите на строку — сравнение.</p>
+    </div>
+    <div class="cmp reveal d2">
+      <div class="crow h"><div>Функция</div><div>Типовой контроллер</div><div class="good">«БУК TS-G»</div></div>
+      <div class="crow"><div class="k">Сопряжение оборудования</div><div class="bad">Ограниченный список моделей</div><div class="good">Свыше 30 моделей ТРК, уровнемеров и стел</div></div>
+      <div class="crow"><div class="k">Управление электропитанием</div><div class="bad">Нет</div><div class="good">IP-модуль до 12 каналов: перезагрузка ТРК, клапаны, фонари, шлагбаумы</div></div>
+      <div class="crow"><div class="k">Тревоги</div><div class="bad">Только в системе автоматизации</div><div class="good">Письма на e-mail: подтоварная вода, потеря связи, критический уровень</div></div>
+      <div class="crow"><div class="k">Первичные данные</div><div class="bad">Транзит в кассовое ПО</div><div class="good">Полное хранение в БД контроллера с логированием</div></div>
+      <div class="crow"><div class="k">Отчётность</div><div class="bad">Через систему автоматизации</div><div class="good">Web-модуль отчётности в браузере, локально или удалённо</div></div>
+      <div class="crow"><div class="k">Верхний уровень</div><div class="bad">Отдельный проект</div><div class="good">«Менеджер сетевого магазина» для централизованного сбора данных</div></div>
+      <div class="crow"><div class="k">Обслуживание</div><div class="bad">Выезд на объект</div><div class="good">Настройка и обновление версий ПО удалённо через интернет</div></div>
+    </div>
+    <p class="vsnote reveal">Решение имеет открытый программный протокол взаимодействия (API), совместимый с контроллером автоматизации DOMS PSS5000, и подключается к системам автоматизации по «Doms POS Protocol» через Ethernet либо по оригинальному протоколу «БУК TS-G». <b>Заменить контроллер можно без переписывания кассового ПО.</b></p>
+  </div>
+</section>
+
+<section id="stages" data-screen-label="Как внедряем">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Как проходит поставка</p>
+      <h2 class="t-heading reveal d1">Пять шагов от опросного листа до сопровождения</h2>
+    </div>
+    <div class="stg">
+      <div class="stage reveal" style="--w:100%"><div class="idx"><span>01</span></div><div class="mid"><h3>Обследование объекта и опросный лист</h3><details class="dt"><summary>Что происходит на этапе</summary><p>Фиксируем состав оборудования: модели и количество ТРК и ГНК, протоколы управления, тип уровнемера, наличие стелы цен, применяемую систему автоматизации и каналы связи. От этого зависит набор интерфейсных модулей — их нельзя «докупить потом» без простоя.</p></details><div class="tags"><i>Типы ТРК</i><i>Протоколы</i><i>Уровнемер</i><i>Система автоматизации</i></div></div><div class="dur"><div class="v">1–3 дня</div><div class="k">Длительность</div><div class="bar"><i></i></div></div></div>
+      <div class="stage reveal" style="--w:35%"><div class="idx"><span>02</span></div><div class="mid"><h3>Комплектация и КП</h3><details class="dt"><summary>Что происходит на этапе</summary><p>Собираем конфигурацию: модули ТРК и уровнемеров на DIN-рейку, IP-модуль управления питанием, модуль стелы, объём памяти, RAID, тип охлаждения. Конфигурация поставляемых решений определяется под конкретного заказчика — типовой позиции «со склада» здесь нет.</p></details><div class="tags"><i>Спецификация</i><i>Опции</i><i>Срок поставки</i></div></div><div class="dur"><div class="v">2–5 дней</div><div class="k">Длительность</div><div class="bar"><i></i></div></div></div>
+      <div class="stage reveal" style="--w:70%"><div class="idx"><span>03</span></div><div class="mid"><h3>Производство и поставка</h3><details class="dt"><summary>Что происходит на этапе</summary><p>Контроллер приходит в сборе с предустановленным ПО, паспортом и руководством по эксплуатации. Транспортирование и хранение — только в горизонтальном положении, без штабелирования; распаковка в отапливаемом помещении, первое включение после выдержки не менее 2 часов при завозе с морозa.</p></details><div class="tags"><i>ПО предустановлено</i><i>Паспорт и РЭ</i><i>Заводской номер</i></div></div><div class="dur"><div class="v">4–8 нед.</div><div class="k">Длительность</div><div class="bar"><i></i></div></div></div>
+      <div class="stage reveal" style="--w:28%"><div class="idx"><span>04</span></div><div class="mid"><h3>Монтаж и пусконаладка</h3><details class="dt"><summary>Что происходит на этапе</summary><p>Крепление настенное, вертикальное, в отапливаемом помещении; питание 220 V через ИБП, при нестабильной сети — со стабилизатором. Пусконаладку и ввод в эксплуатацию выполняет персонал, прошедший обучение и сертифицированный производителем: иначе гарантия не действует.</p></details><div class="tags"><i>Настенный монтаж</i><i>ИБП</i><i>Сертифицированный персонал</i><i>Ввод в эксплуатацию</i></div></div><div class="dur"><div class="v">1–3 дня</div><div class="k">Длительность</div><div class="bar"><i></i></div></div></div>
+      <div class="stage reveal" style="--w:18%"><div class="idx"><span>05</span></div><div class="mid"><h3>Сопровождение и доработки</h3><details class="dt"><summary>Что происходит на этапе</summary><p>Оперативная поддержка по вопросам ПНР и эксплуатации АСУ ТП, багтрекинг обращений, новые релизы ПО. Возможна доработка под подключение нового типа технологического оборудования и добавление функций в сжатые сроки.</p></details><div class="tags"><i>Удалённые обновления</i><i>Багтрекинг</i><i>Доработка под ТЗ</i></div></div><div class="dur"><div class="v">Постоянно</div><div class="k">Режим</div><div class="bar"><i></i></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="gsec" id="case" data-screen-label="Дилерство">
+  <div class="wrap">
+    <div class="cg">
+      <div>
+        <p class="t-eyebrow reveal">Производитель</p>
+        <h2 class="reveal d1">Разработка «Нефтепродукттехники», поставка и ПНР — наши</h2>
+        <p class="reveal d2">Система автоматизации АЗС «БУК TS-G» выведена на рынок в 1994 году, с 2009-го работает на Linux-платформе. Эксплуатируется более 30 лет на объектах ПАО «Татнефть», ТОО «Sinooil» (Казахстан, дочерняя компания PetroChina), ПАО «ЛУКОЙЛ» — с 2024 года, а также на частных сетях АЗС. Мы поставляем контроллер как дилер: комплектуем под объект, монтируем, вводим в эксплуатацию и сопровождаем, оставаясь единым ответственным по объекту вместе с остальным оборудованием АЗС.</p>
+      </div>
+      <div class="facts reveal d2">
+        <div class="f"><div class="v">1994</div><div class="k">год вывода системы на рынок</div></div>
+        <div class="f"><div class="v">2009</div><div class="k">первая версия АСУ ТП на Linux</div></div>
+        <div class="f"><div class="v">№ 4324</div><div class="k">реестровый номер российского ПО</div></div>
+        <div class="f"><div class="v">РФ и СНГ</div><div class="k">РФ, Казахстан, Узбекистан</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section id="adv2" data-screen-label="Преимущества">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Почему это решение</p>
+      <h2 class="t-heading reveal d1">Что даёт экосистема предприятию нефтепродуктообеспечения</h2>
+    </div>
+    <div class="whogrid">
+      <div class="who reveal"><div class="n">01</div><h3>Проверено временем</h3><p>Более 30 лет на рынке РФ и СНГ: накоплен опыт и наработаны технические решения под нестандартные объекты.</p></div>
+      <div class="who reveal d1"><div class="n">02</div><h3>Защищённость</h3><p>В основе — только проверенные платформы и технологии с высоким уровнем защиты от ИТ-угроз.</p></div>
+      <div class="who reveal d2"><div class="n">03</div><h3>Масштабируемость</h3><p>Разворачивается и на одной АЗС, и на сети свыше 1000 объектов с местами хранения и перевалки нефтепродуктов.</p></div>
+      <div class="who reveal d3"><div class="n">04</div><h3>Задел на будущее</h3><p>Стек технологий сохраняет потенциал для модернизаций и доработок без смены платформы.</p></div>
+      <div class="who reveal"><div class="n">05</div><h3>Быстрое внедрение</h3><p>Анализ технических требований, обоснованная оценка сроков и стоимости внедрения до старта работ.</p></div>
+      <div class="who reveal d1"><div class="n">06</div><h3>Стоимость владения</h3><p>Предсказуемый TCO по всем статьям: лицензии, пусконаладка, сопровождение и развитие решения.</p></div>
+    </div>
+  </div>
+</section>
+<section id="deal" data-screen-label="Конструктив">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Конструктив</p>
+      <h2 class="t-heading reveal d1">Как он выглядит вживую</h2>
+      <p class="t-sub reveal d2">Настенный металлический корпус 640×220×120 мм с замком. Всё коммутационное хозяйство — на одной DIN-рейке.</p>
+    </div>
+    <div class="sld reveal d2" id="sld">
+      <div class="sld-vp"><div class="sld-tr" id="sldtr">
+        <div class="sl"><figure><img src="assets/buk/g.jpeg" alt="Открытая крышка: материнская плата, блок питания, DIN-рейка со сменными интерфейсными модулями" loading="lazy"></figure><div class="cap"><i>01</i><span>Открытая крышка: материнская плата, блок питания, DIN-рейка со сменными интерфейсными модулями</span></div></div>
+        <div class="sl"><figure><img src="assets/buk/b.jpeg" alt="Компоновка сверху — пассивное охлаждение" loading="lazy"></figure><div class="cap"><i>02</i><span>Компоновка сверху — пассивное охлаждение</span></div></div>
+        <div class="sl"><figure><img src="assets/buk/e.jpeg" alt="Вариант комплектации модулями под конкретный объект" loading="lazy"></figure><div class="cap"><i>03</i><span>Вариант комплектации модулями под конкретный объект</span></div></div>
+        <div class="sl"><figure><img src="assets/buk/c.jpeg" alt="Низ корпуса: RS-232, RS-232/485 и кабельные вводы" loading="lazy"></figure><div class="cap"><i>04</i><span>Низ корпуса: RS-232, RS-232/485 и кабельные вводы</span></div></div>
+        <div class="sl"><figure><img src="assets/buk/d.jpeg" alt="Панель интерфейсов: 2 × LAN, HDMI, VGA, DP, 4 × USB 3.2" loading="lazy"></figure><div class="cap"><i>05</i><span>Панель интерфейсов: 2 × LAN, HDMI, VGA, DP, 4 × USB 3.2</span></div></div>
+        <div class="sl"><figure><img src="assets/buk/a.jpeg" alt="Ввод 220 V и выключатель сервера снаружи корпуса" loading="lazy"></figure><div class="cap"><i>06</i><span>Ввод 220 V и выключатель сервера снаружи корпуса</span></div></div>
+      </div></div>
+      <div class="sld-bar">
+        <div class="sld-dots" id="slddots"><button type="button" data-i="0" aria-label="Фото 1" class="on"></button><button type="button" data-i="1" aria-label="Фото 2"></button><button type="button" data-i="2" aria-label="Фото 3"></button><button type="button" data-i="3" aria-label="Фото 4"></button><button type="button" data-i="4" aria-label="Фото 5"></button><button type="button" data-i="5" aria-label="Фото 6"></button></div>
+        <div class="sld-nav"><span class="sld-count" id="sldcount">01 / 06</span><button type="button" class="ar" id="sldprev" aria-label="Назад" disabled>←</button><button type="button" class="ar" id="sldnext" aria-label="Вперёд">→</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="norms" data-screen-label="Совместимость">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Совместимость</p>
+      <h2 class="t-heading reveal d1">Протоколы и оборудование, которое он понимает</h2>
+      <p class="t-sub reveal d2">Контроллер держит до 4 типов ТРК/ГНК и до 2 типов уровнемеров с разными протоколами одновременно. Возможна доработка под другое оборудование.</p>
+    </div>
+    <div class="ngrid">
+      <div class="norm reveal"><div class="code">Kienzle</div><h3>Tankanlagen Salzkotten, FAS (ГНК)</h3><p>Интерфейсный модуль «Kienzle» на DIN-рейку</p></div><div class="norm reveal"><div class="code">Two-Wire</div><h3>Gilbarco Veeder-Root — ТРК и ГНК</h3><p>Штатный протокол GVR, мастер-дистрибьютор с 1997 года</p></div><div class="norm reveal"><div class="code">Dart Line</div><h3>Wayne Dresser</h3><p>Интерфейсный модуль «Dart Line»</p></div><div class="norm reveal"><div class="code">V11</div><h3>Scheidt&amp;Bachmann</h3><p>Интерфейсный модуль «V11»</p></div><div class="norm reveal"><div class="code">EnE</div><h3>EnE</h3><p>Оригинальный протокол производителя</p></div><div class="norm reveal"><div class="code">Tokheim</div><h3>Tokheim</h3><p>Оригинальный протокол ТРК «Tokheim»</p></div><div class="norm reveal"><div class="code">АЗТ 2.0 / ТОПАЗ</div><h3>ТОПАЗ — ТРК и ГНК</h3><p>Два протокола на выбор под парк колонок</p></div><div class="norm reveal"><div class="code">АЗТ 2.0</div><h3>ADAST, ТАТСУНО С-Бенч, Шельф</h3><p>Приведение оригинальных протоколов к АЗТ 2.0</p></div><div class="norm reveal"><div class="code">Уровнемеры</div><h3>Veeder-Root, Струна-М, Струна+, OPW, Сенсор</h3><p>До 2 типов с разными протоколами одновременно</p></div>
+    </div>
+  </div>
+</section>
+
+
+<section id="eco" data-screen-label="Экосистема">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Экосистема «БУК TS-G»</p>
+      <h2 class="t-heading reveal d1">Контроллер — ядро. Дальше наращивается верхний уровень</h2>
+      <p class="t-sub reveal d2">Все решения работают на одной платформе: расширение функций не требует смены объектового оборудования.</p>
+    </div>
+    <div class="eco">
+      <div class="ec reveal">
+        <span class="tag">Объектовое решение</span>
+        <h3>«Ведомственная АЗС»</h3>
+        <p>Комплексный сквозной учёт ГСМ — приёмка, хранение, расход — на предприятиях с собственным автопарком и инфраструктурой нефтепродуктообеспечения: горнорудные предприятия, автобусные парки, аэропорты, морские порты. Сменный отчёт по ГСМ, ключевые показатели — в виде dashboard руководству в онлайн-режиме.</p>
+        <details class="dt"><summary>Функционал «Ведомственной АЗС» целиком</summary><ul><li>Подсистема топливного процессинга: гибкие лимиты выдачи — суточный, недельный, месячный</li><li>Идентификация транспорта и персонала при заправке</li><li>Учёт расхода по отделам, группам транспорта, отдельной машине или сотруднику</li><li>Анализ данных на выявление «подозрительных» заправок с высокой вероятностью злоупотреблений</li><li>Установка оборудования на автотопливозаправщик — контроль выдачи в малоподвижную технику: карьерные самосвалы, шагающие экскаваторы, дизель-генераторы</li><li>Диспетчерский центр, дистанционное управление электропитанием, телеметрия</li></ul></details>
+      </div>
+      <div class="ec reveal d1">
+        <span class="tag">Верхний уровень</span>
+        <h3>ИУС «Менеджер сетевого магазина»</h3>
+        <p>Централизованное управление бизнес-процессами сети подчинённых АЗК. Ставится на центральный сервер в офисе, объекты подключаются через защищённые каналы интернета; в сбытовых предприятиях развёртываются АРМ менеджеров.</p>
+        <details class="dt"><summary>Все функции ИУС «МСМ»</summary><ul><li>Центральные справочники сети и их автоматическая синхронизация на объекты</li><li>Управление ценообразованием на топливо, товары и услуги</li><li>Промо-акции на топливо, товары и комбинации «топливо + товар»</li><li>Ассортиментные матрицы с привязкой АЗК к типовым матрицам</li><li>Контроль закупочных цен и перечня поставщиков по каждой торговой точке</li><li>Допустимые коридоры плотности топлива при приёмке на АЗК</li><li>Управление рекламным контентом для ТСО и мониторов торгового зала</li><li>Блокировка прихода или всех операций по заданному товару</li></ul></details>
+      </div>
+      <div class="ec reveal">
+        <span class="tag">Бизнес-аналитика</span>
+        <h3>ИС «ИНФО-ОЙЛ»</h3>
+        <p>Хранилище данных АЗК на СУБД Oracle с аналитическими надстройками верхнего уровня. Полная потранзакционная база всех событий на АЗК, рассчитанная на массивы от 2000 объектов и одновременную работу большого числа пользователей.</p>
+        <details class="dt"><summary>Отчёты и модули «ИНФО-ОЙЛ»</summary><ul><li>Блок отчётов по конкретной АЗК с глубокой детализацией</li><li>Генератор произвольных отчётов: период, группы АЗК, реализация, приход и остатки нефтепродуктов</li><li>Бизнес-отчёты по сетям для оценки эффективности</li><li>Контрольно-регулирующие и сводные отчёты по сетям</li><li>Модули конвертации, автозагрузки и контроля загрузки данных, распределение прав к БД</li></ul></details>
+      </div>
+      <div class="ec reveal d1">
+        <span class="tag">Маркетинг</span>
+        <h3>Лояльность на скидочных купонах</h3>
+        <p>Промо-акции для покупателей: купоны действуют на стоимость топлива, сопутствующих товаров и услуг сети. Решение объединяет два уровня — АСУ ТП объекта и процессинг офиса.</p>
+        <details class="dt"><summary>Как работают купоны</summary><ul><li>Купоны со штрих-кодом стандарта EAN-13 и датой окончания действия</li><li>Online-авторизация каждого купона при заправке через процессинг офиса</li><li>Одновременная работа с несколькими партиями купонов, параметры задаются по каждой партии</li><li>Статусы купонов: новый неактивный, активный, погашен, утерян</li><li>Отчёты по статусам и операциям, распространение через свои и внешние торговые сети</li></ul></details>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="gsec" id="price" data-screen-label="IP-модуль">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal" style="color:var(--signal-blue)">Опция, которая окупается первой</p>
+      <h2 class="t-heading reveal d1" style="color:var(--frost)">IP-модуль управления электропитанием</h2>
+    </div>
+    <div class="pbars reveal d1">
+      <div class="pb" style="--w:88%"><div class="fill"></div><span>Перезагрузка «подвисшей» электроники ТРК<em>Автоматически по заданным параметрам — без выезда оператора к колонке</em></span><b>до 12 кан.</b></div>
+      <div class="pb" style="--w:64%"><div class="fill"></div><span>Клапаны сливных горловин резервуаров<em>Открывается только тот резервуар, в который идёт слив — защита от смешения продукта</em></span><b>до 5 А</b></div>
+      <div class="pb" style="--w:48%"><div class="fill"></div><span>Фонари ТРК и световая индикация<em>Окончание заправки, снятие пистолета, факт оплаты клиентом</em></span><b>DIN-рейка</b></div>
+      <div class="pb" style="--w:30%"><div class="fill"></div><span>Шлагбаумы и прочее оборудование объекта<em>Управление периметром и внешними устройствами с того же контроллера</em></span><b>опция</b></div>
+    </div>
+    <p class="pnote reveal">Модуль устанавливается на ту же DIN-рейку внутри корпуса и управляется дистанционно. На объектах без персонала это единственный способ снять большую часть выездов по «зависшей» колонке.</p>
+  </div>
+</section>
+
+<section id="save" data-screen-label="Характеристики">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Технические характеристики</p>
+      <h2 class="t-heading reveal d1">Базовое исполнение и опции</h2>
+      <p class="t-sub reveal d2">Комплектация — под конфигурацию объекта. Наведите на строку.</p>
+    </div>
+    <div class="saverows reveal d1">
+      <div class="sr"><div class="l">Корпус</div><div class="r">Настенный металлический, 640×220×120 мм, запорное устройство крышки и 2 ключа</div></div><div class="sr"><div class="l">Охлаждение</div><div class="r">Пассивное или активное — по комплектации</div></div><div class="sr"><div class="l">Память</div><div class="r">DDR4 8 Gb или 16 Gb · SSD 500 Gb или 2 × SSD 500 Gb с RAID</div></div><div class="sr"><div class="l">Модули ТРК</div><div class="r">DIN-рейка, до 4 модулей с разными протоколами управления</div></div><div class="sr"><div class="l">Модули уровнемеров</div><div class="r">DIN-рейка, до 2 модулей с разными протоколами</div></div><div class="sr"><div class="l">IP-модуль питания</div><div class="r">DIN-рейка, до 12 каналов, до 5 А на канал (опция)</div></div><div class="sr"><div class="l">Модуль стелы цен</div><div class="r">DIN-рейка (опция)</div></div><div class="sr"><div class="l">Интерфейсы</div><div class="r">2 × RJ45 LAN · HDMI, VGA, DisplayPort · 4 × USB 3.2 · COM RS-232/422/485 · 3 × COM RS-232</div></div><div class="sr"><div class="l">Питание</div><div class="r">220 V ± 5 %, 50 Гц — обязательно через ИБП</div></div><div class="sr"><div class="l">Эксплуатация</div><div class="r">Отапливаемое помещение +5…+25 °С, влажность до 80 % без конденсации</div></div><div class="sr"><div class="l">Гарантия и ресурс</div><div class="r">12 мес. с ввода в эксплуатацию (до 15 мес. с отгрузки) · срок службы 10 лет</div></div>
+    </div>
+    <p class="t-sub reveal" style="margin-top:30px;max-width:80ch">Предприятие-изготовитель допускает внесение конструктивных изменений без ухудшения эксплуатационных свойств. Комплект поставки: контроллер в сборе с предустановленным ПО, руководство по эксплуатации, паспорт.</p>
+  </div>
+</section>
+
+<section id="efaq" data-screen-label="Вопросы">
+  <div class="wrap">
+    <div class="col">
+      <div class="center stack" style="margin-bottom:8px">
+        <p class="t-eyebrow reveal">Частые вопросы</p>
+        <h2 class="t-heading reveal d1">То, о чём спрашивают инженеры и закупщики</h2>
+      </div>
+      <div class="acc reveal d1">
+        <details><summary>У нас колонки трёх производителей. Заработает?</summary><div class="a">Да. Контроллер поддерживает до 4 типов ТРК/ГНК с разными протоколами управления одновременно и до 2 типов уровнемеров. Под каждый протокол ставится свой сменный интерфейсный модуль на DIN-рейку — состав определяется на этапе опросного листа.</div></details>
+        <details><summary>Нашей модели ТРК нет в перечне.</summary><div class="a">Возможна доработка контроллера под другие типы ТРК, уровнемеров, стел цен и прочего оборудования — производитель делает это в сжатые сроки под требования заказчика. Пришлите модель и протокол, ответим по срокам и стоимости.</div></details>
+        <details><summary>Можно оставить нашу систему автоматизации?</summary><div class="a">Да. Подключение идёт либо по «Doms POS Protocol» через Ethernet, либо по оригинальному протоколу «БУК TS-G». API совместим с DOMS PSS5000, поэтому сторонняя система автоматизации видит привычный интерфейс.</div></details>
+        <details><summary>Зачем независимый учёт, если есть касса?</summary><div class="a">Касса считает продажи, контроллер пишет первичные данные прямо с ТРК и уровнемера, включая суммирующие счётчики колонок, и логирует весь обмен. Данные можно выгружать во внешние системы файловым обменом — для задач безопасности, выявления злоупотреблений и мониторинга.</div></details>
+        <details><summary>Где его размещать?</summary><div class="a">Закрытое отапливаемое взрывобезопасное помещение без агрессивных паров и пыли: +5…+25 °С, влажность до 80 % при 25 °С без конденсации. Крепление настенное, вертикальное; горизонтально — при температуре ниже +25 °С. Питание 220 V через ИБП, при нестабильной сети — со стабилизатором.</div></details>
+        <details><summary>Какая гарантия и кто делает ПНР?</summary><div class="a">Гарантия 12 месяцев с даты ввода в эксплуатацию, но не более 15 месяцев с даты отгрузки; срок службы — 10 лет. Пусконаладку выполняет персонал, прошедший обучение и имеющий сертификат производителя — мы такие работы делаем сами как дилер.</div></details>
+        <details><summary>Подтверждается ли российское происхождение ПО?</summary><div class="a">Да: ПО системы автоматизации «БУК TS-G» включено в Единый реестр российских программ для ЭВМ и баз данных, реестровый № 4324. Выписку приложим к коммерческому предложению.</div></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gsec" id="ecta" data-screen-label="Финал">
+  <div class="wrap">
+    <h2 class="reveal">Пришлите состав объекта — соберём комплектацию</h2>
+    <p class="reveal d1">Модели и количество ТРК, тип уровнемера, система автоматизации, каналы связи. Вернёмся со спецификацией контроллера, ценой, сроком поставки и объёмом пусконаладки. Обычно в течение рабочего дня.</p>
+    <div class="btns reveal d2"><span class="g"><button class="pill pill-primary" data-call>Запросить КП</button></span><a class="pill pill-outline" href="automation-scada.html">АСУ и SCADA</a></div>
+  </div>
+</section>
+
+<footer class="footer" data-screen-label="Футер">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="brand"><img src="assets/logo-mark.png" alt="ИнтеллектКАЗС" style="width:30px;height:30px"><span class="word">Интеллект<b>КАЗС</b></span></div>
+        <p>Контейнерные АЗС и системы автоматизации топливных объектов. Производство — Санкт-Петербург.</p>
+      </div>
+      <div class="foot-col"><h5>Автоматизация</h5><a href="automation-buk-tsg.html">БУК TS-G</a><a href="automation-scada.html">АСУ и SCADA</a><a href="automation-terminal.html">Терминалы самообслуживания</a></div>
+      <div class="foot-col"><h5>Оборудование</h5><a href="trk-topaz.html">ТРК</a><a href="reservoirs-rgs.html">Резервуары РГС</a><a href="komplektacii.html">Комплектации</a></div>
+      <div class="foot-col"><h5>Услуги</h5><a href="epc-pod-klyuch.html">EPC под ключ</a><a href="services-installation.html">Монтаж и ПНР</a><a href="services-service.html">Сервис 24/7</a></div>
+      <div class="foot-col"><h5>Знания</h5><a href="docs.html">Документация</a><a href="#faq">Вопросы</a><a href="proizvodstvo.html">О компании</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>ИнтеллектКАЗС · производство КАЗС и АЗС · Санкт-Петербург · <a href="tel:+78122193485">8 812 219 34 85</a> · <a href="mailto:info@ikazs.ru">info@ikazs.ru</a></span>
+      <span><a href="#">Политика обработки ПД</a> · © 2026 ИнтеллектКАЗС</span>
+    </div>
+  </div>
+</footer>
+<div class="lb" id="lb"><img alt="Схема архитектуры АСУ ТП «БУК TS-G»"></div>
+<script>
+(function(){
+  var lb=document.getElementById('lb');if(!lb)return;var im=lb.querySelector('img');
+  document.querySelectorAll('.af').forEach(function(f){f.addEventListener('click',function(){im.src=f.dataset.zoom;lb.classList.add('on')})});
+  lb.addEventListener('click',function(){lb.classList.remove('on')});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('on')});
+})();
+</script>
+<script>
+(function(){
+  var io=new IntersectionObserver(function(en,o){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');o.unobserve(e.target);}});},{threshold:.35});
+  document.querySelectorAll('#stages .stage,#price .pb').forEach(function(e){io.observe(e)});
+})();
+</script>
+<script>
+(function(){
+  var tr=document.getElementById('sldtr');if(!tr)return;
+  var slides=[].slice.call(tr.children),dots=[].slice.call(document.getElementById('slddots').children),
+      prev=document.getElementById('sldprev'),next=document.getElementById('sldnext'),cnt=document.getElementById('sldcount'),i=0;
+  function per(){return Math.max(1,Math.round(tr.parentNode.clientWidth/slides[0].getBoundingClientRect().width))}
+  function max(){return Math.max(0,slides.length-per())}
+  function render(){
+    if(i>max())i=max();
+    var s=slides[0].getBoundingClientRect().width+18;
+    tr.style.transform='translateX('+(-i*s)+'px)';
+    slides.forEach(function(el,n){el.classList.toggle('off',n<i||n>=i+per())});
+    dots.forEach(function(d,n){d.classList.toggle('on',n>=i&&n<i+per())});
+    cnt.textContent=('0'+(i+1)).slice(-2)+' / '+('0'+slides.length).slice(-2);
+    prev.disabled=i<=0;next.disabled=i>=max();
+  }
+  next.onclick=function(){i=Math.min(i+1,max());render()};
+  prev.onclick=function(){i=Math.max(i-1,0);render()};
+  dots.forEach(function(d){d.onclick=function(){i=Math.min(+d.dataset.i,max());render()}});
+  var x0=null;
+  tr.addEventListener('pointerdown',function(e){x0=e.clientX});
+  window.addEventListener('pointerup',function(e){if(x0===null)return;var dx=e.clientX-x0;x0=null;if(Math.abs(dx)>45){dx<0?next.onclick():prev.onclick()}});
+  document.getElementById('sld').addEventListener('keydown',function(e){if(e.key==='ArrowRight')next.onclick();if(e.key==='ArrowLeft')prev.onclick()});
+  window.addEventListener('resize',render);render();
+})();
+</script>
+<script src="app.js"></script>
+<script src="mobile.js" defer></script>
+</body>
+</html>

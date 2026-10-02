@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D-модель КАЗС-40 в дополненной реальности — ИнтеллектКАЗС</title>
+<meta name="description" content="Посмотрите контейнерную АЗС КАЗС-40 (4×10 м³) в 3D и поставьте её на свой участок или на стол через камеру телефона.">
+<link rel="canonical" href="https://ikazs.ru/kazs40-ar.html">
+<link rel="stylesheet" href="styles.css">
+<style>
+a{color:var(--signal-blue)}a:hover{color:#0058b0}
+.ar-intro{padding:calc(110px) 0 40px;background:var(--frost)}
+.ar-intro .crumbs{font-size:12px;color:#6e7681;margin-bottom:18px}.ar-intro .crumbs a{color:#3a434e}
+.ar-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:56px;align-items:end}
+.ar-head h1{margin:12px 0 0}
+.ar-steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:s}
+.ar-steps li{display:grid;grid-template-columns:28px minmax(0,1fr);gap:14px;font-size:15px;line-height:1.5;color:#1d1d1f;text-wrap:pretty}
+.ar-steps li::before{counter-increment:s;content:counter(s);width:28px;height:28px;border-radius:50%;background:#1d1d1f;color:#fff;font-size:13px;font-weight:600;display:grid;place-items:center}
+.ar-note{margin:26px 0 0;font-size:13px;color:#6e7681;display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center}
+.ar-stage{background:#16181b}
+.ar-stage iframe{display:block;width:100%;height:min(860px,calc(100svh / var(--z,1)));min-height:620px;border:0}
+@media(max-width:900px){.ar-intro{padding:96px 0 28px}.ar-head{grid-template-columns:1fr;gap:28px}.ar-stage iframe{height:calc(100svh - 60px);min-height:560px}}
+</style>
+<link rel="stylesheet" href="mobile.css"></head>
+<body>
+<nav class="nav solid" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <img src="assets/logo-mark.png" alt="ИнтеллектКАЗС">
+      <span class="word">Интеллект<b>КАЗС</b></span>
+    </a>
+    <div class="nav-links"><div class="nav-item"><a href="index.html">КАЗС <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="drop-free" href="kazs-besplatno.html">КАЗС Бесплатно<small>Совместная программа с ЛУКОЙЛ</small></a><a href="kommercheskaya.html">Коммерческая КАЗС<small>Продавать топливо через АЗС</small></a><a class="simple" href="soon.html">Индивидуальный дизайн</a><a href="kontejnernaya-azs.html">Ведомственная КАЗС<small>Контейнерная АЗС для своего автопарка</small></a><a href="kazs40-ar.html">3D-модель КАЗС<small>Дополненная реальность: станция у вас на участке</small></a><div class="drop-head">Модельный ряд</div><a class="simple" href="kazs-open.html">КАЗС Стандарт</a><a class="simple" href="kazs-monoblock.html">КАЗС Моно</a><a class="simple" href="kazs-suitcase.html">КАЗС Бизнес</a><a class="simple" href="kazs-profile.html">КАЗС Профлист</a><a class="simple" href="kazs-sea-container.html">КАЗС Морской контейнер</a><a class="simple" href="kazs-premium.html">КАЗС Премиум</a><a class="simple" href="soon.html">КАЗС Люкс</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="reservoirs-rgs.html">Резервуары <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="reservoirs-rgs.html">РГС — горизонтальные</a><a class="simple" href="reservoirs-rvs.html">РВС — вертикальные</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="trk-topaz.html">ТРК <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="trk-topaz.html">Топаз</a><a class="simple" href="trk-kvant.html">Квант</a><a class="simple" href="trk-sanki.html">Sanki</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="automation-terminal.html">Автоматизация <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="automation-terminal.html">Терминал самообслуживания</a><a class="simple" href="automation-scada.html">Промышленная автоматизация (SCADA)</a><a class="simple" href="automation-smart-azs.html">ПО «Смарт-АЗС»</a><a class="simple" href="automation-buk-tsg.html">БУК TS-G</a><a class="simple" href="automation-kmazs.html">КМАЗС и КМАЗС-ОФИС</a><a class="simple" href="automation-topaz.html">ПО «Топаз-Автономный налив»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="epc-pod-klyuch.html">Услуги <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="epc-pod-klyuch.html">EPC под ключ</a><a class="simple" href="services-design.html">Проектирование</a><a class="simple" href="services-installation.html">Монтаж и ПНР</a><a class="simple" href="services-service.html">Сервис 24/7</a><a class="simple" href="services-modernization.html">Модернизация старых АЗС</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="configurator.html">Инструменты <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="configurator.html">3D-конфигуратор КАЗС</a><a class="simple" href="calculator.html">Калькулятор окупаемости</a><a class="simple" href="calculator-tco.html">Калькулятор TCO 5 лет</a><a class="simple" href="wizard.html">Визард «Какой КАЗС нужен»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="znaniya.html">Знания <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="projects.html">Кейсы</a><a class="simple" href="faq.html">FAQ</a><a class="simple" href="sp-156.html">СП 156</a><a class="simple" href="glossary.html">Глоссарий</a><a class="simple" href="industries.html">Отрасли</a><a class="simple" href="blog.html">Блог</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="proizvodstvo.html">О компании <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="proizvodstvo.html">Производство</a><a class="simple" href="about-team.html">Команда</a><a class="simple" href="about-certificates.html">Сертификаты</a><a class="simple" href="about-quality.html">Контроль качества</a><a class="simple" href="contacts.html">Контакты</a><a class="simple" href="lk.html">Личный кабинет клиента</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div></div>
+    <div class="nav-cta">
+      <div class="nav-contact"><a href="tel:+78122193485" class="nav-phone mono">8 812 219 34 85</a><a href="mailto:info@ikazs.ru" class="nav-mail mono">info@ikazs.ru</a></div>
+      <button class="pill pill-primary" data-call>Заказать звонок</button>
+      <button class="nav-burger" aria-label="Меню"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<header class="ar-intro" data-screen-label="Как пользоваться"><div class="wrap">
+<div class="crumbs"><a href="index.html">Главная</a> / <a href="kontejnernaya-azs.html">КАЗС</a> / 3D-модель</div>
+<div class="ar-head">
+<div><p class="t-eyebrow" style="color:var(--signal-blue)">3D · дополненная реальность</p><h1 class="t-heading-lg">КАЗС-40 у вас на участке</h1><p class="t-sub" style="margin-top:14px">Контейнерная АЗС на 4 × 10 м³ в натуральную величину: 17,5 × 2,2 × 2,75 м. Посмотрите её до покупки — на своей площадке или на столе.</p></div>
+<ol class="ar-steps">
+<li><span><b>Выберите вид</b> на панели виджета: станция целиком, с открытыми отсеками или с размерами.</span></li>
+<li><span><b>Выберите масштаб:</b> «Участок 1:1» — для площадки, «Стол 1:20» — для переговорной.</span></li>
+<li><span>Нажмите <b>«Поставить через камеру»</b> и наведите телефон на пол или стол. Станцию можно обойти вокруг.</span></li>
+<li><span><b>«Позиции → Показать»</b> включает номера узлов. Нажмите на номер — появится название.</span></li>
+</ol>
+</div>
+<p class="ar-note"><span>На компьютере модель вращается мышью, Ctrl + колесо — приблизить. Камера работает на iPhone (Safari) и Android (Chrome).</span><a href="3d/kazs40-ar/index.html">Открыть на весь экран →</a></p>
+</div></header>
+<section class="ar-stage" data-screen-label="3D-модель КАЗС-40"><iframe src="3d/kazs40-ar/index.html" title="3D-модель КАЗС-40 в дополненной реальности" allow="xr-spatial-tracking; camera; fullscreen" loading="lazy"></iframe></section>
+<script src="app.js"></script>
+<script src="mobile.js" defer></script>
+</body>
+</html>

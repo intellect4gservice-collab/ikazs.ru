@@ -26,7 +26,7 @@
   // stage is one hold-length shorter than N full segments.
   const SCRUB = 0.45;                    // share of a segment that plays a clip
   const UNITS = (N - 1) + SCRUB;         // total segment-units of scroll
-  cine.style.height = (60 + UNITS * 115) + 'vh';
+  cine.style.height = (60 + UNITS * 115 * (parseFloat(cine.dataset.slow) || 1)) + 'vh';
   if (numEl) numEl.querySelector('.tot').textContent = '/ ' + String(N).padStart(2, '0');
 
   // Lazy native load: only fetch a clip's stream when it's near the
@@ -101,7 +101,7 @@
 
   function render() {
     const rect = cine.getBoundingClientRect();
-    const total = cine.offsetHeight - window.innerHeight;
+    const total = rect.height - window.innerHeight;
     const p = clamp(-rect.top / Math.max(total, 1), 0, 1);
 
     const fpos = p * UNITS;                   // 0 .. UNITS
@@ -188,8 +188,8 @@
   addEventListener('resize', onScroll);
 
   dots.forEach((dt, i) => dt.addEventListener('click', () => {
-    const total = cine.offsetHeight - window.innerHeight;
-    const y = cine.offsetTop + ((i + 0.2) / UNITS) * total;
+    const r0 = cine.getBoundingClientRect(), total = r0.height - window.innerHeight;
+    const y = r0.top + scrollY + ((i + 0.2) / UNITS) * total;
     scrollTo({ top: y, behavior: 'smooth' });
   }));
 

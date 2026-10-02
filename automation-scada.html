@@ -1,19 +1,1069 @@
-<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Промышленная автоматизация и SCADA — ИнтеллектКАЗС</title><meta name="description" content="SCADA и АСУ для топливной инфраструктуры: диспетчеризация, интеграция с 1С, API."><link rel="stylesheet" href="styles.css"></head><body>
+<!DOCTYPE html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>АСУ ТП и SCADA для нефтебаз, складов ГСМ и нефтяных терминалов — ИнтеллектКАЗС</title><meta name="description" content="АСУ ТП и SCADA для нефтебаз, складов ГСМ, нефтяных терминалов, ТЗК и АЗС: сбор данных с оборудования, управление насосными агрегатами и задвижками, автоматизация сливо-наливных эстакад, узлы учёта, мнемосхемы резервуарного парка, тревоги и ПАЗ, интеграция с 1С и API, этапы внедрения."><meta name="keywords" content="АСУ ТП нефтебазы, SCADA нефтебаза, автоматизация склада ГСМ, автоматизация нефтяного терминала, управление насосами и задвижками, автоматизация сливо-наливной эстакады, диспетчеризация резервуарного парка, телеметрия резервуаров"><link rel="canonical" href="https://ikazs.ru/automation-scada.html"><link rel="stylesheet" href="styles.css">
+<style>
+.shine{background:linear-gradient(90deg,var(--carbon) 0%,#0071e3 22%,#00b3a4 36%,var(--carbon) 55%,var(--carbon) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200% 100%;animation:shine 9s linear infinite}
+.shine-l{background:linear-gradient(90deg,#f5f5f7 0%,#2997ff 20%,#7bffe4 34%,#c9a4ff 46%,#f5f5f7 62%,#f5f5f7 100%);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:220% 100%;animation:shine 11s linear infinite}
+@keyframes shine{from{background-position:0% 50%}to{background-position:-200% 50%}}
+a{color:var(--link-blue)}a:hover{color:var(--apple-blue)}
+.gsec{position:relative;overflow:hidden}
+.blob{position:absolute;border-radius:50%;filter:blur(72px);mix-blend-mode:screen;pointer-events:none;will-change:transform}
+@keyframes bA{0%{transform:translate3d(0,0,0) scale(1)}100%{transform:translate3d(9vw,6vw,0) scale(1.18)}}
+@keyframes bB{0%{transform:translate3d(0,0,0) scale(1.12)}100%{transform:translate3d(-8vw,5vw,0) scale(.92)}}
+
+/* HERO */
+#eh{background:#0b0b0d;color:var(--frost);padding:clamp(96px,11vw,152px) 0 clamp(66px,7vw,104px)}
+#eh .b1{width:54vw;height:54vw;left:-16vw;top:-22vw;background:radial-gradient(circle at 50% 50%,rgba(41,151,255,.85),transparent 66%);animation:bA 27s ease-in-out infinite alternate}
+#eh .b2{width:44vw;height:44vw;right:-10vw;top:-6vw;background:radial-gradient(circle at 50% 50%,rgba(163,120,255,.72),transparent 68%);animation:bB 33s ease-in-out infinite alternate}
+#eh .b3{width:58vw;height:58vw;left:28vw;bottom:-34vw;background:radial-gradient(circle at 50% 50%,rgba(0,214,190,.5),transparent 68%);animation:bA 37s ease-in-out infinite alternate-reverse}
+#eh .veil{position:absolute;inset:0;background:rgba(6,6,8,.56)}
+#eh .wrap{position:relative;z-index:2}
+#eh .crumbs{font-size:13px;color:rgba(245,245,247,.5);margin-bottom:26px}
+#eh .crumbs a{color:rgba(245,245,247,.5)}#eh .crumbs a:hover{color:var(--frost)}
+#eh h1{font-size:clamp(38px,5.6vw,70px);font-weight:600;letter-spacing:-2.3px;line-height:1.04;max-width:19ch}
+#eh .lead{font-size:clamp(17px,1.5vw,20px);line-height:1.55;color:rgba(245,245,247,.74);max-width:60ch;margin-top:24px}
+#eh .epc{display:flex;flex-wrap:wrap;gap:10px;margin-top:34px}
+#eh .epc span{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.5px;text-transform:uppercase;border:1px solid rgba(255,255,255,.24);border-radius:20px;padding:8px 15px;color:rgba(245,245,247,.78);transition:.3s}
+#eh .epc span:hover{background:var(--frost);color:#0b0b0d;border-color:var(--frost);transform:translateY(-2px)}
+#eh .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.13);border-radius:12px;overflow:hidden;margin-top:52px}
+#eh .st{background:rgba(10,10,12,.72);backdrop-filter:blur(8px);padding:26px 24px;transition:background .35s}
+#eh .st:hover{background:rgba(41,151,255,.16)}
+#eh .st .v{font-family:var(--font-mono);font-size:clamp(26px,2.9vw,38px);font-weight:600;letter-spacing:-1.4px;line-height:1}
+#eh .st .v em{font-style:normal;font-size:.5em;letter-spacing:0;color:rgba(245,245,247,.55);margin-left:5px}
+#eh .st .k{font-size:13px;color:rgba(245,245,247,.6);margin-top:9px;line-height:1.35}
+@media(max-width:900px){#eh .stats{grid-template-columns:repeat(2,1fr)}}
+
+/* WHO */
+#who{padding:clamp(70px,8vw,110px) 0}
+.whogrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden;margin-top:46px}
+.who{position:relative;background:#fff;padding:30px 26px 28px;min-height:172px;display:flex;flex-direction:column;gap:9px;isolation:isolate;transition:transform .5s cubic-bezier(.22,1,.36,1)}
+.who::before{content:"";position:absolute;inset:0;z-index:-1;opacity:0;transition:opacity .45s;background:linear-gradient(140deg,rgba(41,151,255,.14),rgba(0,214,190,.12) 45%,rgba(180,140,255,.14))}
+.who:hover{transform:translateY(-6px)}
+.who:hover::before{opacity:1}
+.who .n{font-family:var(--font-mono);font-size:11px;color:var(--mist);letter-spacing:.5px;transition:color .3s}
+.who:hover .n{color:var(--link-blue)}
+.who h3{font-size:18px;font-weight:600;letter-spacing:-.3px;line-height:1.25}
+.who p{font-size:13.5px;line-height:1.5;color:var(--ash);margin-top:auto}
+@media(max-width:1000px){.whogrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.whogrid{grid-template-columns:1fr}}
+
+/* ECONOMY */
+#econ{background:var(--ice);padding:clamp(70px,8vw,110px) 0}
+.egrid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.enum{display:flex;flex-direction:column;gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+.en{background:#fff;padding:22px 26px;display:flex;align-items:baseline;justify-content:space-between;gap:20px;transition:background .35s,padding-left .4s cubic-bezier(.22,1,.36,1)}
+.en:hover{background:linear-gradient(90deg,rgba(41,151,255,.1),rgba(255,255,255,0));padding-left:34px}
+.en .v{font-family:var(--font-mono);font-size:26px;font-weight:600;letter-spacing:-1px;white-space:nowrap}
+.en .k{font-size:14px;color:var(--ash);line-height:1.4;text-align:right}
+@media(max-width:900px){.egrid{grid-template-columns:1fr;gap:34px}}
+
+/* COMPARE */
+#vs{background:#111114;color:var(--frost);padding:clamp(70px,8vw,110px) 0}
+#vs::before{content:"";position:absolute;inset:-25%;pointer-events:none;opacity:.46;filter:blur(84px);background:radial-gradient(42% 40% at 14% 10%,rgba(41,151,255,.5),transparent 70%),radial-gradient(44% 44% at 86% 66%,rgba(150,110,255,.44),transparent 70%),radial-gradient(38% 38% at 55% 108%,rgba(0,214,190,.34),transparent 70%)}
+#vs .wrap{position:relative;z-index:1}
+.cmp{margin-top:44px;border:1px solid rgba(255,255,255,.14);border-radius:14px;overflow:hidden;background:rgba(9,9,11,.6);backdrop-filter:blur(10px)}
+.crow{display:grid;grid-template-columns:1.05fr 1fr 1fr;align-items:stretch;border-bottom:1px solid rgba(255,255,255,.09);transition:background .35s}
+.crow:last-child{border-bottom:0}
+.crow.h{background:rgba(255,255,255,.05)}
+.crow.h div{font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:rgba(245,245,247,.5);padding:15px 24px}
+.crow.h .good{color:#7bffe4}
+.crow div{padding:19px 24px;font-size:15px;line-height:1.45}
+.crow .k{color:rgba(245,245,247,.62);border-right:1px solid rgba(255,255,255,.09)}
+.crow .bad{color:rgba(245,245,247,.55);border-right:1px solid rgba(255,255,255,.09);transition:color .3s}
+.crow .good{color:#fff;font-weight:500;position:relative;overflow:hidden}
+.crow .good::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 25%,rgba(123,255,228,.22) 48%,transparent 70%);transform:translateX(-110%)}
+.crow:not(.h):hover{background:rgba(255,255,255,.06)}
+.crow:not(.h):hover .k{color:#fff}
+.crow:not(.h):hover .bad{color:rgba(245,245,247,.4);text-decoration:line-through;text-decoration-color:rgba(255,120,120,.5)}
+.crow:not(.h):hover .good::after{animation:sw 1s cubic-bezier(.4,0,.2,1)}
+@keyframes sw{from{transform:translateX(-110%)}to{transform:translateX(120%)}}
+.vsnote{margin-top:26px;font-size:15px;line-height:1.6;color:rgba(245,245,247,.7);max-width:78ch}
+.vsnote b{color:#fff;font-weight:600}
+@media(max-width:820px){.crow{grid-template-columns:1fr}.crow .k,.crow .bad{border-right:0}}
+
+/* STAGES */
+#stages{padding:clamp(70px,8vw,110px) 0}
+.stg{margin-top:48px;display:flex;flex-direction:column;gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+.stage{background:#fff;display:grid;grid-template-columns:96px 1fr 220px;gap:0;align-items:stretch;cursor:default;transition:background .4s}
+.stage:hover{background:#fbfcfe}
+.stage .idx{position:relative;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:15px;font-weight:600;color:var(--mist);border-right:1px solid var(--hairline);overflow:hidden;transition:color .35s}
+.stage .idx::before{content:"";position:absolute;inset:0;opacity:0;transform:scale(.6);transition:opacity .45s,transform .55s cubic-bezier(.22,1,.36,1);background:linear-gradient(150deg,#2997ff,#7bffe4 45%,#c9a4ff)}
+.stage:hover .idx{color:#fff}
+.stage:hover .idx::before{opacity:1;transform:none}
+.stage .idx span{position:relative}
+.stage .mid{padding:26px 30px}
+.stage h3{font-size:21px;font-weight:600;letter-spacing:-.4px;transition:transform .45s cubic-bezier(.22,1,.36,1)}
+.stage:hover h3{transform:translateX(6px)}
+.stage p{font-size:14.5px;line-height:1.55;color:var(--ash);margin-top:8px;max-width:74ch}
+.stage .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+.stage .tags i{font-style:normal;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.3px;text-transform:uppercase;color:var(--ash);border:1px solid var(--hairline);border-radius:16px;padding:5px 11px;transition:.3s}
+.stage:hover .tags i{border-color:rgba(41,151,255,.4);color:var(--link-blue)}
+.stage .dur{border-left:1px solid var(--hairline);padding:26px 26px;display:flex;flex-direction:column;justify-content:center;gap:5px}
+.stage .dur .v{font-family:var(--font-mono);font-size:23px;font-weight:600;letter-spacing:-.8px}
+.stage .dur .k{font-size:12px;color:var(--mist);text-transform:uppercase;letter-spacing:.4px}
+.stage .bar{height:5px;border-radius:4px;background:#e6ebf1;margin-top:10px;overflow:hidden}
+.stage .bar i{display:block;height:100%;width:0;border-radius:4px;background:linear-gradient(90deg,#2997ff,#25d6c0);transition:width 1.1s cubic-bezier(.22,1,.36,1)}
+.stage.in .bar i{width:var(--w)}
+@media(max-width:900px){.stage{grid-template-columns:1fr}.stage .idx{height:44px;border-right:0;border-bottom:1px solid var(--hairline)}.stage .dur{border-left:0;border-top:1px solid var(--hairline)}}
+
+/* CASE */
+#case{background:var(--carbon);color:var(--frost);padding:clamp(66px,7vw,100px) 0}
+#case::before{content:"";position:absolute;inset:-30%;pointer-events:none;opacity:.4;filter:blur(90px);background:radial-gradient(40% 40% at 22% 24%,rgba(41,151,255,.5),transparent 70%),radial-gradient(42% 42% at 78% 72%,rgba(123,255,228,.34),transparent 70%)}
+#case .wrap{position:relative;z-index:1}
+#case .cg{display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:center}
+#case .t-eyebrow{color:#7bffe4}
+#case h2{font-size:clamp(25px,2.9vw,36px);font-weight:600;letter-spacing:-1.1px;line-height:1.2;margin-top:12px}
+#case p{font-size:16px;line-height:1.65;color:rgba(245,245,247,.74);margin-top:18px;max-width:68ch}
+#case .facts{display:flex;flex-direction:column;gap:1px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.13);border-radius:12px;overflow:hidden}
+#case .f{background:rgba(12,12,14,.8);padding:18px 22px;transition:background .35s,transform .45s cubic-bezier(.22,1,.36,1)}
+#case .f:hover{background:rgba(41,151,255,.18);transform:translateX(5px)}
+#case .f .v{font-family:var(--font-mono);font-size:22px;font-weight:600;letter-spacing:-.8px}
+#case .f .k{font-size:12.5px;color:rgba(245,245,247,.58);margin-top:4px}
+@media(max-width:900px){#case .cg{grid-template-columns:1fr;gap:32px}}
+
+/* NORMS */
+#norms{background:var(--ice);padding:clamp(70px,8vw,110px) 0}
+.ngrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:44px}
+.norm{position:relative;background:#fff;border:1px solid var(--hairline);border-radius:12px;padding:26px 24px;overflow:hidden;isolation:isolate;transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .45s,border-color .4s}
+.norm::before{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;transform:scaleX(0);transform-origin:left;transition:transform .55s cubic-bezier(.22,1,.36,1);background:linear-gradient(90deg,#2997ff,#7bffe4,#c9a4ff)}
+.norm:hover{transform:translateY(-5px);box-shadow:0 22px 50px rgba(20,30,45,.12);border-color:rgba(41,151,255,.35)}
+.norm:hover::before{transform:none}
+.norm .code{font-family:var(--font-mono);font-size:12px;letter-spacing:.4px;color:var(--link-blue);font-weight:600}
+.norm h3{font-size:16.5px;font-weight:600;letter-spacing:-.3px;margin-top:10px;line-height:1.3}
+.norm p{font-size:13.5px;line-height:1.5;color:var(--ash);margin-top:8px}
+@media(max-width:900px){.ngrid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.ngrid{grid-template-columns:1fr}}
+
+/* PRICE */
+#price{background:#0e0e11;color:var(--frost);padding:clamp(70px,8vw,110px) 0}
+#price::before{content:"";position:absolute;inset:-28%;pointer-events:none;opacity:.4;filter:blur(88px);background:radial-gradient(40% 40% at 80% 14%,rgba(41,151,255,.52),transparent 70%),radial-gradient(42% 42% at 18% 78%,rgba(180,140,255,.44),transparent 70%)}
+#price .wrap{position:relative;z-index:1}
+.pbars{margin-top:44px;display:flex;flex-direction:column;gap:2px}
+.pb{position:relative;padding:20px 24px;border-radius:10px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:18px;overflow:hidden;transition:background .35s}
+.pb .fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:10px;opacity:.9;transition:width 1.3s cubic-bezier(.22,1,.36,1),filter .35s}
+.pb.in .fill{width:var(--w)}
+.pb:nth-child(1) .fill{background:linear-gradient(90deg,rgba(41,151,255,.85),rgba(41,151,255,.15))}
+.pb:nth-child(2) .fill{background:linear-gradient(90deg,rgba(37,214,192,.85),rgba(37,214,192,.14))}
+.pb:nth-child(3) .fill{background:linear-gradient(90deg,rgba(177,140,255,.85),rgba(177,140,255,.14))}
+.pb:nth-child(4) .fill{background:linear-gradient(90deg,rgba(255,196,71,.85),rgba(255,196,71,.14))}
+.pb span,.pb b{position:relative;z-index:1}
+.pb span{font-size:16px;font-weight:500;min-width:0}
+.pb span em{display:block;font-style:normal;font-size:13px;color:rgba(245,245,247,.6);margin-top:4px}
+.pb b{font-family:var(--font-mono);font-size:22px;font-weight:600;letter-spacing:-.8px;white-space:nowrap}
+.pb:hover{background:rgba(255,255,255,.05)}
+.pb:hover .fill{filter:brightness(1.25) saturate(1.2)}
+.pnote{margin-top:26px;font-size:14.5px;line-height:1.6;color:rgba(245,245,247,.62);max-width:80ch}
+
+/* SAVE */
+#save{padding:clamp(70px,8vw,110px) 0}
+.saverows{margin-top:44px;display:flex;flex-direction:column;gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+.sr{background:#fff;display:grid;grid-template-columns:1fr 1fr;align-items:stretch;transition:background .35s}
+.sr:hover{background:#fff}
+.sr .l{padding:22px 26px;font-size:16px;font-weight:500;letter-spacing:-.2px;border-right:1px solid var(--hairline);display:flex;align-items:center;gap:12px}
+.sr .l::before{content:"";width:8px;height:8px;border-radius:50%;background:#d8dee6;flex:none;transition:background .35s,box-shadow .35s}
+.sr:hover .l::before{background:#ff6b6b;box-shadow:0 0 0 5px rgba(255,107,107,.16)}
+.sr .r{padding:22px 26px;font-size:15px;line-height:1.5;color:var(--ash);opacity:.45;transform:translateX(-10px);transition:opacity .45s,transform .5s cubic-bezier(.22,1,.36,1),color .35s}
+.sr:hover .r{opacity:1;transform:none;color:var(--carbon)}
+@media(max-width:820px){.sr{grid-template-columns:1fr}.sr .l{border-right:0}.sr .r{opacity:1;transform:none}}
+
+/* FAQ */
+#efaq{background:var(--ice);padding:clamp(70px,8vw,110px) 0}
+.acc{margin-top:40px;border-top:1px solid var(--hairline)}
+.acc details{border-bottom:1px solid var(--hairline)}
+.acc summary{list-style:none;cursor:pointer;padding:24px 44px 24px 0;position:relative;font-size:19px;font-weight:500;letter-spacing:-.3px;transition:color .3s,padding-left .4s cubic-bezier(.22,1,.36,1)}
+.acc summary::-webkit-details-marker{display:none}
+.acc summary::after{content:"";position:absolute;right:8px;top:50%;width:11px;height:11px;border-right:2px solid var(--mist);border-bottom:2px solid var(--mist);transform:translateY(-70%) rotate(45deg);transition:transform .4s cubic-bezier(.22,1,.36,1),border-color .3s}
+.acc summary:hover{color:var(--link-blue);padding-left:8px}
+.acc summary:hover::after{border-color:var(--link-blue)}
+.acc details[open] summary::after{transform:translateY(-20%) rotate(225deg);border-color:var(--carbon)}
+.acc .a{padding:0 60px 26px 0;font-size:16px;line-height:1.65;color:var(--ash);animation:accIn .5s cubic-bezier(.22,1,.36,1)}
+@keyframes accIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+
+/* CTA */
+#ecta{background:var(--carbon);color:var(--frost);padding:clamp(66px,7vw,100px) 0;text-align:center}
+#ecta::before{content:"";position:absolute;inset:-30%;pointer-events:none;opacity:.42;filter:blur(90px);background:radial-gradient(38% 40% at 26% 22%,rgba(41,151,255,.55),transparent 70%),radial-gradient(40% 42% at 74% 74%,rgba(123,255,228,.34),transparent 70%),radial-gradient(36% 38% at 55% 108%,rgba(180,140,255,.4),transparent 70%)}
+#ecta .wrap{position:relative;z-index:1}
+#ecta h2{font-size:clamp(27px,3.1vw,40px);font-weight:600;letter-spacing:-1.2px;max-width:24ch;margin:0 auto;line-height:1.15}
+#ecta p{font-size:16.5px;color:rgba(245,245,247,.7);margin:18px auto 32px;max-width:62ch;line-height:1.6}
+#ecta .btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+#ecta .g{position:relative;z-index:0;isolation:isolate;display:inline-block}
+#ecta .g::before{content:"";position:absolute;inset:-6px -10px;z-index:-1;border-radius:980px;background:linear-gradient(110deg,transparent 8%,#2997ff 26%,#7bffe4 44%,#c9a4ff 60%,#2997ff 76%,transparent 92%);background-size:220% 100%;filter:blur(9px);opacity:.65;animation:shine 7s linear infinite;transition:opacity .35s}
+#ecta .g:hover::before{opacity:1}
+
+/* slider */
+.sld{margin-top:44px;position:relative}
+.sld-vp{overflow:hidden;border-radius:14px}
+.sld-tr{display:flex;gap:18px;transition:transform .72s cubic-bezier(.22,1,.36,1);will-change:transform}
+.sl{flex:0 0 calc((100% - 18px)/2);background:linear-gradient(180deg,#fff,#eef0f3);border:1px solid var(--hairline);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:opacity .6s ease,filter .6s ease}
+.sl.off{opacity:.42;filter:saturate(.55)}
+.sl figure{margin:0;overflow:hidden;background:#e9ecf1}
+.sl img{width:100%;display:block;aspect-ratio:16/10;object-fit:cover;transform:scale(1.02);transition:transform 1.1s cubic-bezier(.22,1,.36,1)}
+.sl:hover img{transform:scale(1.07)}
+.sl .cap{padding:16px 20px;border-top:1px solid var(--hairline);background:#fff;display:flex;gap:12px;align-items:flex-start;min-height:74px}
+.sl .cap i{font-style:normal;font-family:var(--font-mono);font-size:12px;color:var(--mist);flex:none;padding-top:2px;letter-spacing:.5px}
+.sl .cap span{font-size:14px;line-height:1.5;color:var(--ash);text-wrap:pretty}
+.sld-bar{display:flex;align-items:center;gap:22px;margin-top:24px}
+.sld-dots{display:flex;gap:8px;flex:1}
+.sld-dots button{flex:1;height:3px;border:none;padding:0;background:var(--hairline);border-radius:2px;cursor:pointer;position:relative;overflow:hidden;transition:background .3s}
+.sld-dots button::after{content:"";position:absolute;inset:0;background:var(--carbon);transform:scaleX(0);transform-origin:left;transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.sld-dots button.on::after{transform:scaleX(1)}
+.sld-nav{display:flex;align-items:center;gap:10px;flex:none}
+.sld-count{font-family:var(--font-mono);font-size:13px;color:var(--mist);letter-spacing:.5px;min-width:74px;white-space:nowrap;text-align:right}
+.sld-nav .ar{width:44px;height:44px;border-radius:50%;border:1px solid var(--hairline);background:#fff;color:var(--carbon);font-size:16px;line-height:1;display:grid;place-items:center;cursor:pointer;transition:background .28s,color .28s,border-color .28s,transform .28s}
+.sld-nav .ar:hover:not(:disabled){background:var(--carbon);border-color:var(--carbon);color:#fff;transform:translateY(-2px)}
+.sld-nav .ar:disabled{opacity:.3;cursor:default}
+@media(max-width:900px){.sl{flex:0 0 100%}.sld-tr{gap:14px}.sl{flex:0 0 calc(100% - 0px)}}
+
+/* architecture */
+.arch{display:grid;gap:26px;margin-top:44px}
+.arow{display:grid;grid-template-columns:1fr;gap:clamp(22px,2.6vw,34px);background:#fff;border:1px solid var(--hairline);border-radius:16px;padding:clamp(20px,2.4vw,32px)}
+.arow .an{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.arow .an i{font-style:normal;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.6px;color:var(--link-blue);border:1px solid rgba(0,113,227,.3);border-radius:999px;padding:4px 11px}
+.arow h3{font-size:clamp(21px,2vw,26px);letter-spacing:-.7px;line-height:1.2;margin:0 0 16px}
+.arow .lede{font-size:16px;line-height:1.6;color:var(--ash);text-wrap:pretty;margin:0 0 22px}
+.arow>figure{max-width:720px;width:100%;margin:0 auto!important}
+.alist{display:grid;gap:0 clamp(24px,3vw,44px);grid-template-columns:1fr 1fr;border-top:1px solid var(--hairline)}
+.alist .ai{display:grid;grid-template-columns:minmax(0,.42fr) minmax(0,1fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--hairline);transition:padding-left .35s cubic-bezier(.22,1,.36,1)}
+.alist .ai:hover{padding-left:8px}
+.alist .ai b{font-size:14px;font-weight:600;letter-spacing:-.1px;line-height:1.4}
+.alist .ai span{font-size:14.5px;line-height:1.55;color:var(--ash);text-wrap:pretty}
+@media(max-width:1000px){.alist{grid-template-columns:1fr}}
+@media(max-width:900px){.alist .ai{grid-template-columns:1fr;gap:4px}}
+.af{margin:0;background:#fff;border:1px solid var(--hairline);border-radius:14px;overflow:hidden;cursor:zoom-in;transition:box-shadow .45s,transform .5s cubic-bezier(.22,1,.36,1)}
+.af:hover{transform:translateY(-4px);box-shadow:0 24px 54px rgba(20,30,45,.14)}
+.af .ph{background:linear-gradient(180deg,#fbfcfe,#f1f4f8);padding:18px}
+.af img{width:100%;display:block;border-radius:8px}
+.af figcaption{padding:16px 20px 18px;border-top:1px solid var(--hairline)}
+.af figcaption b{display:block;font-size:15.5px;letter-spacing:-.2px;margin-bottom:5px}
+.af figcaption span{font-size:13.5px;line-height:1.5;color:var(--ash)}
+.af figcaption i{font-style:normal;font-family:var(--font-mono);font-size:11.5px;color:var(--link-blue);letter-spacing:.5px;display:block;margin-top:8px}
+.lb{position:fixed;inset:0;z-index:999;background:rgba(12,16,24,.9);display:none;place-items:center;padding:24px;cursor:zoom-out;backdrop-filter:blur(6px)}
+.lb.on{display:grid}
+.lb img{max-width:min(760px,92vw);max-height:calc(92vh / var(--z,1));border-radius:10px;background:#fff}
+/* ecosystem */
+.eco{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:44px}
+.ec{background:#fff;border:1px solid var(--hairline);border-radius:14px;padding:30px 32px;transition:border-color .4s,box-shadow .45s,transform .5s cubic-bezier(.22,1,.36,1)}
+.ec:hover{transform:translateY(-4px);border-color:rgba(0,113,227,.35);box-shadow:0 22px 48px rgba(20,30,45,.1)}
+.ec .tag{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--link-blue)}
+.ec h3{font-size:20px;letter-spacing:-.5px;margin:10px 0 12px}
+.ec p{font-size:15px;line-height:1.6;color:var(--ash);text-wrap:pretty}
+.ec ul{margin:16px 0 0;padding:0;display:grid;gap:9px}
+.ec li{list-style:none;display:flex;gap:11px;font-size:14.5px;line-height:1.5;color:var(--ash)}
+.ec li::before{content:"";flex:none;width:6px;height:6px;margin-top:8px;border-radius:50%;background:var(--link-blue)}
+.dt{margin-top:18px;border-top:1px solid var(--hairline);padding-top:4px}
+.dt summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0 2px;font-size:13.5px;font-family:var(--font-mono);letter-spacing:.4px;color:var(--link-blue);transition:color .3s}
+.dt summary::-webkit-details-marker{display:none}
+.dt summary::after{content:"+";font-family:var(--font-mono);font-size:17px;line-height:1;color:var(--link-blue)}
+.dt[open] summary::after{content:"–"}
+.dt summary:hover{color:var(--carbon)}
+.dt[open] summary{margin-bottom:6px}
+.stage .dt{border-top:none;padding-top:0;margin-top:2px}
+.stage .dt summary{padding:6px 0}
+.stage .dt p{font-size:15px;line-height:1.6;color:var(--ash);margin:2px 0 12px;text-wrap:pretty;max-width:72ch}
+@media(max-width:900px){.eco{grid-template-columns:1fr}}
+/* dealer strip */
+#deal{background:#fff;border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);padding:clamp(44px,5vw,68px) 0}
+.dgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:clamp(28px,4vw,60px);align-items:center}
+.dfacts{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+.dfacts div{background:#fff;padding:22px 24px}
+.dfacts .v{font-family:var(--font-mono);font-size:24px;font-weight:600;letter-spacing:-1px}
+.dfacts .k{font-size:13px;color:var(--ash);margin-top:6px;line-height:1.4}
+@media(max-width:900px){.dgrid{grid-template-columns:1fr;gap:28px}}
+/* spec rows reuse .sr */
+.sr .l.mono{font-family:var(--font-mono);font-size:14.5px}
+</style>
+<style>
+.snav{position:sticky;top:64px;z-index:40;background:rgba(255,255,255,.86);backdrop-filter:blur(14px);border-bottom:1px solid var(--hairline)}
+.snav-in{max-width:1240px;margin:0 auto;padding:0 clamp(18px,4vw,40px);display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.snav-in::-webkit-scrollbar{display:none}
+.snav a{flex:none;font-size:13.5px;color:var(--ash);padding:14px;position:relative;white-space:nowrap;transition:color .3s}
+.snav a::after{content:"";position:absolute;left:10px;right:10px;bottom:0;height:2px;background:linear-gradient(90deg,#2997ff,#25d6c0);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.snav a:hover{color:var(--carbon)}
+.snav a.on{color:var(--carbon);font-weight:600}
+.snav a.on::after{transform:none}
+/* hero dispatcher mock */
+.disp{background:rgba(10,11,14,.72);border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden;backdrop-filter:blur(10px)}
+.disp-top{display:flex;align-items:center;justify-content:space-between;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.1);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.6px;text-transform:uppercase;color:rgba(245,245,247,.55)}
+.disp-top em{font-style:normal;display:flex;align-items:center;gap:7px;color:#7bffe4}
+.disp-top em::before{content:"";width:7px;height:7px;border-radius:50%;background:#25d6c0;box-shadow:0 0 0 4px rgba(37,214,192,.22);animation:pulse 1.9s infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 9px rgba(37,214,192,0)}}
+.orow{display:grid;grid-template-columns:minmax(0,1fr) 78px 96px 62px;gap:12px;align-items:center;padding:13px 18px;border-bottom:1px solid rgba(255,255,255,.07);transition:background .35s}
+.orow:hover{background:rgba(41,151,255,.12)}
+.orow .nm{font-size:14px;display:flex;align-items:center;gap:9px;min-width:0}
+.orow .nm i{font-style:normal;width:7px;height:7px;border-radius:50%;flex:none;background:#25d6c0}
+.orow.warn .nm i{background:#ffc447;box-shadow:0 0 0 3px rgba(255,196,71,.2)}
+.orow.bad .nm i{background:#ff6b6b;animation:blink 1.1s infinite}
+@keyframes blink{50%{opacity:.25}}
+.orow .nm span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(245,245,247,.9)}
+.orow .v{font-family:var(--font-mono);font-size:13.5px;text-align:right;color:#fff}
+.orow .v u{text-decoration:none;color:rgba(245,245,247,.45);font-size:11px}
+.spark{display:flex;align-items:flex-end;gap:2px;height:22px}
+.spark i{flex:1;background:linear-gradient(180deg,#2997ff,rgba(41,151,255,.25));border-radius:1px;transition:height .7s cubic-bezier(.22,1,.36,1)}
+.ticker{padding:11px 18px;font-family:var(--font-mono);font-size:11.5px;color:#ffc447;letter-spacing:.3px;background:rgba(255,196,71,.08);white-space:nowrap;overflow:hidden}
+.ticker b{color:#fff;font-weight:500}
+/* pyramid */
+#lvl{padding:clamp(70px,8vw,110px) 0}
+.pyr-wrap{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1fr);gap:clamp(26px,3.4vw,52px);margin-top:44px;align-items:center}
+.pyr{display:flex;flex-direction:column;gap:7px}
+.pl{position:relative;cursor:pointer;border:1px solid var(--hairline);background:#fff;padding:17px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px;transition:transform .45s cubic-bezier(.22,1,.36,1),border-color .35s,box-shadow .4s;overflow:hidden}
+.pl::before{content:"";position:absolute;inset:0;opacity:0;transition:opacity .4s;background:linear-gradient(100deg,rgba(41,151,255,.14),rgba(0,214,190,.1) 55%,rgba(180,140,255,.14))}
+.pl:hover{transform:translateX(5px)}
+.pl:hover::before,.pl.on::before{opacity:1}
+.pl.on{border-color:rgba(41,151,255,.5);box-shadow:0 16px 40px rgba(20,30,45,.1)}
+.pl>*{position:relative}
+.pl b{font-size:16px;letter-spacing:-.3px}
+.pl i{font-style:normal;font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;color:var(--mist);text-transform:uppercase}
+.pl:nth-child(1){width:56%;border-radius:12px 12px 4px 4px;margin:0 auto 0 0}
+.pl:nth-child(2){width:68%}
+.pl:nth-child(3){width:80%}
+.pl:nth-child(4){width:90%}
+.pl:nth-child(5){width:100%;border-radius:4px 4px 12px 12px}
+.pyr-panel{background:#fff;border:1px solid var(--hairline);border-radius:14px;padding:clamp(24px,2.6vw,34px);min-height:290px}
+.pyr-panel .tag{font-family:var(--font-mono);font-size:11.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--link-blue)}
+.pyr-panel h3{font-size:clamp(21px,2vw,26px);letter-spacing:-.7px;margin:10px 0 12px;line-height:1.2}
+.pyr-panel p{font-size:15.5px;line-height:1.65;color:var(--ash);text-wrap:pretty}
+.pyr-panel ul{margin:16px 0 0;padding:0;display:grid;gap:9px}
+.pyr-panel li{list-style:none;display:flex;gap:11px;font-size:14.5px;line-height:1.5;color:var(--ash)}
+.pyr-panel li::before{content:"";flex:none;width:6px;height:6px;margin-top:8px;border-radius:50%;background:var(--link-blue)}
+@media(max-width:1000px){.pyr-wrap{grid-template-columns:1fr}.pl{width:100%!important}}
+/* mnemo */
+#mnemo{background:#0b0c0f;color:var(--frost);padding:clamp(70px,8vw,110px) 0;position:relative;overflow:hidden}
+#mnemo::before{content:"";position:absolute;inset:-28%;pointer-events:none;opacity:.36;filter:blur(90px);background:radial-gradient(40% 40% at 18% 18%,rgba(41,151,255,.5),transparent 70%),radial-gradient(42% 42% at 82% 74%,rgba(0,214,190,.4),transparent 70%)}
+#mnemo .wrap{position:relative;z-index:1}
+.scen{display:inline-flex;gap:3px;padding:4px;border:1px solid rgba(255,255,255,.18);border-radius:999px;margin-top:30px;background:rgba(255,255,255,.05)}
+.scen button{border:none;background:transparent;font:inherit;font-size:14px;color:rgba(245,245,247,.72);padding:10px 20px;border-radius:999px;cursor:pointer;white-space:nowrap;transition:.3s}
+.scen button.on{background:#fff;color:#0b0c0f;font-weight:500}
+.mn{margin-top:36px;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(9,10,13,.66);backdrop-filter:blur(8px);padding:clamp(20px,2.6vw,34px)}
+.mn-head{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;font-family:var(--font-mono);font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:rgba(245,245,247,.5);border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:16px}
+.mn-alarm{color:#ff8b8b;display:none;align-items:center;gap:8px}
+.mn.alarm .mn-alarm{display:flex}
+.mn-alarm::before{content:"";width:8px;height:8px;border-radius:50%;background:#ff6b6b;animation:blink 1s infinite}
+.mn-body{display:grid;grid-template-columns:132px 1fr 1fr;gap:clamp(14px,1.8vw,26px);align-items:stretch;margin-top:26px}
+.node{border:1px solid rgba(255,255,255,.14);border-radius:13px;padding:16px;background:rgba(255,255,255,.04);display:flex;flex-direction:column;gap:10px;transition:border-color .4s,background .4s}
+.node .nh{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:rgba(245,245,247,.5)}
+.tanks{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:12px}
+.tank{position:relative;border:1px solid rgba(255,255,255,.16);border-radius:10px;height:186px;overflow:hidden;background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));display:flex;flex-direction:column;gap:3px;padding:11px 12px}
+.tank .liq{position:absolute;left:0;right:0;bottom:0;z-index:0;background:linear-gradient(180deg,rgba(41,151,255,.85),rgba(41,151,255,.55));height:var(--h,52%);transition:height 1.4s cubic-bezier(.22,1,.36,1),background .5s}
+.tank .liq::before{content:"";position:absolute;left:-50%;right:-50%;top:-9px;height:18px;border-radius:50%;background:rgba(255,255,255,.22);animation:wave 4.5s ease-in-out infinite}
+@keyframes wave{50%{transform:translateX(12%) scaleY(.7)}}
+.tank.d .liq{background:linear-gradient(180deg,rgba(255,196,71,.85),rgba(255,196,71,.5))}
+.tank.water::after{content:"";position:absolute;left:0;right:0;bottom:0;height:11%;background:repeating-linear-gradient(45deg,rgba(255,107,107,.85),rgba(255,107,107,.85) 5px,rgba(255,60,60,.7) 5px,rgba(255,60,60,.7) 10px)}
+.tank.water{border-color:rgba(255,107,107,.6);box-shadow:0 0 0 1px rgba(255,107,107,.25),0 0 34px rgba(255,107,107,.22)}
+.tank .lbl{position:relative;z-index:2;font-family:var(--font-mono);font-size:11px;line-height:1.3;letter-spacing:.4px;color:rgba(245,245,247,.68)}
+.tank .val{position:relative;z-index:2;font-family:var(--font-mono);font-size:18px;font-weight:600;letter-spacing:-.6px;color:#fff;line-height:1.1}
+.tank .val u{text-decoration:none;font-size:11px;color:rgba(245,245,247,.6);margin-left:4px}
+.tank .pct{position:relative;z-index:2;margin-top:auto;font-family:var(--font-mono);font-size:11px;color:rgba(255,255,255,.9)}
+.pipe{position:relative;height:4px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden;margin:auto 0}
+.pipe::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(41,151,255,.95) 0 12px,transparent 12px 26px);animation:flow 1.1s linear infinite;opacity:0;transition:opacity .4s}
+.pipe.on::after{opacity:1}
+@keyframes flow{to{transform:translateX(26px)}}
+.disp-v{display:flex;flex-direction:column;gap:8px}
+.dv{display:flex;align-items:baseline;justify-content:space-between;gap:12px;border-bottom:1px solid rgba(255,255,255,.09);padding-bottom:7px}
+.dv .k{font-size:12.5px;color:rgba(245,245,247,.55)}
+.dv .n{font-family:var(--font-mono);font-size:15px;color:#fff}
+.trk{display:flex;flex-direction:column;gap:9px;align-items:flex-start;font-size:12.5px;color:rgba(245,245,247,.6)}
+.trk .ic{width:100%;height:52px;border:1px dashed rgba(255,255,255,.24);border-radius:9px;display:grid;place-items:center;font-family:var(--font-mono);font-size:10.5px;letter-spacing:.5px;color:rgba(245,245,247,.5);transition:.4s}
+.mn.recv .trk .ic{border-color:#7bffe4;color:#7bffe4;background:rgba(123,255,228,.08)}
+.leg{display:flex;flex-wrap:wrap;gap:10px 22px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1);font-size:13px;color:rgba(245,245,247,.62)}
+.leg span{display:flex;align-items:center;gap:8px}
+.leg i{font-style:normal;width:10px;height:10px;border-radius:3px;flex:none}
+@media(max-width:900px){.mn-body{grid-template-columns:1fr}.tank{height:150px}}
+/* flow chain */
+.chain{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,1.6vw,22px);margin-top:44px;position:relative}
+.cn{position:relative;background:#fff;border:1px solid var(--hairline);border-radius:14px;padding:24px 22px;transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .45s,border-color .4s}
+.cn:hover{transform:translateY(-5px);box-shadow:0 22px 50px rgba(20,30,45,.12);border-color:rgba(41,151,255,.4)}
+.cn .lv{font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;color:var(--link-blue);text-transform:uppercase}
+.cn h3{font-size:18px;letter-spacing:-.4px;margin:9px 0 10px;line-height:1.25}
+.cn ul{margin:0;padding:0;display:grid;gap:7px}
+.cn li{list-style:none;font-size:13.5px;line-height:1.5;color:var(--ash);display:flex;gap:9px}
+.cn li::before{content:"";flex:none;width:5px;height:5px;margin-top:7px;border-radius:50%;background:#cfd8e3}
+.cn:not(:last-child)::after{content:"";position:absolute;top:50%;right:calc(-1 * clamp(12px,1.6vw,22px));width:clamp(12px,1.6vw,22px);height:2px;background:repeating-linear-gradient(90deg,#2997ff 0 6px,transparent 6px 13px);animation:flow2 .9s linear infinite;z-index:2}
+@keyframes flow2{to{transform:translateX(13px)}}
+@media(max-width:980px){.chain{grid-template-columns:1fr 1fr}.cn:nth-child(2)::after{display:none}}
+@media(max-width:600px){.chain{grid-template-columns:1fr}.cn::after{display:none!important}}
+/* alarm table */
+.al{margin-top:44px;border:1px solid var(--hairline);border-radius:14px;overflow:hidden;background:#fff}
+.ar2{display:grid;grid-template-columns:210px 1fr 150px;align-items:stretch;border-bottom:1px solid var(--hairline);transition:background .35s}
+.ar2:last-child{border-bottom:0}
+.ar2:hover{background:#fbfcfe}
+.ar2.h{background:var(--ice)}
+.ar2.h div{font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--mist);padding:13px 20px}
+.ar2 .a1{padding:17px 20px;font-size:15px;font-weight:600;letter-spacing:-.2px;display:flex;align-items:center;gap:11px;border-right:1px solid var(--hairline)}
+.ar2 .a1::before{content:"";width:9px;height:9px;border-radius:50%;flex:none;background:#d8dee6;transition:background .35s,box-shadow .35s}
+.ar2.crit:hover .a1::before{background:#ff6b6b;box-shadow:0 0 0 5px rgba(255,107,107,.16)}
+.ar2.warn:hover .a1::before{background:#ffc447;box-shadow:0 0 0 5px rgba(255,196,71,.18)}
+.ar2 .a2{padding:17px 20px;font-size:14.5px;line-height:1.5;color:var(--ash);border-right:1px solid var(--hairline)}
+.ar2 .a3{padding:17px 20px;font-family:var(--font-mono);font-size:12.5px;color:var(--ash);display:flex;align-items:center}
+@media(max-width:820px){.ar2{grid-template-columns:1fr}.ar2 .a1,.ar2 .a2{border-right:0}}
+/* protocol chips */
+.protos{display:flex;flex-wrap:wrap;gap:10px;margin-top:36px}
+.protos span{border:1px solid var(--hairline);background:#fff;border-radius:999px;padding:10px 18px;font-family:var(--font-mono);font-size:12.5px;letter-spacing:.3px;color:var(--ash);transition:.35s}
+.protos span:hover{transform:translateY(-3px);border-color:rgba(41,151,255,.45);color:var(--carbon);box-shadow:0 12px 26px rgba(20,30,45,.09)}
+.kpi4{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden;margin-top:44px}
+.kpi4>div{background:#fff;padding:28px 24px;transition:background .35s}
+.kpi4>div:hover{background:linear-gradient(150deg,rgba(41,151,255,.09),rgba(0,214,190,.06))}
+.kpi4 .v{font-family:var(--font-mono);font-size:clamp(26px,3vw,38px);font-weight:600;letter-spacing:-1.6px;line-height:1}
+.kpi4 .v em{font-style:normal;font-size:.4em;letter-spacing:0;color:var(--mist);margin-left:6px}
+.kpi4 .k{font-size:13.5px;color:var(--ash);margin-top:10px;line-height:1.45}
+@media(max-width:900px){.kpi4{grid-template-columns:1fr 1fr}}
+.tilt{transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.olist.dk{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.14)}
+.olist.dk .oi{background:rgba(10,11,14,.72);color:rgba(245,245,247,.75);font-size:14.5px;line-height:1.55}
+.olist.dk .oi:hover{background:rgba(41,151,255,.16)}
+.okpi.dk{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.14)}
+.okpi.dk>div{background:rgba(10,11,14,.72)}
+.okpi.dk .v{color:var(--frost);font-size:17px}
+.okpi.dk .k{color:rgba(245,245,247,.6)}
+.docs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px}
+.doc{background:#fff;border:1px solid var(--hairline);border-radius:12px;padding:22px 24px;transition:transform .5s cubic-bezier(.22,1,.36,1),box-shadow .45s,border-color .4s}
+.doc:hover{transform:translateY(-4px);box-shadow:0 20px 44px rgba(20,30,45,.1);border-color:rgba(41,151,255,.35)}
+.doc .code{font-family:var(--font-mono);font-size:12px;font-weight:600;letter-spacing:.4px;color:var(--link-blue)}
+.doc h3{font-size:16.5px;letter-spacing:-.3px;margin:9px 0 8px;line-height:1.3}
+.doc p{font-size:13.5px;line-height:1.55;color:var(--ash)}
+@media(max-width:980px){.docs{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.docs{grid-template-columns:1fr}}
+.tabs{display:inline-flex;gap:3px;padding:4px;border:1px solid var(--hairline);border-radius:999px;background:#fff;margin:30px auto 0;flex-wrap:wrap;justify-content:center}
+.tabs button{border:none;background:transparent;font:inherit;font-size:14px;padding:11px 20px;border-radius:999px;cursor:pointer;color:var(--ash);white-space:nowrap;transition:color .3s,background .35s}
+.tabs button.on{background:var(--carbon);color:#fff}
+.tabs button:not(.on):hover{color:var(--carbon);background:var(--ice)}
+.opane{display:none;animation:accIn .5s cubic-bezier(.22,1,.36,1);margin-top:36px}
+.opane.on{display:block}
+.ogrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,3vw,46px);align-items:start}
+.ogrid h3{font-size:clamp(21px,2.1vw,28px);letter-spacing:-.8px;line-height:1.2;margin:0 0 14px}
+.ogrid p.lede{font-size:16px;line-height:1.65;color:var(--ash);margin:0 0 20px;text-wrap:pretty}
+.olist{display:grid;gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden}
+.oi{background:#fff;padding:15px 20px;transition:background .35s,padding-left .4s cubic-bezier(.22,1,.36,1)}
+.oi:hover{background:linear-gradient(90deg,rgba(41,151,255,.08),rgba(255,255,255,0));padding-left:28px}
+.oi b{display:block;font-size:15px;letter-spacing:-.2px}
+.oi span{display:block;font-size:13.5px;line-height:1.5;color:var(--ash);margin-top:4px}
+.okpi{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hairline);border:1px solid var(--hairline);border-radius:12px;overflow:hidden;margin-top:20px}
+.okpi>div{background:#fff;padding:18px 20px}
+.okpi .v{font-family:var(--font-mono);font-size:21px;font-weight:600;letter-spacing:-.9px}
+.okpi .k{font-size:12.5px;color:var(--ash);margin-top:6px;line-height:1.4}
+@media(max-width:960px){.ogrid{grid-template-columns:1fr}.okpi{grid-template-columns:1fr}}
+.ctrls{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px}
+.ctrlc{position:relative;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:26px 24px;overflow:hidden;transition:transform .5s cubic-bezier(.22,1,.36,1),background .4s,border-color .4s}
+.ctrlc:hover{transform:translateY(-5px);background:rgba(41,151,255,.14);border-color:rgba(123,255,228,.4)}
+.ctrlc .tag{font-family:var(--font-mono);font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:#7bffe4}
+.ctrlc h3{font-size:18px;letter-spacing:-.4px;margin:10px 0 10px;color:var(--frost)}
+.ctrlc ul{margin:0;padding:0;display:grid;gap:8px}
+.ctrlc li{list-style:none;display:flex;gap:10px;font-size:13.5px;line-height:1.5;color:rgba(245,245,247,.72)}
+.ctrlc li::before{content:"";flex:none;width:5px;height:5px;margin-top:7px;border-radius:50%;background:#25d6c0}
+@media(max-width:980px){.ctrls{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.ctrls{grid-template-columns:1fr}}
+</style><link rel="stylesheet" href="mobile.css"></head><body>
 <nav class="nav" id="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html">
       <img src="assets/logo-mark.png" alt="ИнтеллектКАЗС">
       <span class="word">Интеллект<b>КАЗС</b></span>
     </a>
-    <div class="nav-links"><div class="nav-item"><a href="index.html">КАЗС <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="drop-free" href="kazs-besplatno.html">КАЗС Бесплатно<small>Совместная программа с ЛУКОЙЛ</small></a><a href="kommercheskaya.html">Коммерческая КАЗС<small>Продавать топливо через АЗС</small></a><a class="simple" href="soon.html">Индивидуальный дизайн</a><a href="vedomstvennaya.html">Ведомственная КАЗС<small>Для собственного автопарка</small></a><div class="drop-head">Модельный ряд</div><a class="simple" href="kazs-open.html">Открытый тех. отсек</a><a class="simple" href="kazs-monoblock.html">Моноблок</a><a class="simple" href="kazs-suitcase.html">Чемодан</a><a class="simple" href="kazs-profile.html">Контейнер профлист</a><a class="simple" href="kazs-premium.html">Контейнер коммерческий</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="reservoirs-rgs.html">Резервуары <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="reservoirs-rgs.html">РГС — горизонтальные</a><a class="simple" href="reservoirs-rvs.html">РВС — вертикальные</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="trk-topaz.html">ТРК <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="trk-topaz.html">Топаз</a><a class="simple" href="trk-kvant.html">Квант</a><a class="simple" href="trk-sanki.html">Sanki</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="automation-terminal.html">Автоматизация <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="automation-terminal.html">Терминал самообслуживания</a><a class="simple" href="automation-scada.html">Промышленная автоматизация (SCADA)</a><a class="simple" href="automation-monitoring.html">Удалённый мониторинг и учёт</a><a class="simple" href="automation-smart-azs.html">ПО «Смарт-АЗС»</a><a class="simple" href="automation-plexpoint.html">PlexPoint</a><a class="simple" href="automation-buk-tsg.html">БУК TS-G</a><a class="simple" href="soon.html">ПО ТОПАЗ</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="epc-pod-klyuch.html">Услуги <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="epc-pod-klyuch.html">EPC под ключ</a><a class="simple" href="services-design.html">Проектирование</a><a class="simple" href="services-installation.html">Монтаж и ПНР</a><a class="simple" href="services-service.html">Сервис 24/7</a><a class="simple" href="services-modernization.html">Модернизация старых АЗС</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="configurator.html">Инструменты <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="configurator.html">3D-конфигуратор КАЗС</a><a class="simple" href="calculator.html">Калькулятор окупаемости</a><a class="simple" href="calculator-tco.html">Калькулятор TCO 5 лет</a><a class="simple" href="wizard.html">Визард «Какой КАЗС нужен»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="znaniya.html">Знания <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="projects.html">Кейсы</a><a class="simple" href="faq.html">FAQ</a><a class="simple" href="objections.html">Возражения</a><a class="simple" href="docs.html">Нормативка</a><a class="simple" href="glossary.html">Глоссарий</a><a class="simple" href="industries.html">Отрасли</a><a class="simple" href="blog.html">Блог</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="proizvodstvo.html">О компании <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="proizvodstvo.html">Производство</a><a class="simple" href="about-team.html">Команда</a><a class="simple" href="about-certificates.html">Сертификаты</a><a class="simple" href="about-quality.html">Контроль качества</a><a class="simple" href="contacts.html">Контакты</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div></div>
+    <div class="nav-links"><div class="nav-item"><a href="index.html">КАЗС <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="drop-free" href="kazs-besplatno.html">КАЗС Бесплатно<small>Совместная программа с ЛУКОЙЛ</small></a><a href="kommercheskaya.html">Коммерческая КАЗС<small>Продавать топливо через АЗС</small></a><a class="simple" href="soon.html">Индивидуальный дизайн</a><a href="kontejnernaya-azs.html">Ведомственная КАЗС<small>Контейнерная АЗС для своего автопарка</small></a><a href="kazs40-ar.html">3D-модель КАЗС<small>Дополненная реальность: станция у вас на участке</small></a><div class="drop-head">Модельный ряд</div><a class="simple" href="kazs-open.html">КАЗС Стандарт</a><a class="simple" href="kazs-monoblock.html">КАЗС Моно</a><a class="simple" href="kazs-suitcase.html">КАЗС Бизнес</a><a class="simple" href="kazs-profile.html">КАЗС Профлист</a><a class="simple" href="kazs-sea-container.html">КАЗС Морской контейнер</a><a class="simple" href="kazs-premium.html">КАЗС Премиум</a><a class="simple" href="soon.html">КАЗС Люкс</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="reservoirs-rgs.html">Резервуары <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="reservoirs-rgs.html">РГС — горизонтальные</a><a class="simple" href="reservoirs-rvs.html">РВС — вертикальные</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="trk-topaz.html">ТРК <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="trk-topaz.html">Топаз</a><a class="simple" href="trk-kvant.html">Квант</a><a class="simple" href="trk-sanki.html">Sanki</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="automation-terminal.html">Автоматизация <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="automation-terminal.html">Терминал самообслуживания</a><a class="simple" href="automation-scada.html">Промышленная автоматизация (SCADA)</a><a class="simple" href="automation-smart-azs.html">ПО «Смарт-АЗС»</a><a class="simple" href="automation-buk-tsg.html">БУК TS-G</a><a class="simple" href="automation-kmazs.html">КМАЗС и КМАЗС-ОФИС</a><a class="simple" href="automation-topaz.html">ПО «Топаз-Автономный налив»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="epc-pod-klyuch.html">Услуги <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="epc-pod-klyuch.html">EPC под ключ</a><a class="simple" href="services-design.html">Проектирование</a><a class="simple" href="services-installation.html">Монтаж и ПНР</a><a class="simple" href="services-service.html">Сервис 24/7</a><a class="simple" href="services-modernization.html">Модернизация старых АЗС</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="configurator.html">Инструменты <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="configurator.html">3D-конфигуратор КАЗС</a><a class="simple" href="calculator.html">Калькулятор окупаемости</a><a class="simple" href="calculator-tco.html">Калькулятор TCO 5 лет</a><a class="simple" href="wizard.html">Визард «Какой КАЗС нужен»</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="znaniya.html">Знания <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="projects.html">Кейсы</a><a class="simple" href="faq.html">FAQ</a><a class="simple" href="sp-156.html">СП 156</a><a class="simple" href="glossary.html">Глоссарий</a><a class="simple" href="industries.html">Отрасли</a><a class="simple" href="blog.html">Блог</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div><div class="nav-item"><a href="proizvodstvo.html">О компании <span class="caret">▾</span></a><div class="drop mega"><div class="drop-col"><a class="simple" href="proizvodstvo.html">Производство</a><a class="simple" href="about-team.html">Команда</a><a class="simple" href="about-certificates.html">Сертификаты</a><a class="simple" href="about-quality.html">Контроль качества</a><a class="simple" href="contacts.html">Контакты</a><a class="simple" href="lk.html">Личный кабинет клиента</a></div><div class="drop-col drop-buy"><a class="simple" href="usloviya-pokupki.html">Условия покупки</a><a class="simple" href="calculator-leasing.html">Калькулятор лизинга</a><a class="simple" href="garantiya.html">Гарантия</a><a class="simple" href="plan-grafik.html">План-график работ</a><a class="simple" href="postavshchikam.html">Поставщикам</a></div></div></div></div>
     <div class="nav-cta">
       <div class="nav-contact"><a href="tel:+78122193485" class="nav-phone mono">8 812 219 34 85</a><a href="mailto:info@ikazs.ru" class="nav-mail mono">info@ikazs.ru</a></div>
       <button class="pill pill-primary" data-call>Заказать звонок</button>
       <button class="nav-burger" aria-label="Меню"><span></span><span></span><span></span></button>
     </div>
   </div>
-</nav><header class="phero" data-screen-label="SCADA"><div class="wrap"><div class="phero-grid"><div><div class="crumbs reveal"><a href="index.html">Главная</a> / SCADA</div><p class="t-eyebrow reveal" style="color:var(--signal-blue)">Автоматизация</p><h1 class="t-heading-lg reveal d1" style="margin:14px 0 18px">Промышленная автоматизация (SCADA)</h1><p class="t-sub reveal d2">Диспетчеризация топливной инфраструктуры: контроль резервуаров и колонок, интеграция с 1С и API, отчётность в реальном времени.</p><div class="btn-row reveal d3"><a href="contacts.html" class="pill pill-primary">Запросить КП</a><a href="contacts.html" class="pill pill-outline">Запросить демо</a></div></div><div class="phero-media reveal d2"><div class="ph-slot" style="min-height:340px">[ скриншот SCADA-панели диспетчеризации ]</div></div></div></div></header>
-<section class="section ice"><div class="wrap"><div class="lead-col reveal"><p class="t-eyebrow">Что это</p><p>SCADA/АСУ объединяет резервуары, ТРК, терминалы и датчики в единую систему диспетчеризации с онлайн-аналитикой движения топлива.</p><p>Интеграция с 1С и учётными системами, открытый API, разграничение прав, журналы и тревоги. Прозрачность вместо ручных сверок.</p></div></div></section>
-<section class="section "><div class="wrap"><div class="col center stack" style="margin-bottom:48px"><p class="t-eyebrow reveal">Возможности</p><h2 class="t-heading reveal d1">Контроль и прозрачность</h2></div><div class="adv-grid"><div class="adv reveal"><div class="n mono" style="font-size:12px;color:var(--mist)">01</div><h3>Единая картина</h3><p>Остатки, расход, продажи и тревоги — на одном экране в реальном времени.</p></div><div class="adv reveal d1"><div class="n mono" style="font-size:12px;color:var(--mist)">02</div><h3>Интеграция с 1С/ERP</h3><p>Данные о топливе автоматически попадают в вашу учётную систему.</p></div><div class="adv reveal d2"><div class="n mono" style="font-size:12px;color:var(--mist)">03</div><h3>API и масштаб</h3><p>Подключайте новые объекты и системы через открытый интерфейс.</p></div><div class="adv reveal"><div class="n mono" style="font-size:12px;color:var(--mist)">04</div><h3>−20% потерь</h3><p>Контроль движения топлива сокращает хищения и недоливы.</p></div></div></div></section>
-<section class="section dark-2" id="cta"><div class="wrap"><div class="col"><div class="stack" style="text-align:center;margin-bottom:10px"><h2 class="t-heading-lg reveal" style="color:var(--frost)">Получите КП за 1 час</h2><p class="t-sub light reveal d1">Оставьте контакты — инженер вернётся с расчётом, моделью и сроком в течение часа.</p></div><form class="cta-form reveal d2" onsubmit="return false"><div class="field-input"><input type="text" placeholder="Имя"></div><div class="field-input"><input type="tel" placeholder="Телефон"></div><textarea placeholder="Опишите задачу — инженер ответит в течение часа"></textarea><div class="cta-submit"><button class="pill pill-primary">Получить КП за 1 час</button><span class="cta-alt">Или позвоните: <b>8 812 219 34 85</b></span></div></form></div></div></section>
-<footer class="footer"><div class="wrap"><div class="foot-grid"><div class="foot-brand"><div class="brand"><img src="assets/logo-mark.png" alt="ИнтеллектКАЗС" style="width:30px;height:30px"><span class="word">Интеллект<b>КАЗС</b></span></div><p>Заводская АЗС для вашего автопарка. Под ключ за 45 дней. Производство — Санкт-Петербург.</p></div><div class="foot-col"><h5>КАЗС</h5><a href="vedomstvennaya.html">Ведомственная</a><a href="kommercheskaya.html">Коммерческая</a><a href="kazs-open.html">Открытый тех. отсек</a><a href="kazs-premium.html">Коммерческий</a></div><div class="foot-col"><h5>Оборудование</h5><a href="trk-topaz.html">ТРК</a><a href="reservoirs-rgs.html">Резервуары</a><a href="automation-terminal.html">Терминалы</a><a href="automation-scada.html">SCADA</a></div><div class="foot-col"><h5>Услуги</h5><a href="epc-pod-klyuch.html">EPC под ключ</a><a href="services-design.html">Проектирование</a><a href="services-service.html">Сервис 24/7</a><a href="calculator.html">Калькулятор</a></div><div class="foot-col"><h5>Знания</h5><a href="projects.html">Кейсы</a><a href="faq.html">FAQ</a><a href="objections.html">Возражения</a><a href="proizvodstvo.html">О компании</a></div></div><div class="foot-bottom"><span>ИнтеллектКАЗС · производство КАЗС и АЗС · Санкт-Петербург · 8 812 219 34 85</span><span><a href="#">Политика обработки ПД</a> · © 2026 ИнтеллектКАЗС</span></div></div></footer><script src="app.js"></script></body></html>
+</nav>
+<section class="gsec" id="eh" data-screen-label="Хиро">
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div><div class="veil"></div>
+  <div class="wrap">
+    <p class="crumbs"><a href="index.html">Главная</a> → Автоматизация → SCADA и АСУ ТП</p>
+    <div class="egrid" style="align-items:center;gap:clamp(28px,4vw,56px)">
+      <div>
+        <h1 class="reveal">АСУ ТП и <span class="shine-l">SCADA</span> для нефтебаз, складов ГСМ и нефтяных терминалов</h1>
+        <p class="lead reveal d1">Собираем данные со всего оборудования объекта и берём под управление насосные агрегаты, задвижки, сливо-наливные эстакады и узлы учёта. Резервуарный парк, насосные блоки, сливо-наливные эстакады и узлы учёта объединяются в одну систему диспетчеризации: мнемосхемы в реальном времени, тревоги по уставкам, тренды, товарный баланс и выгрузка в 1С. От одной площадки до сети нефтебаз и терминалов в разных регионах — с одним диспетчерским пультом.</p>
+        <div class="epc reveal d1"><span>АСУ ТП нефтебаз и складов ГСМ</span><span>Modbus · OPC UA · MQTT</span><span>ОВЕН · Siemens · Регул · КОНТАР</span><span>МастерСКАДА · Trace Mode · WinCC</span><span>Проект раздела АТХ</span><span>Мнемосхемы и тренды</span><span>Тревоги и уставки</span><span>1С · ERP · REST API</span></div>
+        <div class="btns reveal d2" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:30px"><a href="#cta" class="pill pill-primary">Запросить КП</a><a href="#hmi-sec" class="pill pill-outline" style="border-color:rgba(255,255,255,.3);color:#fff">Живые экраны АРМ</a></div>
+      </div>
+      <div class="reveal d2">
+        <div class="disp" id="disp">
+          <div class="disp-top"><span>Диспетчерский пульт · сеть объектов</span><em>онлайн</em></div>
+          <div id="orows"></div>
+          <div class="ticker" id="tick">…</div>
+        </div>
+      </div>
+    </div>
+    <div class="stats reveal d2">
+      <div class="st"><div class="v" data-cnt="4"><span class="num">0</span></div><div class="k">уровня автоматизации:<br>от датчика до отчётности</div></div>
+      <div class="st"><div class="v" data-cnt="500"><span class="num">0</span><em>сигналов</em></div><div class="k">и более в одной системе:<br>уровень, расход, давление, арматура</div></div>
+      <div class="st"><div class="v" data-cnt="5"><span class="num">0</span><em>сек</em></div><div class="k">период опроса резервуарного парка,<br>1 с — на эстакаде налива</div></div>
+      <div class="st"><div class="v" data-cnt="20"><span class="num">0</span><em>%</em></div><div class="k">сокращение неучтённых потерь<br>при сплошном учёте</div></div>
+    </div>
+  </div>
+</section>
+<nav class="snav" id="snav"><div class="snav-in">
+  <a href="#task">Задача</a><a href="#obj">Объекты</a><a href="#lvl">Уровни</a><a href="#plc">Контроллеры</a><a href="#soft">ПО SCADA</a><a href="#atx">Раздел АТХ</a><a href="#mnemo">Мнемосхема</a><a href="#hmi-sec">АРМ диспетчера</a><a href="#center">Сеть объектов</a><a href="#chain">Поток данных</a><a href="#mods">Модули</a><a href="#ctrl">Управление</a><a href="#alarm">Тревоги</a><a href="#field">Оборудование</a><a href="#integr">Протоколы и 1С</a><a href="#eff">Эффект</a><a href="#stages">Внедрение</a><a href="#norms">Нормы</a><a href="#efaq">Вопросы</a>
+</div></nav>
+<section id="task" data-screen-label="Задача">
+  <div class="wrap">
+    <div class="egrid">
+      <div class="stack">
+        <p class="t-eyebrow reveal">Задача</p>
+        <h2 class="t-heading reveal d1">Объект есть. <span class="shine">Данных о нём — нет</span></h2>
+        <p class="t-sub reveal d2">На типовой нефтебазе или складе ГСМ оборудование говорит на своих протоколах, уровнемер показывает миллиметры, узел учёта — свою цифру, оператор обходит парк с журналом, а сводка попадает к руководителю раз в сутки файлом Excel. Расхождения находят через неделю, причину — никогда.</p>
+        <p class="t-sub reveal d2">АСУ ТП со SCADA замыкает контур: первичные данные снимаются с приборов, приводятся к единому виду, сохраняются в базу, сверяются между собой и выводятся на мнемосхему. Отклонение видно в момент возникновения, а не в конце месяца.</p>
+      </div>
+      <div class="saverows reveal d1">
+        <div class="sr"><div class="l">Ручные сверки в Excel</div><div class="r">Автоматический товарный баланс «узел учёта ↔ уровнемер ↔ документ» и журнал расхождений.</div></div>
+        <div class="sr"><div class="l">Обход парка с журналом</div><div class="r">Круглосуточный опрос приборов с периодом 5 с, тревоги на телефон дежурного.</div></div>
+        <div class="sr"><div class="l">Разные протоколы приборов</div><div class="r">Приведение к Modbus TCP и OPC UA на контроллере объекта.</div></div>
+        <div class="sr"><div class="l">Данные не доходят до учёта</div><div class="r">Выгрузка в 1С и ERP по расписанию, обмен через REST API.</div></div>
+        <div class="sr"><div class="l">Нет истории</div><div class="r">Тренды по каждому параметру, архив за годы, разбор инцидентов по логам.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="obj" data-screen-label="Объекты" style="background:var(--ice);padding:clamp(70px,8vw,110px) 0">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Объекты</p>
+      <h2 class="t-heading reveal d1">Что именно мы автоматизируем</h2>
+      <p class="t-sub reveal d2">Выберите тип объекта — что берём под контроль, чем управляем и что получает служба и бухгалтерия.</p>
+      <div class="tabs reveal d2" id="otabs"><button class="on" data-o="0">Нефтебаза</button><button data-o="1">Склад ГСМ</button><button data-o="2">Нефтяной терминал</button><button data-o="3">ТЗК и аэродром</button><button data-o="4">Битумохранилище и мазутное хозяйство</button></div>
+    </div>
+    <div id="opanes"></div>
+    <div class="btn-row reveal" style="margin-top:34px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><a href="services-design.html" class="pill pill-outline">Проектирование объекта</a><a href="epc-pod-klyuch.html" class="pill pill-outline">Объект под ключ по EPC</a></div>
+  </div>
+</section>
+<section id="lvl" data-screen-label="Уровни">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Архитектура</p>
+      <h2 class="t-heading reveal d1">Четыре уровня плюс поле</h2>
+      <p class="t-sub reveal d2">Нажмите на уровень — что именно на нём стоит и за что отвечает.</p>
+    </div>
+    <div class="pyr-wrap">
+      <div class="pyr" id="pyr">
+        <div class="pl" data-i="0"><b>Учёт и аналитика</b><i>MES / ERP</i></div>
+        <div class="pl" data-i="1"><b>Диспетчеризация</b><i>SCADA</i></div>
+        <div class="pl" data-i="2"><b>Сервер объекта</b><i>Средний уровень</i></div>
+        <div class="pl" data-i="3"><b>Контроллеры и связь</b><i>ПЛК / БУК</i></div>
+        <div class="pl" data-i="4"><b>Поле: приборы и исполнительные устройства</b><i>Уровень 0</i></div>
+      </div>
+      <div class="pyr-panel reveal" id="pyrPanel"></div>
+    </div>
+  </div>
+</section>
+<section id="plc" data-screen-label="Контроллеры" class="gsec" style="background:#0e0f12;color:var(--frost);padding:clamp(70px,8vw,110px) 0">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal" style="color:#7bffe4">Средний уровень</p>
+      <h2 class="t-heading reveal d1" style="color:var(--frost)">Контроллерные платформы, на которых мы строим АСУ ТП</h2>
+      <p class="t-sub light reveal d2">Платформу подбираем под объект, а не наоборот: под требования заказчика по импортозамещению, под уже установленный парк и под резервирование. Выберите платформу — какие задачи на ней закрываем.</p>
+      <div class="tabs dk reveal d2" id="ptabs"><button class="on" data-p="0">ОВЕН</button><button data-p="1">Регул (Прософт-Системы)</button><button data-p="2">Siemens SIMATIC</button><button data-p="3">КОНТАР (МЗТА)</button><button data-p="4">ВОЛМАГ</button><button data-p="5">Текон</button></div>
+    </div>
+    <div id="ppanes"></div>
+    <p class="pnote reveal" style="color:rgba(245,245,247,.55);margin-top:26px;font-size:14px;line-height:1.6;max-width:86ch">Программируем на штатных средах платформы — CODESYS, TIA Portal, ISaGRAF — и всегда передаём заказчику исходный проект контроллера и SCADA. Система остаётся вашей: доработать её может любой квалифицированный подрядчик, а не только мы.</p>
+  </div>
+</section>
+<section id="soft" data-screen-label="ПО SCADA">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Верхний уровень</p>
+      <h2 class="t-heading reveal d1">SCADA-платформы: АРМ оператора и диспетчера</h2>
+      <p class="t-sub reveal d2">Мнемосхемы, тренды, журналы тревог, отчёты и права доступа делаем на промышленных SCADA-пакетах — тех, что уже стоят в отрасли и поддерживаются годами.</p>
+    </div>
+    <div class="hwcols">
+      <div class="hwc reveal"><div class="tag">Основной выбор</div><h3>МастерСКАДА 4D</h3><div class="chips"><span>реестр отечественного ПО</span><span>Windows и Linux</span><span>OPC UA</span><span>веб-клиент</span><span>резервирование серверов</span></div><p>Российская платформа, объектный подход: один раз описанный резервуар или насосный агрегат тиражируется на весь парк. Наш основной выбор для нефтебаз и складов ГСМ, где важны импортонезависимость и рост числа объектов.</p></div>
+      <div class="hwc reveal d1"><div class="tag">Проверено временем</div><h3>Trace Mode</h3><div class="chips"><span>АРМ оператора</span><span>тренды и архивы</span><span>отчёты смены</span><span>ПАЗ-логика</span></div><p>Классика российской автоматизации нефтебаз: АРМ оператора резервуарного парка, экраны насосных блоков и налива, архивы параметров и сменная отчётность. Хорошо ложится на действующие объекты, где Trace Mode уже используется.</p></div>
+      <div class="hwc reveal d2"><div class="tag">Если стоит Siemens</div><h3>SIMATIC WinCC</h3><div class="chips"><span>WinCC Unified</span><span>Comfort / Advanced</span><span>интеграция с S7</span><span>панели HMI</span></div><p>Когда на объекте уже работают контроллеры SIMATIC, логично оставить и визуализацию Siemens: единая инженерная среда, панели HMI на местных постах и АРМ в операторной без прослоек и конвертеров.</p></div>
+      <div class="hwc reveal"><div class="tag">Лёгкий верх</div><h3>Rapid SCADA и веб-панели</h3><div class="chips"><span>браузер</span><span>Linux</span><span>малые объекты</span><span>дешёвая лицензия</span></div><p>Для одного склада ГСМ или удалённой площадки, где не нужен полноценный диспетчерский центр: контроль остатков, тревоги и простые отчёты через браузер.</p></div>
+      <div class="hwc reveal d1"><div class="tag">Учёт</div><h3>Учётный контур и MES-функции</h3><div class="chips"><span>товарный баланс</span><span>партионный учёт</span><span>ТОиР по наработке</span><span>отчёты и выгрузки</span></div><p>Над SCADA надстраивается учётный слой: приход, отгрузка, остаток и потери сводятся в товарно-транспортный баланс, наработка агрегатов формирует заявки на обслуживание, отчёты уходят в 1С.</p></div>
+      <div class="hwc reveal d2"><div class="tag">Эксплуатация</div><h3>Что получает заказчик</h3><div class="chips"><span>исходники проекта</span><span>инструкции оператора</span><span>обучение персонала</span><span>резервные копии</span></div><p>Проект SCADA и контроллера, паспорта и инструкции, обучение операторов и регламент резервного копирования. Плюс удалённая поддержка по защищённому каналу.</p></div>
+    </div>
+  </div>
+</section>
+<section id="atx" data-screen-label="Раздел АТХ" style="background:var(--ice);padding:clamp(70px,8vw,110px) 0">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Проектирование</p>
+      <h2 class="t-heading reveal d1">Раздел АТХ: проект автоматизации, а не «настройка по месту»</h2>
+      <p class="t-sub reveal d2">Автоматизация начинается с документации. Мы выпускаем полный раздел автоматизации технологических процессов — по нему объект проходит экспертизу, монтируется и принимается в эксплуатацию.</p>
+    </div>
+    <div class="docs">
+      <div class="doc reveal"><div class="code">ТЗ</div><h3>Техническое задание на АСУ ТП</h3><p>Цели создания системы, объём автоматизации по уровням, требования к техническому, программному, информационному и математическому обеспечению — по ГОСТ 34.602.</p></div>
+      <div class="doc reveal d1"><div class="code">ФСА</div><h3>Функциональная схема автоматизации</h3><p>Основной чертёж раздела: контуры контроля и регулирования, приборы и средства автоматизации в условных обозначениях по ГОСТ 21.408-2013 и ГОСТ 21.208-2013.</p></div>
+      <div class="doc reveal d2"><div class="code">СТР</div><h3>Структурная схема АС</h3><p>Иерархия системы: полевой уровень, контроллерный уровень, АРМ операторной и учётный контур; резервирование, каналы связи между уровнями.</p></div>
+      <div class="doc reveal"><div class="code">ЗАКАЗ</div><h3>Заказная спецификация КИПиА</h3><p>Перечень приборов, контроллеров, модулей ввода-вывода, шкафов и кабельной продукции с точными типами и исполнением — по нему закупается оборудование.</p></div>
+      <div class="doc reveal d1"><div class="code">ПРОВ</div><h3>Схемы соединения и подключения внешних проводок</h3><p>Кабельные журналы, клеммные подключения, закладные конструкции, трассировка от датчика до шкафа автоматики.</p></div>
+      <div class="doc reveal d2"><div class="code">ШКАФ</div><h3>Схемы шкафов автоматики</h3><p>Компоновка шкафа, принципиальные электрические схемы питания и цепей управления, обогрев и климатика, взрывозащищённое исполнение по ТР ТС 012/2011.</p></div>
+      <div class="doc reveal"><div class="code">ИНФ</div><h3>Схема информационных потоков</h3><p>Что и куда передаётся: сигналы датчиков, период опроса, теги, архивы, обмен с учётной системой; методы контроля достоверности данных.</p></div>
+      <div class="doc reveal d1"><div class="code">АЛГ</div><h3>Алгоритмы контроля и управления</h3><p>Алгоритмы сбора измерений, автоматического регулирования, блокировок и защит; сценарии аварийного останова и переключения потока.</p></div>
+      <div class="doc reveal d2"><div class="code">ЭКР</div><h3>Экранные формы и дерево экранов</h3><p>Проект АРМ: мнемосхемы парка, насосного блока и налива, экраны трендов и тревог, дерево переходов между экранами, права оператора.</p></div>
+      <div class="doc reveal"><div class="code">ПАЗ</div><h3>Система ПАЗ</h3><p>Отдельный контур противоаварийной защиты: перечень защит, уставки, логика срабатывания, независимость от контура регулирования.</p></div>
+      <div class="doc reveal d1"><div class="code">ПНР</div><h3>Программа и методика испытаний</h3><p>Программа пусконаладочных работ, поверка контуров «датчик — контроллер — экран», протоколы индивидуальных и комплексных испытаний.</p></div>
+      <div class="doc reveal d2"><div class="code">ЭД</div><h3>Эксплуатационная документация</h3><p>Инструкции оператора и обслуживающего персонала, описание применения, регламент технического обслуживания и резервного копирования.</p></div>
+    </div>
+    <div class="btn-row reveal" style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;justify-content:center"><a href="services-design.html" class="pill pill-outline">Проектирование объекта целиком</a><a href="epc-pod-klyuch.html" class="pill pill-outline">Проект и автоматизация под ключ</a></div>
+  </div>
+</section>
+<section id="mnemo" data-screen-label="Мнемосхема">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal" style="color:#7bffe4">Мнемосхема объекта</p>
+      <h2 class="t-heading reveal d1" style="color:var(--frost)">Так объект выглядит на экране диспетчера</h2>
+      <p class="t-sub light reveal d2">Переключите сценарий — схема, значения и тревоги изменятся так же, как на реальном пульте.</p>
+      <div class="scen reveal d2" id="scen"><button class="on" data-s="norm">Норма</button><button data-s="recv">Приём из ж/д цистерн</button><button data-s="ship">Отгрузка в автоцистерну</button><button data-s="alarm">Тревога: подтоварная вода</button></div>
+    </div>
+    <div class="mn" id="mn">
+      <div class="mn-head">
+        <span id="mnTitle">Нефтебаза · резервуарный парк · опрос 5 с</span>
+        <span class="mn-alarm" id="mnAlarm">Тревога: превышение уровня подтоварной воды, РВС-2</span>
+        <span id="mnTime">—</span>
+      </div>
+      <div class="mn-body">
+        <div class="node">
+          <div class="nh">Приём · сливная эстакада</div>
+          <div class="trk"><div class="ic" id="trkIc">Ж/д цистерны</div><span id="trkTxt">Слива нет</span></div>
+          <div class="pipe" id="pipe1"></div>
+        </div>
+        <div class="node">
+          <div class="nh">Резервуарный парк · уровнемеры</div>
+          <div class="tanks">
+            <div class="tank" id="t1"><span class="lbl">РВС-1 · 1000 м³ · АИ-95</span><span class="val" id="v1">0<u>л</u></span><span class="pct" id="p1">0%</span><div class="liq"></div></div>
+            <div class="tank d" id="t2"><span class="lbl">РВС-2 · 1000 м³ · ДТ</span><span class="val" id="v2">0<u>л</u></span><span class="pct" id="p2">0%</span><div class="liq"></div></div>
+            <div class="tank" id="t3"><span class="lbl">РВС-3 · 400 м³ · мазут</span><span class="val" id="v3">0<u>л</u></span><span class="pct" id="p3">0%</span><div class="liq"></div></div>
+          </div>
+          <div class="pipe on" id="pipe2"></div>
+        </div>
+        <div class="node">
+          <div class="nh">Насосная и отгрузка</div>
+          <div class="disp-v">
+            <div class="dv"><span class="k">Насос Н-1 · приём</span><span class="n" id="d1">остановлен</span></div>
+            <div class="dv"><span class="k">Насос Н-2 · отпуск</span><span class="n" id="d2">работа · 42 м³/ч</span></div>
+            <div class="dv"><span class="k">Задвижка ЗД-4 · маршрут</span><span class="n" id="d7">открыта</span></div>
+            <div class="dv"><span class="k">Отгрузка за смену</span><span class="n" id="d3">184 260 л</span></div>
+            <div class="dv"><span class="k">Баланс узел учёта ↔ уровнемер</span><span class="n" id="d4">0,08%</span></div>
+            <div class="dv"><span class="k">Температура ДТ · РВС-2</span><span class="n" id="d5">+11,4 °C</span></div>
+            <div class="dv"><span class="k">Подтоварная вода РВС-2</span><span class="n" id="d6">6 мм</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="leg">
+        <span><i style="background:#2997ff"></i>бензин</span>
+        <span><i style="background:#ffc447"></i>дизельное топливо и мазут</span>
+        <span><i style="background:repeating-linear-gradient(45deg,#ff6b6b,#ff6b6b 3px,#ff3c3c 3px,#ff3c3c 6px)"></i>подтоварная вода</span>
+        <span><i style="background:#7bffe4"></i>активный поток</span>
+        <span style="margin-left:auto;font-family:var(--font-mono);font-size:11.5px;letter-spacing:.4px">данные условные · демонстрация интерфейса</span>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="hmi-sec" class="gsec" data-screen-label="АРМ диспетчера" style="background:#0a0b0f;color:var(--frost);padding:clamp(70px,8vw,110px) 0;position:relative;overflow:hidden">
+  <div class="blob b1"></div><div class="blob b3"></div><div class="veil"></div>
+  <div class="wrap" style="position:relative;z-index:1">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal" style="color:#7bffe4">АРМ диспетчера</p>
+      <h2 class="t-heading reveal d1" style="color:var(--frost)">Живые экраны: так работает пульт нефтебазы</h2>
+      <p class="t-sub light reveal d2">Четыре рабочих экрана из проекта АРМ — обзор объекта, насосная, приём и отгрузка, тренды и тревоги. Значения обновляются в реальном времени, тревоги приходят в журнал, посты налива добирают дозу. Переключайте экраны так же, как оператор в операторной.</p>
+    </div>
+    <div class="hmi-wrap reveal" id="hmi"></div>
+    <p class="hmi-note reveal">Экранные формы и дерево переходов между ними — часть раздела АТХ: мы проектируем их вместе с технологией, а не рисуем после пусконаладки. Состав экранов, набор уставок и права оператора согласуем с вашей службой эксплуатации.</p>
+  </div>
+</section>
+<section id="center" data-screen-label="Диспетчерский центр" style="background:var(--ice);padding:clamp(70px,8vw,110px) 0">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Сеть объектов</p>
+      <h2 class="t-heading reveal d1">Диспетчерский центр на несколько площадок</h2>
+      <p class="t-sub reveal d2">Когда у компании не одна нефтебаза, а сеть складов ГСМ, терминалов и участков в разных регионах, задача меняется: нужен зонтичный мониторинг разнородного оборудования в одном центре — без переписывания системы под каждый новый объект.</p>
+    </div>
+    <div class="whogrid">
+      <div class="who reveal"><div class="n">01</div><h3>Типовая модель объекта</h3><p>Резервуар, насосный агрегат, пост налива описываются один раз как типовой объект с набором параметров и тревог. Новая площадка подключается тиражированием модели, а не проектом с нуля.</p></div>
+      <div class="who reveal d1"><div class="n">02</div><h3>Зонтичный мониторинг</h3><p>В одном центре сводятся технологические параметры, состояние КИПиА, каналы связи, питание и инженерные системы — включая оборудование разных производителей и разных лет.</p></div>
+      <div class="who reveal d2"><div class="n">03</div><h3>Масштабирование</h3><p>Архитектура рассчитана на рост: десятки площадок и тысячи сигналов на одном сервере, распределённая схема с локальными серверами объектов и центральным узлом.</p></div>
+      <div class="who reveal d3"><div class="n">04</div><h3>Клиенты от телефона до видеостены</h3><p>АРМ оператора в операторной, веб-клиент для руководителя, мобильный доступ для дежурного, вывод сводных экранов на видеостену ситуационного центра.</p></div>
+      <div class="who reveal"><div class="n">05</div><h3>Оповещения по каналам</h3><p>Тревоги уходят не только на экран: e-mail, SMS и push дежурному и ответственному по объекту, с эскалацией, если событие не квитировано.</p></div>
+      <div class="who reveal d1"><div class="n">06</div><h3>Хранение и глубина архива</h3><p>Оперативные данные — в быстром хранилище, история параметров и событий — в реляционной базе с глубиной не менее 12 месяцев и последующим сжатием или переносом на резервные носители.</p></div>
+      <div class="who reveal d2"><div class="n">07</div><h3>Прогностическое обслуживание</h3><p>Наработка агрегатов, число пусков и отклонения параметров формируют заявки на ТО до отказа — вместо ремонта по факту остановки объекта.</p></div>
+      <div class="who reveal d3"><div class="n">08</div><h3>Связь с корпоративными системами</h3><p>Данные уходят в учёт, ERP и систему управления активами: товарный баланс, отгрузки, наработка и инциденты — по API и через регламентные выгрузки.</p></div>
+    </div>
+    <div class="cmp reveal" style="margin-top:44px">
+      <div class="crow h"><div>Информационная безопасность</div><div>Что бывает «по умолчанию»</div><div class="good">Как делаем мы</div></div>
+      <div class="crow"><div class="k">Доступ операторов</div><div class="bad">Один общий пароль на смену</div><div class="good">Ролевой доступ: оператор, старший оператор, инженер, наблюдатель</div></div>
+      <div class="crow"><div class="k">Учётные записи</div><div class="bad">Локальные пользователи в SCADA</div><div class="good">Интеграция с Active Directory или LDAP предприятия</div></div>
+      <div class="crow"><div class="k">Каналы связи</div><div class="bad">Открытый доступ к контроллеру из интернета</div><div class="good">VPN, защищённые соединения, доступ только через шлюз объекта</div></div>
+      <div class="crow"><div class="k">Действия персонала</div><div class="bad">Кто менял уставку — неизвестно</div><div class="good">Журнал действий оператора: команда, время, учётная запись</div></div>
+      <div class="crow"><div class="k">Отказ сервера</div><div class="bad">Объект остаётся без диспетчеризации и архива</div><div class="good">Резервирование сервера и локальный архив на контроллере объекта</div></div>
+    </div>
+  </div>
+</section>
+<section id="chain" data-screen-label="Поток данных" style="background:var(--ice);padding:clamp(70px,8vw,110px) 0">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Поток данных</p>
+      <h2 class="t-heading reveal d1">Путь одного литра — от датчика до проводки в 1С</h2>
+    </div>
+    <div class="chain">
+      <div class="cn reveal"><div class="lv">01 · поле</div><h3>Прибор снимает значение</h3><ul><li>Уровнемер: уровень, температура, подтоварная вода</li><li>Массомер и расходомер на узле учёта: приход и отгрузка</li><li>Датчики давления, положения задвижек, загазованности, пожарные шлейфы</li></ul></div>
+      <div class="cn reveal d1"><div class="lv">02 · контроллер</div><h3>Приводится к единому протоколу</h3><ul><li>ПЛК ОВЕН, Регул или SIMATIC — опрос приборов и логика управления</li><li>Разнородные протоколы приборов → Modbus TCP и OPC UA по Ethernet</li><li>Локальный архив на контроллере: данные не теряются при обрыве связи</li></ul></div>
+      <div class="cn reveal d2"><div class="lv">03 · SCADA</div><h3>Диспетчеризация и хранение</h3><ul><li>Мнемосхемы, тренды, тревоги, журналы событий</li><li>Архив в реляционной БД, разграничение прав</li><li>Автоматическая сверка данных между источниками</li></ul></div>
+      <div class="cn reveal d3"><div class="lv">04 · учёт</div><h3>Отчётность и учётные системы</h3><ul><li>Сменные и периодические отчёты, автоотправка на e-mail</li><li>Выгрузка в 1С «Бухгалтерия», ERP, TMS</li><li>REST API и обмен файлами для сторонних систем</li></ul></div>
+    </div>
+  </div>
+</section>
+<section id="mods" data-screen-label="Модули">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Что видит диспетчер</p>
+      <h2 class="t-heading reveal d1">Модули рабочего места</h2>
+    </div>
+    <div class="whogrid">
+      <div class="who reveal"><div class="n">01</div><h3>Мнемосхемы</h3><p>Схема объекта в реальном времени: резервуары, ТРК, насосы, задвижки, состояние связи.</p></div>
+      <div class="who reveal d1"><div class="n">02</div><h3>Тренды</h3><p>Графики по любому параметру за период, наложение нескольких кривых, экспорт.</p></div>
+      <div class="who reveal d2"><div class="n">03</div><h3>Тревоги</h3><p>Уставки, квитирование, эскалация — на экран, в Telegram, на e-mail и SMS.</p></div>
+      <div class="who reveal d3"><div class="n">04</div><h3>Журналы</h3><p>События, действия операторов, обмен с оборудованием — для разбора инцидентов.</p></div>
+      <div class="who reveal"><div class="n">05</div><h3>Отчёты</h3><p>Смена, сутки, период; товарно-транспортный баланс, отчёт по расхождениям.</p></div>
+      <div class="who reveal d1"><div class="n">06</div><h3>Права доступа</h3><p>Роли: диспетчер, механик, бухгалтер, служба безопасности, подрядчик.</p></div>
+      <div class="who reveal d2"><div class="n">07</div><h3>Карта сети</h3><p>Все объекты на карте со статусом, остатками и потребностью в завозе.</p></div>
+      <div class="who reveal d3"><div class="n">08</div><h3>Мобильный доступ</h3><p>Кабинет и приложение под Android и iOS — остатки и тревоги в телефоне.</p></div>
+    </div>
+    <div class="btn-row reveal" style="margin-top:30px;display:flex;gap:12px;flex-wrap:wrap"><a href="automation-smart-azs.html" class="pill pill-outline">ПО «Смарт-АЗС»</a></div>
+  </div>
+</section>
+<section id="ctrl" class="gsec" data-screen-label="Управление" style="background:#0e0f12;color:var(--frost);padding:clamp(70px,8vw,110px) 0">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal" style="color:#7bffe4">Управление оборудованием</p>
+      <h2 class="t-heading reveal d1" style="color:var(--frost)">Система не только смотрит — она управляет</h2>
+      <p class="t-sub light reveal d2">Сбор данных без управления оставляет диспетчера наблюдателем. Мы замыкаем контур: маршрут перекачки, пуск насосов, положение задвижек и дозирование налива выполняются по команде с АРМ или автоматически по сценарию.</p>
+    </div>
+    <div class="ctrls">
+      <div class="ctrlc reveal"><div class="tag">Насосные агрегаты</div><h3>Пуск, останов, режим</h3><ul><li>Управление насосами напрямую или через преобразователи частоты</li><li>Поддержание давления и расхода, плавный пуск, защита от сухого хода</li><li>Наработка моточасов, чередование агрегатов, заявки в сервис по наработке</li><li>Блокировки: пуск только при открытой линии и разрешённом маршруте</li></ul></div>
+      <div class="ctrlc reveal d1"><div class="tag">Задвижки и клапаны</div><h3>Маршрут перекачки одной командой</h3><ul><li>Электроприводные задвижки: открыть, закрыть, стоп, обратная связь по положению</li><li>Готовые маршруты «резервуар → насос → эстакада» вместо ручного обхода</li><li>Контроль незакрытой арматуры и запрет встречных маршрутов</li><li>Отсекающие клапаны в аварийных сценариях</li></ul></div>
+      <div class="ctrlc reveal d2"><div class="tag">Сливо-наливные эстакады</div><h3>Автоматизированный налив</h3><ul><li>Дозирование по массе и объёму, автоматический останов по заданной дозе</li><li>Нижний налив, контроль заземления автоцистерны и датчика переполнения</li><li>Ж/д налив: пост, стояк, разрешение на операцию по наряду</li><li>Учёт операций слива, налива и перекачек по каждой партии</li></ul></div>
+      <div class="ctrlc reveal"><div class="tag">Узлы учёта</div><h3>Коммерческий и технический учёт</h3><ul><li>Массомеры и объёмные счётчики, приведение объёма к 15 °C</li><li>Товарно-транспортный баланс: приход, отгрузка, остаток, потери</li><li>Печать транспортных документов и паспортов качества по операции</li><li>Сверка «эстакада ↔ резервуар ↔ учётная система»</li></ul></div>
+      <div class="ctrlc reveal d1"><div class="tag">Резервуарный парк</div><h3>Телеметрия и приём топлива</h3><ul><li>Уровень, температура, подтоварная вода, масса и плотность продукта</li><li>Контроль приёма: старт слива, отслеживание прироста, закрытие операции</li><li>Оповещение о неснижаемом остатке и потребности в завозе</li><li>Газоанализаторы в каре и обваловании, контроль загазованности</li></ul></div>
+      <div class="ctrlc reveal d2"><div class="tag">ПАЗ и безопасность</div><h3>Противоаварийная защита</h3><ul><li>Аварийный останов насосов и налива по кнопке и по сценарию</li><li>Защита от перелива с переключением потока и блокировкой операции</li><li>Пожарная сигнализация и пуск пенного пожаротушения по регламенту</li><li>Резервирование питания, работа на ИБП, журнал всех срабатываний</li></ul></div>
+    </div>
+  </div>
+</section>
+<section id="alarm" data-screen-label="Тревоги" style="background:var(--ice);padding:clamp(70px,8vw,110px) 0">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Тревоги и уставки</p>
+      <h2 class="t-heading reveal d1">На что система реагирует сама</h2>
+      <p class="t-sub reveal d2">Уставки задаются по каждому объекту и резервуару; адресаты и каналы оповещения — по каждой тревоге.</p>
+    </div>
+    <div class="al reveal">
+      <div class="ar2 h"><div>Событие</div><div>Что означает и что делает система</div><div>Приоритет</div></div>
+      <div class="ar2 crit"><div class="a1">Перелив резервуара</div><div class="a2">Уровень выше верхней аварийной уставки при приёме — блокировка налива, оповещение дежурного и водителя автоцистерны.</div><div class="a3">Аварийный</div></div>
+      <div class="ar2 crit"><div class="a1">Подтоварная вода</div><div class="a2">Превышение допустимого уровня воды по данным уровнемера — запрет отпуска из резервуара до откачки.</div><div class="a3">Аварийный</div></div>
+      <div class="ar2 crit"><div class="a1">Загазованность, пожар</div><div class="a2">Сигнал от датчиков и шлейфов — аварийный останов ТРК и насосов, оповещение по всем каналам.</div><div class="a3">Аварийный</div></div>
+      <div class="ar2 warn"><div class="a1">Расхождение учёта</div><div class="a2">Разница между литрами по ТРК, показаниями уровнемера и кассовыми продажами выше допуска — запись в журнал расхождений.</div><div class="a3">Предупреждение</div></div>
+      <div class="ar2 warn"><div class="a1">Неснижаемый остаток</div><div class="a2">Остаток ниже уставки завоза — формируется потребность в поставке и уведомление логисту.</div><div class="a3">Предупреждение</div></div>
+      <div class="ar2 warn"><div class="a1">Потеря связи</div><div class="a2">Объект или прибор не отвечает дольше заданного времени — отметка на мнемосхеме и заявка в сервис.</div><div class="a3">Предупреждение</div></div>
+      <div class="ar2 warn"><div class="a1">Температурная компенсация</div><div class="a2">Отклонение температуры продукта — пересчёт объёма к 15 °C для товарного баланса.</div><div class="a3">Событие</div></div>
+      <div class="ar2 warn"><div class="a1">Вскрытие шкафа, отключение питания</div><div class="a2">Открытие шкафа автоматики или пропадание сети — событие в журнал, работа на ИБП.</div><div class="a3">Событие</div></div>
+    </div>
+  </div>
+</section>
+<section id="field" data-screen-label="Оборудование">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Нижний уровень</p>
+      <h2 class="t-heading reveal d1">Оборудование, которое мы подключаем</h2>
+      <p class="t-sub reveal d2">Полевой уровень: датчики и исполнительные механизмы, которые мы подбираем, монтируем и заводим в контроллер. Парк действующего оборудования не меняем — система адаптируется к тому, что уже стоит на объекте.</p>
+    </div>
+    <div class="ngrid">
+      <div class="norm reveal"><div class="code">УРОВЕНЬ</div><h3>Уровнемеры</h3><p>Магнитострикционные, поплавковые и радарные системы измерения уровня, температуры по слоям и подтоварной воды в РГС и РВС; расчёт массы и приведение объёма к 15 °C.</p></div>
+      <div class="norm reveal d1"><div class="code">РАСХОД</div><h3>Расходомеры и массомеры</h3><p>Вихревые и кориолисовы расходомеры на узлах учёта — приём, отгрузка и внутренние перекачки; сигнал 4–20 мА или Modbus прямо в контроллер.</p></div>
+      <div class="norm reveal d2"><div class="code">ДАВЛЕНИЕ</div><h3>Датчики давления</h3><p>Преобразователи давления и перепада на приёмных и нагнетательных линиях, контроль работы насосов и целостности трубопровода.</p></div><div class="norm reveal"><div class="code">ТЕМПЕРАТУРА</div><h3>Термопреобразователи</h3><p>Термосопротивления в резервуарах и на трубопроводах — расчёт плотности, контроль обогрева битума и мазута.</p></div><div class="norm reveal d1"><div class="code">АРМАТУРА</div><h3>Блоки управления задвижками</h3><p>Электроприводы запорной арматуры и блоки управления с обратной связью по положению «открыто / закрыто / промежуточное».</p></div><div class="norm reveal d2"><div class="code">СВЯЗЬ</div><h3>Коммуникационные шлюзы</h3><p>Конвертеры интерфейсов, шлюзы Modbus и OPC, промышленные роутеры с 4G и VPN для удалённых площадок.</p></div>
+      <div class="norm reveal"><div class="code">ГАЗ</div><h3>Газоанализаторы</h3><p>Стационарные датчики загазованности в каре резервуаров, насосных и на постах налива с порогами 10 и 20% НКПР.</p></div>
+      <div class="norm reveal d1"><div class="code">НАСОСЫ</div><h3>Насосные и задвижки</h3><p>Управление насосными агрегатами, электроприводными задвижками, контроль обратной связи по положению.</p></div>
+      <div class="norm reveal d2"><div class="code">ПБ</div><h3>Безопасность</h3><p>Датчики загазованности, пожарная сигнализация, аварийный останов, контроль вскрытия и питания.</p></div>
+      <div class="norm reveal"><div class="code">ЭНЕРГО</div><h3>Электрощит и ИБП</h3><p>Шкаф автоматики с обогревом, контроль питания, ИБП для сервера объекта и приборов.</p></div>
+      <div class="norm reveal d1"><div class="code">ЗАЗЕМЛЕНИЕ</div><h3>Оборудование постов налива</h3><p>Устройства контроля заземления автоцистерн, датчики переполнения, наливные устройства нижнего налива и системы отвода паров.</p></div>
+      <div class="norm reveal d2"><div class="code">ВИДЕО</div><h3>Видеонаблюдение</h3><p>Привязка событий и операций налива к видеозаписи — разбор инцидентов и спорных отгрузок.</p></div>
+    </div>
+  </div>
+</section>
+<section id="integr" data-screen-label="Протоколы и 1С" class="gsec" style="background:#111114;color:var(--frost);padding:clamp(70px,8vw,110px) 0">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal" style="color:#7bffe4">Интеграции</p>
+      <h2 class="t-heading reveal d1" style="color:var(--frost)">Открытые протоколы вместо чёрного ящика</h2>
+      <p class="t-sub light reveal d2">Система собирается на промышленных протоколах и отдаёт данные наружу — вы не остаётесь заложником одного поставщика.</p>
+    </div>
+    <div class="protos reveal" style="justify-content:center">
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">Modbus RTU</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">Modbus TCP</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">OPC UA</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">MQTT</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">RS-485 / RS-232</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">Ethernet / TCP-IP</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">4G / VPN</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">REST API / JSON</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">API DOMS PSS5000</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">1С «Бухгалтерия»</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">Word · Excel · XML</span>
+      <span style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.2);color:rgba(245,245,247,.85)">SQL / PostgreSQL</span>
+    </div>
+    <div class="cmp reveal" style="margin-top:44px">
+      <div class="crow h"><div>Вопрос заказчика</div><div>Закрытая система</div><div class="good">Наш подход</div></div>
+      <div class="crow"><div class="k">Смена поставщика ПО</div><div class="bad">Данные остаются внутри, экспорт неполный</div><div class="good">Своя БД на объекте, экспорт в SQL, XML и API</div></div>
+      <div class="crow"><div class="k">Разнородные ТРК</div><div class="bad">Замена парка колонок</div><div class="good">Конвертеры и коммуникационный сервер, парк остаётся</div></div>
+      <div class="crow"><div class="k">Импортозамещение</div><div class="bad">Зарубежная платформа без поддержки</div><div class="good">Российское ПО, реестр отечественного ПО, Linux и PostgreSQL</div></div>
+      <div class="crow"><div class="k">Развитие системы</div><div class="bad">Каждая доработка — через вендора</div><div class="good">Открытый API, наращивание объектов и функций без остановки продаж</div></div>
+    </div>
+  </div>
+</section>
+<section id="eff" data-screen-label="Эффект">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Эффект</p>
+      <h2 class="t-heading reveal d1">Что меняется после внедрения</h2>
+    </div>
+    <div class="kpi4 reveal">
+      <div><div class="v" data-cnt="20"><span class="num">0</span><em>%</em></div><div class="k">сокращение потерь и неучтённого расхода топлива при сплошном учёте</div></div>
+      <div><div class="v" data-cnt="24"><span class="num">0</span><em>/7</em></div><div class="k">контроль объектов без оператора на площадке</div></div>
+      <div><div class="v" data-cnt="1"><span class="num">0</span><em>мин</em></div><div class="k">от события на объекте до тревоги у дежурного</div></div>
+      <div><div class="v">0<em>ручных сверок</em></div><div class="k">баланс и отчёты формируются автоматически</div></div>
+    </div>
+    <div class="pbars" style="margin-top:44px">
+      <div class="pb" style="--w:88%"><div class="fill"></div><span>Прозрачность движения топлива<em>сплошной учёт по каждой транзакции и каждому резервуару</em></span><b>88%</b></div>
+      <div class="pb" style="--w:72%"><div class="fill"></div><span>Скорость реакции на инцидент<em>тревога у дежурного вместо утренней сводки</em></span><b>72%</b></div>
+      <div class="pb" style="--w:64%"><div class="fill"></div><span>Трудозатраты на отчётность<em>отчёты и выгрузки в 1С без участия человека</em></span><b>−64%</b></div>
+      <div class="pb" style="--w:45%"><div class="fill"></div><span>Простои из-за отказов<em>предиктивные заявки в сервис по данным телеметрии</em></span><b>−45%</b></div>
+    </div>
+    <p class="pnote reveal" style="color:var(--ash);margin-top:22px;font-size:14.5px;max-width:80ch">Значения — типовой диапазон по объектам с автоматизированным отпуском и телеметрией резервуаров. Точный эффект считаем на вашей структуре расхода и числе объектов.</p>
+  </div>
+</section>
+<section id="stages" data-screen-label="Внедрение" style="background:var(--ice);padding:clamp(70px,8vw,110px) 0">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Внедрение</p>
+      <h2 class="t-heading reveal d1">Как это делается на действующем объекте</h2>
+      <p class="t-sub reveal d2">Без остановки продаж: подключение идёт параллельно работающей схеме, переключение — в согласованное окно.</p>
+    </div>
+    <div class="stg">
+      <div class="stage" style="--w:100%"><div class="idx"><span>01</span></div><div class="mid"><h3>Обследование объекта</h3><p>Опись оборудования: модели ТРК, уровнемеров, кассы, шкафы, трассы, каналы связи. Фиксируем протоколы и точки подключения.</p><div class="tags"><i>опись</i><i>протоколы</i><i>каналы связи</i></div></div><div class="dur"><div class="v">2–5 дн.</div><div class="k">срок</div><div class="bar"><i></i></div></div></div>
+      <div class="stage" style="--w:80%"><div class="idx"><span>02</span></div><div class="mid"><h3>Архитектура и ТЗ</h3><p>Схема уровней, перечень тревог и уставок, состав отчётов, роли пользователей, требования к серверу и связи.</p><div class="tags"><i>ТЗ</i><i>уставки</i><i>роли</i></div></div><div class="dur"><div class="v">3–7 дн.</div><div class="k">срок</div><div class="bar"><i></i></div></div></div>
+      <div class="stage" style="--w:70%"><div class="idx"><span>03</span></div><div class="mid"><h3>Поставка и монтаж</h3><p>Шкаф автоматики, контроллеры, конвертеры, датчики, кабельные трассы, каналы 4G или локальная сеть предприятия.</p><div class="tags"><i>шкаф</i><i>трассы</i><i>4G / LAN</i></div></div><div class="dur"><div class="v">2–4 нед.</div><div class="k">срок</div><div class="bar"><i></i></div></div></div>
+      <div class="stage" style="--w:60%"><div class="idx"><span>04</span></div><div class="mid"><h3>Настройка и мнемосхемы</h3><p>Опрос приборов, калибровка резервуаров, отрисовка мнемосхем объекта, настройка тревог, отчётов и прав доступа.</p><div class="tags"><i>калибровка</i><i>мнемосхемы</i><i>отчёты</i></div></div><div class="dur"><div class="v">1–2 нед.</div><div class="k">срок</div><div class="bar"><i></i></div></div></div>
+      <div class="stage" style="--w:45%"><div class="idx"><span>05</span></div><div class="mid"><h3>Интеграция с учётом</h3><p>Выгрузка в 1С и ERP, обмен по API, автоотправка отчётов, сверка первых смен вместе с бухгалтерией.</p><div class="tags"><i>1С</i><i>API</i><i>сверка</i></div></div><div class="dur"><div class="v">3–10 дн.</div><div class="k">срок</div><div class="bar"><i></i></div></div></div>
+      <div class="stage" style="--w:30%"><div class="idx"><span>06</span></div><div class="mid"><h3>ПНР, обучение, поддержка</h3><p>Пусконаладка, инструктаж диспетчеров и механиков, передача документации. Далее — сопровождение и удалённая поддержка.</p><div class="tags"><i>ПНР</i><i>обучение</i><i>сервис 24/7</i></div></div><div class="dur"><div class="v">от 3 дн.</div><div class="k">срок</div><div class="bar"><i></i></div></div></div>
+    </div>
+  </div>
+</section>
+<section id="norms" data-screen-label="Нормы">
+  <div class="wrap">
+    <div class="col center stack">
+      <p class="t-eyebrow reveal">Нормативная рамка</p>
+      <h2 class="t-heading reveal d1">Чем регулируется автоматизация АЗС</h2>
+    </div>
+    <div class="ngrid">
+      <div class="norm reveal"><div class="code">СП 156.13130.2014</div><h3>Пожарная безопасность АЗС</h3><p>Требования к размещению оборудования, аварийному останову и системам противоаварийной защиты. <a href="sp-156.html">Разбор свода правил</a>.</p></div>
+      <div class="norm reveal d1"><div class="code">ТР ТС 012/2011</div><h3>Взрывозащита</h3><p>Оборудование во взрывоопасных зонах — соответствующее исполнение датчиков и монтаж в опасных зонах резервуаров и ТРК.</p></div>
+      <div class="norm reveal d2"><div class="code">102-ФЗ</div><h3>Единство измерений</h3><p>Измерительные каналы учёта топлива — поверяемые средства измерений и корректные методики расчёта объёма.</p></div>
+      <div class="norm reveal"><div class="code">54-ФЗ</div><h3>Расчёты с покупателем</h3><p>Фискализация расчётов при коммерческом отпуске: касса в терминале, чек в момент оплаты.</p></div>
+      <div class="norm reveal d1"><div class="code">ГОСТ Р МЭК 61131</div><h3>Программируемые контроллеры</h3><p>Требования к ПЛК и прикладному ПО среднего уровня АСУ ТП.</p></div>
+      <div class="norm reveal d2"><div class="code">РЕЕСТР ПО</div><h3>Отечественное ПО</h3><p>Компоненты системы из Единого реестра российских программ — для объектов с требованием импортозамещения.</p></div>
+    </div>
+  </div>
+</section>
+<section id="efaq" data-screen-label="Вопросы" style="background:var(--ice);padding:clamp(70px,8vw,110px) 0">
+  <div class="wrap">
+    <div class="col center stack"><p class="t-eyebrow reveal">Вопросы</p><h2 class="t-heading reveal d1">Что спрашивают инженеры и финансисты</h2></div>
+    <div class="acc reveal">
+      <details><summary>На каких контроллерах вы делаете АСУ ТП?</summary><div class="a">Основные платформы — ОВЕН (ПЛК200/210, модули Мх210, панели СПК), Регул R500 и R200 производства «Прософт-Системы» для ответственных контуров и ПАЗ, КОНТАР на инженерных системах и обогреве, ВОЛМАГ на измерении уровня в резервуарных парках, Текон на телемеханике удалённых постов. С Siemens SIMATIC S7-1200/1500 и WinCC работаем на действующих объектах, где эта платформа уже стоит. Если у вас есть корпоративный стандарт на оборудование — работаем в нём.</div></details>
+      <details><summary>Какую SCADA вы применяете?</summary><div class="a">По умолчанию предлагаем МастерСКАДУ 4D: российская платформа из реестра отечественного ПО, объектный подход, веб-клиент и резервирование серверов. На объектах с историей часто остаётся Trace Mode, на площадках Siemens — WinCC, на небольших складах ГСМ достаточно Rapid SCADA с доступом через браузер. Выбор обосновываем в техническом задании, а не навязываем.</div></details>
+      <details><summary>Вы проектируете раздел автоматизации или только монтируете?</summary><div class="a">И то и другое. Выпускаем полный раздел АТХ: техническое задание по ГОСТ 34.602, функциональную схему автоматизации по ГОСТ 21.408-2013 с обозначениями по ГОСТ 21.208-2013, структурную схему, заказные спецификации КИПиА, схемы внешних проводок и шкафов, алгоритмы, экранные формы и программу испытаний. Дальше — монтаж, программирование, пусконаладка и обучение операторов. <a href="services-design.html">Проектирование объекта целиком</a> тоже наша работа.</div></details>
+      <details><summary>Автоматизируете ли вы КАЗС и АЗС на SCADA?</summary><div class="a">Нет, и это важное уточнение. Заправочная станция автоматизируется системой управления АЗС — контроллером отпуска и ПО учёта, а не SCADA-пакетом. SCADA нужна там, где есть технологический процесс: резервуарный парк, насосные, сливо-наливные эстакады, узлы учёта нефтебазы, склада ГСМ или терминала. Для заправочных станций смотрите <a href="automation-smart-azs.html">ПО «Смарт-АЗС»</a> и <a href="automation-kmazs.html">контроллер КМАЗС</a>.</div></details>
+      <details><summary>Нужно ли менять наши колонки и уровнемеры?</summary><div class="a">Нет. Система подключается к тому, что стоит на объекте: ТРК любых производителей — через конвертеры и коммуникационный сервер <a href="automation-buk-tsg.html">«БУК TS-G»</a>, уровнемеры — по своим протоколам. Замена парка не требуется.</div></details>
+      <details><summary>Можно ли начать с одного объекта?</summary><div class="a">Да, это обычный сценарий: сначала один объект как пилот — мнемосхема, тревоги, отчёты, выгрузка в 1С. Затем к тому же серверу диспетчеризации подключаются остальные объекты, интерфейс и роли уже настроены.</div></details>
+      <details><summary>Что происходит при потере связи с объектом?</summary><div class="a">Объект продолжает работать автономно: отпуск топлива, учёт и логирование идут в локальной базе на объекте. После восстановления связи данные догружаются в диспетчерскую систему, разрыв связи фиксируется как событие.</div></details>
+      <details><summary>Как система ловит расхождения?</summary><div class="a">Сверяются три независимых источника: транзакции и суммирующие счётчики ТРК, показания уровнемера по резервуару и продажи в кассовом ПО. Отклонение выше допуска попадает в журнал расхождений и в тревоги — с привязкой ко времени, колонке и смене.</div></details>
+      <details><summary>Где хранятся данные — у нас или в облаке?</summary><div class="a">Возможны оба варианта. Первичные данные всегда пишутся в базу на объекте; диспетчерский сервер размещается в вашей серверной или в облаке, доступ — по VPN. Для мобильного приложения используется промежуточный облачный сервер.</div></details>
+      <details><summary>Кто обслуживает систему после сдачи?</summary><div class="a">Мы: удалённая техподдержка, обновления, выезды по заявкам. На объектах с телеметрией часть неисправностей видна заранее — заявка в сервис формируется по данным системы, а не по звонку с площадки.</div></details>
+      <details><summary>Сколько это стоит?</summary><div class="a">Стоимость зависит от числа объектов, колонок и резервуаров, состава тревог и требуемых интеграций. Ориентир по типовому комплекту автоматики ведомственного объекта — в разделе <a href="automation-smart-azs.html#kit">комплект и цены «Смарт-АЗС»</a>; полную смету считаем после обследования.</div></details>
+    </div>
+  </div>
+</section>
+<section id="links" data-screen-label="Смежные решения" style="padding:clamp(60px,7vw,96px) 0">
+  <div class="wrap">
+    <div class="col center stack" style="margin-bottom:40px"><p class="t-eyebrow reveal">Смежные решения</p><h2 class="t-heading reveal d1">Из чего собирается автоматизация</h2></div>
+    <div class="link-cards">
+      <a class="lcard reveal" href="epc-pod-klyuch.html"><h3>EPC под ключ</h3><p>Объект целиком: проект, изготовление, монтаж, автоматика и пусконаладка.</p><span class="ghost">Подробнее →</span></a>
+      <a class="lcard reveal" href="reservoirs-rvs.html"><h3>Резервуары РВС</h3><p>Вертикальные стальные резервуары для парков нефтебаз и терминалов.</p><span class="ghost">Подробнее →</span></a><a class="lcard reveal d1" href="automation-smart-azs.html"><h3>ПО «Смарт-АЗС»</h3><p>Отпуск без оператора, АРМ, ведомственный режим по картам, отчёты и 1С.</p><span class="ghost">Подробнее →</span></a>
+      <a class="lcard reveal" href="services-design.html"><h3>Проектирование и раздел АТХ</h3><p>ФСА, структурная схема, спецификации КИПиА, схемы проводок и шкафов.</p><span class="ghost">Подробнее →</span></a>
+      <a class="lcard reveal d1" href="services-modernization.html"><h3>Модернизация объекта</h3><p>Дооснащение действующей нефтебазы автоматикой без остановки работы.</p><span class="ghost">Подробнее →</span></a>
+      <a class="lcard reveal d2" href="services-service.html"><h3>Сервис и поддержка</h3><p>Обслуживание системы, удалённая диагностика, регламентное ТО КИПиА.</p><span class="ghost">Подробнее →</span></a>
+    </div>
+  </div>
+</section>
+<section class="gsec" id="ecta" data-screen-label="CTA">
+  <div class="wrap">
+    <h2 class="reveal">Обследуем объект и предложим архитектуру</h2>
+    <p class="reveal d1">Расскажите, сколько резервуаров, насосных и постов налива на объекте и что уже стоит из КИПиА и контроллеров. Вернёмся со структурной схемой, объёмом автоматизации по уровням, перечнем сигналов и ценой.</p>
+    <div class="btns reveal d2"><span class="g"><a href="contacts.html" class="pill pill-primary">Запросить КП</a></span><button class="pill pill-outline" data-call style="border-color:rgba(255,255,255,.3);color:#fff">Заказать звонок</button></div>
+  </div>
+</section>
+<footer class="footer"><div class="wrap"><div class="foot-grid"><div class="foot-brand"><div class="brand"><img src="assets/logo-mark.png" alt="ИнтеллектКАЗС" style="width:30px;height:30px"><span class="word">Интеллект<b>КАЗС</b></span></div><p>Заводская АЗС для вашего автопарка. Под ключ за 45 дней. Производство — Санкт-Петербург.</p></div><div class="foot-col"><h5>КАЗС</h5><a href="kontejnernaya-azs.html">Ведомственная</a><a href="kommercheskaya.html">Коммерческая</a><a href="kazs-open.html">Открытый тех. отсек</a><a href="kazs-premium.html">Коммерческий</a></div><div class="foot-col"><h5>Оборудование</h5><a href="trk-topaz.html">ТРК</a><a href="reservoirs-rgs.html">Резервуары</a><a href="automation-terminal.html">Терминалы</a><a href="automation-scada.html">SCADA</a></div><div class="foot-col"><h5>Услуги</h5><a href="epc-pod-klyuch.html">EPC под ключ</a><a href="services-design.html">Проектирование</a><a href="services-service.html">Сервис 24/7</a><a href="calculator.html">Калькулятор</a></div><div class="foot-col"><h5>Знания</h5><a href="projects.html">Кейсы</a><a href="faq.html">FAQ</a><a href="proizvodstvo.html">О компании</a></div></div><div class="foot-bottom"><span>ИнтеллектКАЗС · производство КАЗС и АЗС · Санкт-Петербург · 8 812 219 34 85</span><span><a href="#">Политика обработки ПД</a> · © 2026 ИнтеллектКАЗС</span></div></div></footer>
+<script>
+(function(){
+  /* hero dispatcher mock */
+  var objs=[
+    {n:'РВС-1 · 1000 м³ · ДТ',s:'ok',v:842600,d:'хранение'},
+    {n:'РВС-2 · 1000 м³ · АИ-95',s:'ok',v:610400,d:'приём'},
+    {n:'РВС-3 · 400 м³ · мазут',s:'warn',v:96800,d:'ниже уставки'},
+    {n:'Насосная отпуска · Н-2',s:'ok',v:184,d:'42 м³/ч'},
+    {n:'Эстакада налива · пост 3',s:'bad',v:0,d:'нет связи'}
+  ];
+  var rows=document.getElementById('orows');
+  function spark(){var h='';for(var i=0;i<12;i++)h+='<i style="height:'+(22+Math.random()*72)+'%"></i>';return h}
+  function draw(){
+    rows.innerHTML=objs.map(function(o){
+      return '<div class="orow '+(o.s==='ok'?'':o.s)+'"><div class="nm"><i></i><span>'+o.n+'</span></div><div class="spark">'+spark()+'</div><div class="v">'+(o.s==='bad'?'— ':o.v.toLocaleString('ru-RU')+' ')+'<u>л</u></div><div class="v"><u>'+o.d+'</u></div></div>';
+    }).join('');
+  }
+  draw();
+  setInterval(function(){
+    objs.forEach(function(o){if(o.s!=='bad')o.v=Math.max(120,o.v-Math.round(Math.random()*o.v*0.0009))});
+    if(rows.getBoundingClientRect().top<window.innerHeight&&rows.getBoundingClientRect().bottom>0)draw();
+  },2600);
+  var msgs=['РВС-3 · мазут: остаток ниже неснижаемого — <b>96 800 л</b>','Эстакада · пост 3: нет связи 4 мин — <b>заявка в сервис</b>','Узел учёта · отгрузка за смену: расхождение <b>0,08%</b>','РВС-2 · приём из ж/д цистерн, налив <b>+118 400 л</b>','РВС-1 · температура ДТ <b>+9,8 °C</b> — приведение к 15 °C','Н-2 · насос отпуска: наработка <b>4 180 ч</b>, ТО через 320 ч'];
+  var ti=0,tick=document.getElementById('tick');
+  function nextTick(){tick.innerHTML=msgs[ti%msgs.length];ti++}
+  nextTick();setInterval(nextTick,3400);
+
+  /* counters */
+  var cio=new IntersectionObserver(function(en){en.forEach(function(e){
+    if(!e.isIntersecting)return;cio.unobserve(e.target);
+    var el=e.target,to=+el.dataset.cnt,num=el.querySelector('.num')||el,t0=null;
+    function step(t){if(!t0)t0=t;var p=Math.min(1,(t-t0)/1100),v=Math.round(to*(1-Math.pow(1-p,3)));
+      num.textContent=v;if(p<1)requestAnimationFrame(step)}
+    requestAnimationFrame(step);
+  })},{threshold:.4});
+  document.querySelectorAll('[data-cnt]').forEach(function(el){cio.observe(el)});
+
+
+  /* objects */
+  var OB=[
+    {n:'Нефтебаза',p:'Приём, хранение и отгрузка нефтепродуктов: резервуарный парк, насосная, сливо-наливные эстакады, узлы учёта. Система связывает партию продукта от слива из цистерны до отгрузки клиенту и закрывает товарный баланс без ручных сверок.',
+     l:[['Сбор данных','Уровнемеры по каждому резервуару, температура и плотность, массомеры на узлах учёта, состояние насосов и задвижек, газоанализаторы в каре.'],['Управление','Маршруты перекачки, пуск насосов через ЧРП, электроприводные задвижки, дозирование налива в авто- и ж/д цистерны.'],['Учёт','Операции слива, налива и перекачек, приведение объёма к 15 °C, товарно-транспортный баланс, отчёты смены и месяца.'],['Безопасность','Защита от перелива, контроль загазованности, аварийный останов, пуск пожаротушения, журнал срабатываний.']],
+     k:[['24/7','диспетчерский контроль парка'],['1 мин','от события до тревоги'],['−20%','неучтённых потерь']]},
+    {n:'Склад ГСМ',p:'Ведомственный склад топлива предприятия: карьер, автопарк, лесозаготовка, сельхозпредприятие. Задача — отпуск своей технике по лимитам, точный остаток в резервуаре и данные в бухгалтерию без бумажных ведомостей.',
+     l:[['Сбор данных','Уровнемеры резервуаров, счётчики ТРК, транзакции отпуска по картам и ключам, состояние питания и связи.'],['Управление','Разрешение отпуска по идентификатору, лимиты по водителю и технике, блокировка карт, дистанционный останов.'],['Учёт','Расход по водителям, технике и подразделениям, сверка «литры по ТРК ↔ уровнемер», выгрузка в 1С.'],['Автономность','Объект работает без связи: данные пишутся локально и догружаются после восстановления канала.']],
+     k:[['Без оператора','отпуск по картам'],['3 лимита','сутки, месяц, календарь'],['1С','выгрузка расхода']]},
+    {n:'Нефтяной терминал',p:'Перевалочный терминал: приём с трубопровода, ж/д или водного транспорта, хранение и отгрузка партиями. Здесь критичны безаварийный налив, коммерческий учёт и полная история каждой операции.',
+     l:[['Сбор данных','Резервуарный парк и трубопроводные узлы, датчики давления и температуры, массомеры, состояние насосных станций.'],['Управление','Насосные агрегаты с частотным регулированием, задвижки маршрутов, автоматизированные системы налива в цистерны и танкеры.'],['Учёт','Партионный учёт, паспорта качества, транспортные документы, сверка отгрузки с данными узлов учёта.'],['Диспетчеризация','Единый АРМ на все установки терминала, тренды по параметрам, архив за годы, разбор инцидентов по журналам.']],
+     k:[['Партии','полная история операций'],['ПАЗ','независимый контур защит'],['Архив','тренды за годы']]},
+    {n:'ТЗК и аэродром',p:'Топливозаправочный комплекс предприятия или аэродрома: заправка техники и специального транспорта с контролем качества и жёсткой отчётностью по каждой операции.',
+     l:[['Сбор данных','Резервуары, фильтры-водоотделители, счётчики заправочных агрегатов, параметры качества по операции.'],['Управление','Разрешение заправки по наряду и идентификатору, дозирование, останов по превышению параметров.'],['Учёт','Отчёты по бортам и технике, подразделениям и подрядчикам, выгрузка в учётные системы.'],['Регламенты','Контроль сроков обслуживания фильтров и оборудования, электронный журнал операций.']],
+     k:[['Наряд','заправка только по разрешению'],['Качество','контроль по операции'],['Отчёт','по каждой заправке']]},
+    {n:'Битумохранилище и мазутное хозяйство',p:'Тёмные нефтепродукты требуют не только учёта, но и постоянного температурного режима: разогрев, циркуляция, подача к потребителю. Здесь автоматика управляет обогревом и следит за вязкостью так же строго, как за уровнем.',
+     l:[['Сбор данных','Температура по слоям продукта и на трубопроводах, давление на линиях подачи, уровень в хранилищах, состояние теплоспутников и змеевиков.'],['Управление','Обогрев резервуаров и трубопроводов по уставкам, циркуляционные и подающие насосы, регулирование подачи к котлам и смесителям.'],['Учёт','Расход мазута по потребителям, приход из ж/д и авто, потери при разогреве, отчёты для котельной и производства.'],['Инженерка','Котельная, ИТП, вентиляция насосных и блок-боксов — на платформе КОНТАР с передачей параметров в общую SCADA.']],
+     k:[['Обогрев','по уставке, а не «на глаз»'],['Вязкость','контроль режима подачи'],['Котельная','единый пульт с парком']]}
+  ];
+  var op=document.getElementById('opanes');
+  if(op){
+    op.innerHTML=OB.map(function(o,i){
+      return '<div class="opane'+(i?'':' on')+'" data-p="'+i+'"><div class="ogrid"><div><h3>'+o.n+'</h3><p class="lede">'+o.p+'</p><div class="okpi">'+o.k.map(function(k){return '<div><div class="v">'+k[0]+'</div><div class="k">'+k[1]+'</div></div>'}).join('')+'</div></div><div class="olist">'+o.l.map(function(l){return '<div class="oi"><b>'+l[0]+'</b><span>'+l[1]+'</span></div>'}).join('')+'</div></div></div>';
+    }).join('');
+    document.getElementById('otabs').addEventListener('click',function(e){
+      var b=e.target.closest('button');if(!b)return;
+      [].forEach.call(this.querySelectorAll('button'),function(x){x.classList.toggle('on',x===b)});
+      [].forEach.call(op.children,function(x){x.classList.toggle('on',x.dataset.p===b.dataset.o)});
+    });
+  }
+
+
+  /* PLC platforms */
+  var PL=[
+    {n:'ОВЕН',t:'Российская автоматика, оптимальная по цене',p:'Основная рабочая платформа для складов ГСМ и небольших нефтебаз. Контроллеры ПЛК серий 100/200, панели СПК, модули ввода-вывода Мх210, преобразователи частоты и барьеры искрозащиты. Программирование в CODESYS, обмен по Modbus RTU и Modbus TCP, штатная интеграция с любой SCADA по OPC.',
+     l:['ПЛК210 / ПЛК200 как контроллер резервуарного парка и насосной','Модули аналогового ввода под датчики 4–20 мА, термосопротивления и дискретику','Панели оператора СПК на местном посту — управление без АРМ','Преобразователи частоты для насосных агрегатов','Реестр отечественного оборудования, короткий срок поставки'],
+     k:[['CODESYS','среда разработки'],['Modbus','RTU и TCP'],['РФ','отечественное производство']]},
+    {n:'Регул (Прософт-Системы)',t:'Промышленный ПЛК для ответственных контуров',p:'Российские контроллеры Регул R500 и R200 — платформа для объектов, где нужны резервирование, большое число каналов и жёсткие требования к надёжности: перевалочные нефтебазы, терминалы, узлы учёта, системы ПАЗ.',
+     l:['Резервирование процессорных модулей и каналов связи','Высокая плотность ввода-вывода на крейт — крупные резервуарные парки','Применяется в проектах нефтегазовых компаний, включён в реестр','Среда Epsilon LD / CODESYS, детерминированный цикл','Подходит под требования заказчиков по импортозамещению в ТЭК'],
+     k:[['R500','резервируемый ПЛК'],['ПАЗ','отдельный контур защит'],['ТЭК','отраслевое применение']]},
+    {n:'Siemens SIMATIC',t:'Когда на объекте уже стоит Siemens',p:'Контроллеры SIMATIC S7-1200 и S7-1500, панели HMI Comfort, визуализация WinCC. Работаем с этой платформой на действующих объектах: расширяем существующие системы, добавляем контуры и объекты, не переделывая то, что работает.',
+     l:['Расширение действующих систем на S7 без замены платформы','TIA Portal: контроллер, панель и WinCC в одной среде','PROFINET и PROFIBUS для существующих сетей','Интеграция участков Siemens в общую диспетчеризацию по OPC UA','Миграция на отечественную платформу поэтапно, если это требуется'],
+     k:[['S7-1500','контроллер'],['WinCC','визуализация'],['PROFINET','промышленная сеть']]},
+    {n:'КОНТАР (МЗТА)',t:'Инженерные системы и вспомогательное оборудование',p:'Платформа Московского завода тепловой автоматики. Применяем на инженерной инфраструктуре объекта: котельные и обогрев резервуаров, ИТП, вентиляция операторной и насосных, отопление технологических блоков.',
+     l:['Обогрев резервуаров, трубопроводов и запорной арматуры','Автоматизация котельной и мазутного хозяйства','Вентиляция и подогрев воздуха в блок-боксах','Свободное программирование, встроенный веб-доступ','Передача параметров инженерных систем в общую SCADA'],
+     k:[['МЗТА','российский производитель'],['Инженерка','обогрев и вентиляция'],['Веб','встроенный доступ']]},
+    {n:'ВОЛМАГ',t:'Контроллеры и уровнемеры для резервуарных парков',p:'Оборудование для измерения уровня и автоматизации резервуарных парков: контроллеры сбора данных и магнитострикционные уровнемеры. Применяем там, где нужен точный уровень, температура по слоям и подтоварная вода в одном приборе.',
+     l:['Магнитострикционные уровнемеры: уровень, температура, подтоварная вода','Контроллеры сбора данных с парка резервуаров','Расчёт массы и объёма продукта с приведением к 15 °C','Взрывозащищённое исполнение для установки на резервуаре','Интеграция в SCADA по Modbus без промежуточных конвертеров'],
+     k:[['Уровень','основная задача'],['Ex','взрывозащита'],['Modbus','прямая интеграция']]},
+    {n:'Текон',t:'Отечественные ПЛК для распределённых объектов',p:'Контроллеры ТЕКОН применяем на распределённых объектах и там, где заказчик стандартизован на этой платформе: сбор данных с удалённых постов, узлы учёта, телемеханика трубопроводных участков.',
+     l:['Телемеханика удалённых постов и узлов учёта','Работа по каналам с низкой пропускной способностью','Локальный архив на контроллере при потере связи','Программирование в ISaGRAF / CODESYS','Реестр отечественного оборудования'],
+     k:[['Телемеханика','удалённые посты'],['Архив','локально на ПЛК'],['РФ','отечественное производство']]}
+  ];
+  var pp=document.getElementById('ppanes');
+  if(pp){
+    pp.innerHTML=PL.map(function(o,i){
+      return '<div class="opane'+(i?'':' on')+'" data-p="'+i+'"><div class="ogrid"><div><h3 style="color:var(--frost)">'+o.n+'</h3><p class="lede" style="color:rgba(245,245,247,.72)">'+o.t+'. '+o.p+'</p><div class="okpi dk">'+o.k.map(function(k){return '<div><div class="v">'+k[0]+'</div><div class="k">'+k[1]+'</div></div>'}).join('')+'</div></div><div class="olist dk">'+o.l.map(function(l){return '<div class="oi">'+l+'</div>'}).join('')+'</div></div></div>';
+    }).join('');
+    document.getElementById('ptabs').addEventListener('click',function(e){
+      var b=e.target.closest('button');if(!b)return;
+      [].forEach.call(this.querySelectorAll('button'),function(x){x.classList.toggle('on',x===b)});
+      [].forEach.call(pp.children,function(x){x.classList.toggle('on',x.dataset.p===b.dataset.p)});
+    });
+  }
+
+  /* pyramid */
+  var LV=[
+    {tag:'Уровень 4 · MES / ERP',h:'Учёт, аналитика и решения',p:'Данные объекта становятся управленческими цифрами: товарный баланс, себестоимость литра, потребность в завозе, эффективность объектов сети.',l:['Выгрузка в 1С «Бухгалтерия» и ERP','Отчёты по сети объектов и сравнение площадок','Планирование поставок по неснижаемому остатку','REST API для BI и сторонних систем']},
+    {tag:'Уровень 3 · SCADA',h:'Диспетчеризация и хранение',p:'Рабочее место диспетчера: мнемосхемы всех объектов, тревоги с квитированием, тренды, журналы, отчёты и разграничение прав. Здесь же архив в реляционной БД.',l:['Мнемосхемы объектов в реальном времени','Тревоги по уставкам и эскалация оповещений','Тренды и архив параметров за годы','Роли и журнал действий операторов']},
+    {tag:'Уровень 2 · сервер объекта',h:'Локальная логика и автономность',p:'Сервер на объекте опрашивает приборы, ведёт собственную базу первичных данных и продолжает работать при потере связи с центром — данные догружаются после восстановления канала.',l:['Первичная база транзакций и показаний','Автономная работа объекта без связи','Сверка ТРК ↔ уровнемер ↔ касса','Локальные сценарии блокировок и защит']},
+    {tag:'Уровень 1 · ПЛК и связь',h:'Контроллеры, конвертеры, протоколы',p:'Оригинальные протоколы оборудования приводятся к единому протоколу управления. Контроллер «БУК TS-G» или ПЛК управляет отпуском, питанием и исполнительными устройствами.',l:['Modbus RTU/TCP, RS-485, Ethernet','Коммуникационный сервер «БУК TS-G»','Управление питанием оборудования','Аварийные блокировки и останов']},
+    {tag:'Уровень 0 · поле',h:'Приборы и исполнительные устройства',p:'То, что физически стоит на площадке: измерительные системы, колонки, насосы, задвижки, датчики безопасности. Точность всей системы задаётся именно здесь.',l:['Уровнемеры: уровень, температура, подтоварная вода','Расходомеры, массомеры, датчики давления и температуры','Газоанализаторы, пожарные шлейфы, контроль заземления','Насосные агрегаты, ЧРП, электроприводные задвижки']}
+  ];
+  var pyr=document.getElementById('pyr'),panel=document.getElementById('pyrPanel');
+  function setLv(i){
+    [].forEach.call(pyr.children,function(el,k){el.classList.toggle('on',k===i)});
+    var d=LV[i];
+    panel.innerHTML='<div class="tag">'+d.tag+'</div><h3>'+d.h+'</h3><p>'+d.p+'</p><ul>'+d.l.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>';
+  }
+  pyr.addEventListener('click',function(e){var el=e.target.closest('.pl');if(el)setLv(+el.dataset.i)});
+  pyr.addEventListener('mouseover',function(e){var el=e.target.closest('.pl');if(el)setLv(+el.dataset.i)});
+  setLv(1);
+
+  /* mnemo scenarios */
+  var mn=document.getElementById('mn');
+  var SC={
+    norm:{t1:[62,'618 400'],t2:[48,'482 600'],t3:[71,'284 200'],pipe1:false,trk:'Слива нет',d1:'остановлен',d2:'работа · 42 м³/ч',d7:'открыта',d3:'184 260 л',d4:'0,08%',d5:'+11,4 °C',d6:'6 мм',water:false,alarm:false,title:'Нефтебаза · резервуарный парк · опрос 5 с'},
+    recv:{t1:[88,'884 100'],t2:[48,'482 600'],t3:[71,'284 200'],pipe1:true,trk:'Слив в РВС-1: +265 700 л',d1:'работа · 96 м³/ч',d2:'остановлен',d7:'маршрут «эстакада → РВС-1»',d3:'184 260 л',d4:'0,05%',d5:'+11,4 °C',d6:'6 мм',water:false,alarm:false,title:'Нефтебаза · приём · ж/д маршрут 8 цистерн'},
+    ship:{t1:[62,'618 400'],t2:[39,'392 800'],t3:[71,'284 200'],pipe1:false,trk:'Слива нет',d1:'остановлен',d2:'работа · 58 м³/ч',d7:'маршрут «РВС-2 → пост 3»',d3:'212 480 л',d4:'0,07%',d5:'+11,5 °C',d6:'6 мм',water:false,alarm:false,title:'Нефтебаза · отгрузка · пост налива 3, доза 28 200 л'},
+    alarm:{t1:[62,'618 400'],t2:[41,'412 700'],t3:[71,'284 200'],pipe1:false,trk:'Слива нет',d1:'остановлен',d2:'останов по защите',d7:'закрыта по блокировке',d3:'184 260 л',d4:'1,9%',d5:'+11,6 °C',d6:'34 мм',water:true,alarm:true,title:'Нефтебаза · тревога · отгрузка ДТ заблокирована'}
+  };
+  function setScen(k){
+    var s=SC[k];
+    ['1','2','3'].forEach(function(n){
+      var t=document.getElementById('t'+n);
+      t.querySelector('.liq').style.setProperty('--h',s['t'+n][0]+'%');
+      document.getElementById('v'+n).innerHTML=s['t'+n][1]+'<u>л</u>';
+      document.getElementById('p'+n).textContent=s['t'+n][0]+'%';
+    });
+    document.getElementById('t2').classList.toggle('water',s.water);
+    document.getElementById('pipe1').classList.toggle('on',s.pipe1);
+    document.getElementById('trkTxt').textContent=s.trk;
+    ['d1','d2','d3','d4','d5','d6','d7'].forEach(function(id){document.getElementById(id).textContent=s[id]});
+    document.getElementById('mnTitle').textContent=s.title;
+    mn.classList.toggle('alarm',s.alarm);
+    mn.classList.toggle('recv',k==='recv'||k==='ship');
+  }
+  document.getElementById('scen').addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;
+    [].forEach.call(this.querySelectorAll('button'),function(x){x.classList.toggle('on',x===b)});
+    setScen(b.dataset.s);
+  });
+  setScen('norm');
+  var mt=document.getElementById('mnTime');
+  setInterval(function(){var d=new Date();mt.textContent='обновлено '+d.toLocaleTimeString('ru-RU')},1000);
+
+  /* bars in view */
+  var io2=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io2.unobserve(e.target)}})},{threshold:.3});
+  document.querySelectorAll('.stage,.pb').forEach(function(el){io2.observe(el)});
+
+  /* subnav scroll-spy */
+  var links=[].slice.call(document.querySelectorAll('.snav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'))});
+  function spy(){var y=window.scrollY+180,best=0;secs.forEach(function(s,i){if(s&&s.offsetTop<=y)best=i});links.forEach(function(a,i){a.classList.toggle('on',i===best)})}
+  window.addEventListener('scroll',spy,{passive:true});spy();
+  links.forEach(function(a){a.addEventListener('click',function(e){var t=document.querySelector(a.getAttribute('href'));if(!t)return;e.preventDefault();window.scrollTo({top:t.offsetTop-108,behavior:'smooth'})})});
+})();
+</script>
+<script src="scada-hmi.js"></script><script src="app.js"></script><script src="mobile.js" defer></script>
+</body></html>
