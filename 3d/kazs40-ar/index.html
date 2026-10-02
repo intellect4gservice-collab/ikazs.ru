@@ -50,7 +50,7 @@ html.embed .top{display:none}
 <model-viewer id="mv" class="nohs" src="kazs40_full.glb" ios-src="kazs40_full.usdz" alt="3D-модель КАЗС-40 4×10 м³"
   camera-controls touch-action="pan-y" shadow-intensity="1.1" shadow-softness="0.9" exposure="1.0" tone-mapping="aces"
   environment-image="neutral" camera-orbit="-35deg 68deg 70%" min-camera-orbit="auto auto 1%" interaction-prompt="none"
-  ar ar-modes="webxr scene-viewer quick-look" ar-scale="fixed" ar-placement="floor">
+  ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" ar-placement="floor">
   <div slot="ar-button" style="display:none"></div>
   <div class="top"><h1>КАЗС-40 (4×10 м³)</h1><p id="sub">Масштаб 1:1 · 17 500 × 2 200 × 2 750 мм</p></div>
   <div class="tip" id="tip" hidden></div>
@@ -58,12 +58,12 @@ html.embed .top{display:none}
     <div class="row"><span class="lbl">Вид</span>
       <div class="seg" id="segVar"><button data-v="full" aria-pressed="true">Целиком</button><button data-v="open" aria-pressed="false">Отсеки открыты</button><button data-v="dims" aria-pressed="false">Размеры</button></div></div>
     <div class="row"><span class="lbl">Масштаб</span>
-      <div class="seg" id="segScale"><button data-s="" aria-pressed="true">Участок 1:1</button><button data-s="_stol" aria-pressed="false">Стол 1:20</button></div></div>
+      <div class="seg" id="segScale"><button data-s="" aria-pressed="true">Участок 1:1</button><button data-s="_stol" aria-pressed="false">Стол 1:50</button></div></div>
     <div class="row"><span class="lbl">Позиции</span>
       <div class="seg" id="segHs"><button data-h="1" aria-pressed="false">Показать</button><button data-h="0" aria-pressed="true">Скрыть</button></div></div>
     <button class="more" id="more" type="button">Скрыть настройки ▾</button>
     <button class="arbtn" id="arb" type="button">Поставить через камеру (AR)</button>
-    <p class="hint" id="hint">Выберите вид и масштаб, затем нажмите кнопку и наведите камеру на пол или стол. Станцию можно обойти вокруг. На iPhone вид выбирается до запуска AR.</p>
+    <p class="hint" id="hint">Наведите камеру на пол или стол и коснитесь поверхности. В AR: один палец — перетащить, два пальца — сжать/растянуть и повернуть. Двойное касание — вернуть исходный масштаб.</p>
   </div>
 </model-viewer>
 <script src="model-viewer.min.js"></script>
@@ -73,8 +73,8 @@ const HOT = {"tank": {"n": "1", "t": "Резервуар 4×10 м³ (ДТ1-ДТ4
 const mv = document.getElementById('mv'), tip = document.getElementById('tip');
 let v = 'full', s = '';
 function src(){ mv.src = 'kazs40_' + v + s + '.glb'; mv.setAttribute('ios-src','kazs40_' + v + s + '.usdz');
-  document.getElementById('sub').textContent = (s ? 'Масштаб 1:20 · 875 × 110 × 138 мм' : 'Масштаб 1:1 · 17 500 × 2 200 × 2 750 мм');
-  const k = s ? 0.05 : 1;
+  document.getElementById('sub').textContent = (s ? 'Масштаб 1:50 · 350 × 44 × 55 мм' : 'Масштаб 1:1 · 17 500 × 2 200 × 2 750 мм');
+  const k = s ? 0.02 : 1;
   document.querySelectorAll('.hs').forEach(b=>{ const p = HOT[b.dataset.id].p; b.dataset.position = p.map(x=>(x*k)+'m').join(' '); });
   if(mv.updateHotspot) document.querySelectorAll('.hs').forEach(b=>mv.updateHotspot({name:b.slot, position:b.dataset.position}));
   tip.hidden = true; }
@@ -93,7 +93,7 @@ const UA=navigator.userAgent, IOS=/iPad|iPhone|iPod/.test(UA)||(navigator.platfo
 const hintEl=document.getElementById('hint'), arb=document.getElementById('arb');
 const abs=p=>new URL(p,location.href).href;
 function quickLook(){ const a=document.createElement('a'); a.rel='ar'; a.href=abs('kazs40_'+v+s+'.usdz'); a.appendChild(document.createElement('img')); document.body.appendChild(a); a.click(); a.remove(); }
-function sceneViewer(){ const f=abs('kazs40_'+v+s+'.glb'); location.href='intent://arvr.google.com/scene-viewer/1.0?file='+encodeURIComponent(f)+'&mode=ar_preferred&resizable=false&title='+encodeURIComponent('КАЗС-40')+'#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url='+encodeURIComponent(location.href)+';end;'; }
+function sceneViewer(){ const f=abs('kazs40_'+v+s+'.glb'); location.href='intent://arvr.google.com/scene-viewer/1.0?file='+encodeURIComponent(f)+'&mode=ar_preferred&resizable=true&title='+encodeURIComponent('КАЗС-40')+'#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url='+encodeURIComponent(location.href)+';end;'; }
 arb.addEventListener('click', ()=>{
   if(mv.canActivateAR){ mv.activateAR(); return; }
   if(IOS){ quickLook(); return; }
