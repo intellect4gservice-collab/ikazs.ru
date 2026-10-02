@@ -11,8 +11,14 @@ RewriteRule ^(.*)$ https://ikazs.ru/$1 [R=301,L]
 RewriteCond %{HTTP_HOST} ^www\.ikazs\.ru$ [NC]
 RewriteRule ^(.*)$ https://ikazs.ru/$1 [R=301,L]
 
-# ---- Адреса без .html: /kommercheskaya открывает kommercheskaya.html ----
-# (редирект .html -> без .html пока выключен; ссылки в коде остаются с .html)
+# ---- Адреса без .html ----
+# /index.html -> /
+RewriteCond %{THE_REQUEST} \s/+index\.html[\s?]
+RewriteRule ^ / [R=301,L]
+# /страница.html -> /страница (старые ссылки и закладки)
+RewriteCond %{THE_REQUEST} \s/+([a-z0-9-]+)\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+# /страница -> отдаём страница.html
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f

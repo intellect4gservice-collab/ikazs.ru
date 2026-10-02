@@ -23,6 +23,12 @@ jobs:
           test -n "$TG_TOKEN" || { echo "Нет секрета TG_TOKEN"; exit 1; }
           php -r '$c=["tg_token"=>getenv("TG_TOKEN"),"tg_chat_id"=>getenv("TG_CHAT_ID"),"email_to"=>"intellect4gservice@gmail.com","email_from"=>"no-reply@ikazs.ru","rate_limit"=>5]; file_put_contents("3d/terminals/order-config.php","<?php\nreturn ".var_export($c,true).";\n");'
 
+      - name: Clean URLs (ссылки без .html)
+        run: |
+          perl -pi -e 's#(href|action)="(?:\./)?index\.html(\#[^"]*)?"#$1="/$2"#g; s#(href|action)="(?:\./)?([a-z0-9-]+)\.html((?:\?[^"\#]*)?(?:\#[^"]*)?)"#$1="/$2$3"#g' *.html
+          perl -pi -e 's#(<loc>https://ikazs\.ru/[a-z0-9-]+)\.html#$1#g' sitemap.xml
+          perl -pi -e 's#(https://ikazs\.ru/[a-z0-9-]+)\.html"#$1"#g' *.html
+
       - name: Upload via FTP
         id: ftp1
         continue-on-error: true
