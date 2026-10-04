@@ -572,6 +572,7 @@ const ar = setupAR({
   group: () => (current ? current.group : null),
   file: (line, v) => LINES[line].file(v),
 });
+window.k3AR = ar;
 root.k3ar = ar;
 
 // ---------- старт

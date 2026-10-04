@@ -106,6 +106,7 @@ class USDZExporter {
 			const blob = await new Promise( resolve => canvas.toBlob( resolve, 'image/png', 1 ) );
 
 			files[ `textures/Texture_${ id }.png` ] = new Uint8Array( await blob.arrayBuffer() );
+			canvas.width = canvas.height = 0; // iOS Safari: освобождаем память холстов, иначе лимит canvas-памяти
 
 		}
 
@@ -156,6 +157,7 @@ function imageToCanvas( image, flipY, maxTextureSize ) {
 		canvas.height = image.height * Math.min( 1, scale );
 
 		const context = canvas.getContext( '2d' );
+		if ( ! context ) throw new Error( 'canvas memory limit' );
 
 		// TODO: We should be able to do this in the UsdTransform2d?
 

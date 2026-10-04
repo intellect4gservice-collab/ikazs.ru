@@ -53,12 +53,46 @@ export function setupAR(ctx) {
     open('Посмотрите КАЗС у себя на площадке', `
       <p class="k3-sum">${s.title}. Наведите камеру телефона на код - откроется эта модель, затем нажмите «Смотреть в AR».</p>
       <div class="k3-qr">${svg || '<p class="k3-err">Не удалось построить QR-код</p>'}</div>
-      <p class="k3-note">Работает на iPhone (Safari) и на Android с сервисами Google Play. Модель встанет на землю в натуральную величину.</p>`);
+      <p class="k3-note">Работает на iPhone и на Android с сервисами Google Play. Модель встанет на землю в натуральную величину.</p>`);
   }
 
   // ---------- iPhone: USDZ из текущей сцены
   const usdzCache = new Map();
   let anchor = null;
+  const MAPS = ['map', 'normalMap', 'roughnessMap', 'metalnessMap', 'aoMap', 'emissiveMap', 'alphaMap', 'clearcoatMap', 'clearcoatRoughnessMap', 'clearcoatNormalMap'];
+  const okImage = (img) => !!img && img.width > 0 && img.height > 0 && (
+    (typeof HTMLImageElement !== 'undefined' && img instanceof HTMLImageElement) ||
+    (typeof HTMLCanvasElement !== 'undefined' && img instanceof HTMLCanvasElement) ||
+    (typeof OffscreenCanvas !== 'undefined' && img instanceof OffscreenCanvas) ||
+    (typeof ImageBitmap !== 'undefined' && img instanceof ImageBitmap));
+  // копия модели только с тем, что понимает AR Quick Look: стандартные материалы и обычные картинки-текстуры
+  function exportable(src, lite) {
+    const g = src.clone(true);
+    const drop = [];
+    g.traverse((o) => {
+      if (!o.isMesh) return;
+      if (o.isInstancedMesh || o.isSkinnedMesh || !o.geometry || !o.geometry.attributes.position) { drop.push(o); return; }
+      const m0 = Array.isArray(o.material) ? o.material[0] : o.material;
+      if (!m0 || !m0.isMeshStandardMaterial) { drop.push(o); return; }
+      const m = m0.clone();
+      for (const k of MAPS) {
+        const t = m[k];
+        if (!t) continue;
+        if (t.isCompressedTexture || t.isDataTexture || t.isVideoTexture || !okImage(t.image) || (lite && k !== 'map')) m[k] = null;
+      }
+      if (lite && m.map && m.map.isCanvasTexture) m.map = null;
+      o.material = m;
+    });
+    drop.forEach((o) => o.parent && o.parent.remove(o));
+    g.position.set(0, 0, 0); g.updateMatrixWorld(true);
+    return g;
+  }
+  async function exportUSDZ(group, lite) {
+    return new USDZExporter().parseAsync(exportable(group, lite), {
+      quickLookCompatible: true, maxTextureSize: lite ? 256 : (isIOS ? 512 : 1024),
+      ar: { anchoring: { type: 'plane' }, planeAnchoring: { alignment: 'horizontal' } },
+    });
+  }
   async function buildUSDZ() {
     const s = ctx.state();
     const key = `${s.line}:${s.volume}:${s.color}`;
@@ -66,10 +100,9 @@ export function setupAR(ctx) {
     const group = ctx.group();
     if (!group) throw new Error('model not ready');
     group.updateMatrixWorld(true);
-    const data = await new USDZExporter().parseAsync(group, {
-      quickLookCompatible: true, maxTextureSize: 1024,
-      ar: { anchoring: { type: 'plane' }, planeAnchoring: { alignment: 'horizontal' } },
-    });
+    let data;
+    try { data = await exportUSDZ(group, false); }
+    catch (e) { console.warn('USDZ full failed, retry lite', e); data = await exportUSDZ(group, true); }   // запасной вариант: без карт рельефа, текстуры 512
     const url = URL.createObjectURL(new Blob([data], { type: 'model/vnd.usdz+zip' }));
     usdzCache.set(key, url);
     return url;
@@ -99,7 +132,7 @@ export function setupAR(ctx) {
       body.querySelector('#k3-ar-go').addEventListener('click', () => { launchQuickLook(url); close(); });
     } catch (e) {
       console.error(e);
-      body.innerHTML = `<p class="k3-err">Не получилось подготовить модель. Обновите страницу и попробуйте еще раз.</p>`;
+      body.innerHTML = `<p class="k3-err">Не получилось подготовить модель. Обновите страницу и попробуйте еще раз.</p><p class="k3-note">Код ошибки: ${String(e && e.message || e).slice(0, 140).replace(/[<>&]/g, '')}</p>`;
     }
   }
 
@@ -127,7 +160,7 @@ export function setupAR(ctx) {
   }
 
   function start() {
-    if (isIOS && quickLook) return startIOS();
+    if (isIOS) return startIOS();
     if (isAndroid) return startAndroid();
     if (mobile) { open('Дополненная реальность', `<p class="k3-sum">Этот браузер не поддерживает AR. Откройте страницу в Safari на iPhone или в Chrome на Android.</p>`); return; }
     showQR();
