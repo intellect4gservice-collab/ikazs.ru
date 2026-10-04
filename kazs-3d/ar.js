@@ -1,6 +1,6 @@
 // Дополненная реальность: iPhone - AR Quick Look (USDZ собирается из текущей модели и цвета, кнопка «Позвонить»),
 // Android - Google Scene Viewer (нужен публичный .glb на сайте), компьютер - QR-код для перехода с телефона.
-import { USDZExporter } from 'three/addons/exporters/USDZExporter.js';
+import { USDZExporter } from 'three/addons/exporters/USDZExporter.js?v=20261005';
 
 const PHONE_TEL = '+78122193485';
 const PHONE_TXT = '8 812 219 3485';

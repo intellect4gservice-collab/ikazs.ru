@@ -10,7 +10,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { createAsuScreen } from './asu.js';
 import { createAsuTall } from './asu_tall.js';
-import { setupAR } from './ar.js';
+import { setupAR } from './ar.js?v=20261005';
 
 const root = document.getElementById('kazs3d');
 const BASE = new URL(root.dataset.base || './', document.baseURI).href;
