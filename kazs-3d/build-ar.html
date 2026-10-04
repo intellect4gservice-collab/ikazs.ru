@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<title>Сборка AR-файлов КАЗС</title>
+<style>body{margin:0;font:15px/1.5 system-ui,-apple-system,sans-serif;background:#f3f4f6;color:#16181c}main{max-width:760px;margin:0 auto;padding:28px 20px}h1{font-size:22px;margin:0 0 6px}p{margin:0 0 14px;color:#5d636d}button{font:inherit;font-weight:600;background:#1c6ed4;color:#fff;border:0;border-radius:10px;padding:12px 20px;cursor:pointer}button:disabled{opacity:.5;cursor:progress}.bar{height:8px;background:#dfe2e6;border-radius:4px;overflow:hidden;margin:16px 0}.bar i{display:block;height:100%;width:0;background:#1c6ed4;transition:width .3s}ol{padding-left:22px;font:13px/1.7 ui-monospace,Menlo,monospace}.ok{color:#1f7a3c}.err{color:#c62828}.skip{color:#8a9099}iframe{width:100%;height:360px;border:0;border-radius:12px;margin-top:16px;background:#e7e9ec}</style>
+</head><body><main>
+<h1>Сборка AR-файлов для iPhone</h1>
+<p>Открыть один раз на компьютере после выкладки, нажать «Собрать». Страница по очереди соберёт 44 варианта (линейка × объём × цвет) и сохранит их на сервер в <code>kazs-3d/usdz/</code>. После этого AR открывается и в Chrome на iPhone. Уже собранные файлы пропускаются, вкладку можно закрыть и запустить снова.</p>
+<button id="go" disabled>Загружаем виджет…</button>
+<div class="bar"><i id="pr"></i></div>
+<ol id="log"></ol>
+<iframe id="w" src="index.html?embed=build" title="Виджет"></iframe>
+</main>
+<script>
+const COLORS=['#0b0c0e','#383c42','#7d8084','#eceef0','#1b4fa0','#a3141c','#1f6a3c','#5b3a24','#e2621b','#0f9a9a','#f2a900'];
+const go=document.getElementById('go'),log=document.getElementById('log'),pr=document.getElementById('pr'),w=document.getElementById('w');
+const line=(t,c)=>{const li=document.createElement('li');li.textContent=t;li.className=c||'';log.appendChild(li);return li};
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+let K=null;
+(async()=>{for(let i=0;i<120;i++){await wait(500);try{K=w.contentWindow.k3;if(K&&K.ready())break}catch(e){}}
+  if(K&&K.ready()){go.disabled=false;go.textContent='Собрать'}else{go.textContent='Виджет не загрузился - обновите страницу'}})();
+go.onclick=async()=>{
+  go.disabled=true;go.textContent='Собираем…';log.innerHTML='';
+  const jobs=[];for(const v of K.lines.lux.volumes)for(const c of COLORS)jobs.push(['lux',v,c]);for(const v of K.lines.premium.volumes)for(const c of COLORS)jobs.push(['premium',v,c]);
+  let done=0,ok=0,fail=0;
+  for(const [l,v,c] of jobs){
+    const s={line:l,volume:v,color:c},name=K.ar.usdzName(s),li=line(name+' …');
+    try{
+      if(await K.ar.staticExists(K.ar.usdzStatic(s))){li.textContent=name+' - уже есть';li.className='skip';ok++}
+      else{
+        await K.showVolume(v,l);for(let i=0;i<60&&!K.ready();i++)await wait(250);
+        K.setPaint(c);await wait(150);
+        const t=performance.now();const url=await K.ar.buildUSDZ();
+        const size=(await (await fetch(url)).blob()).size;
+        if(!(await K.ar.uploadUSDZ(s,url)))throw new Error('сервер не сохранил файл (save-usdz.php)');
+        URL.revokeObjectURL(url);
+        li.textContent=name+' - готово, '+(size/1e6).toFixed(1)+' МБ, '+((performance.now()-t)/1000).toFixed(1)+' с';li.className='ok';ok++;
+      }
+    }catch(e){li.textContent=name+' - ошибка: '+(e&&e.message||e);li.className='err';fail++}
+    pr.style.width=(++done/jobs.length*100)+'%';
+  }
+  go.disabled=false;go.textContent=fail?'Повторить ошибочные':'Готово';
+  line('Итого: '+ok+' из '+jobs.length+(fail?', ошибок: '+fail:''),fail?'err':'ok');
+};
+</script>
+</body></html>

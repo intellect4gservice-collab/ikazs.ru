@@ -109,7 +109,7 @@ export function setupAR(ctx) {
   }
   function quickLookHref(url) {
     const s = ctx.state();
-    const f = new URLSearchParams({ allowsContentScaling: '0', callToAction: 'Позвонить', checkoutTitle: s.title, checkoutSubtitle: 'ИнтеллектКАЗС · ' + PHONE_TXT });
+    const f = new URLSearchParams({ allowsContentScaling: '1', callToAction: 'Позвонить', checkoutTitle: s.title, checkoutSubtitle: 'ИнтеллектКАЗС · ' + PHONE_TXT });
     return url + '#' + f.toString().replace(/\+/g, '%20');
   }
   function launchQuickLook(url) {
@@ -123,19 +123,54 @@ export function setupAR(ctx) {
     anchor.href = quickLookHref(url);
     anchor.click();
   }
-  async function startIOS() {
-    open('Дополненная реальность', `<p class="k3-sum">Готовим модель для AR, это займет 5-20 секунд…</p><div class="k3-spin" aria-hidden="true"></div>`);
+  // ---------- готовые AR-файлы на сервере: kazs-3d/usdz/<линейка>_<объем>_<цвет>.usdz (работают и в Chrome)
+  const usdzName = (s) => `${s.line}_${s.volume}_${s.color.replace('#', '').toLowerCase()}`;
+  const usdzStatic = (s) => new URL('usdz/' + usdzName(s) + '.usdz', base).href;
+  async function staticExists(url) {
+    if (packed) return false;
+    try { const r = await fetch(url, { method: 'HEAD', cache: 'no-store' }); return r.ok && Number(r.headers.get('content-length') || 1) > 1000; } catch (e) { return false; }
+  }
+  // собранный файл кладем на сервер, чтобы следующий посетитель (и Chrome) получил его сразу
+  async function uploadUSDZ(s, blobUrl) {
+    if (packed) return false;
     try {
-      const url = await buildUSDZ();
-      body.innerHTML = `<p class="k3-sum">Модель готова. Наведите телефон на ровную площадку и поставьте КАЗС в натуральную величину. Кнопка «Позвонить» будет внизу экрана.</p>
-        <button type="button" class="k3-send" id="k3-ar-go">Открыть в AR</button>`;
-      body.querySelector('#k3-ar-go').addEventListener('click', () => { launchQuickLook(url); close(); });
-    } catch (e) {
+      const data = await (await fetch(blobUrl)).blob();
+      const r = await fetch(new URL('save-usdz.php?k=' + usdzName(s), base).href, { method: 'POST', headers: { 'Content-Type': 'application/octet-stream' }, body: data });
+      const j = await r.json().catch(() => ({}));
+      return r.ok && j.ok === true;
+    } catch (e) { return false; }
+  }
+  const chromeLike = /CriOS|FxiOS|EdgiOS|YaBrowser|OPiOS/.test(ua);
+  function readyBody(url) {
+    body.innerHTML = `<p class="k3-sum">Модель готова. Наведите телефон на ровную площадку и поставьте КАЗС. Двумя пальцами можно уменьшить или увеличить модель. Кнопка «Позвонить» будет внизу экрана.</p>
+      <a class="k3-send k3-call" id="k3-ar-go" rel="ar" href="${quickLookHref(url)}"><img alt="" style="display:none">Открыть в AR</a>`;
+    const go = body.querySelector('#k3-ar-go');
+    go.addEventListener('message', (e) => { if (e.data === '_apple_ar_quicklook_button_tapped') callNow(); }, false);
+    go.addEventListener('click', () => setTimeout(close, 300));
+  }
+  function safariHint() {
+    const u = shareUrl({ ar: '1' });
+    body.innerHTML = `<p class="k3-sum">Этот вариант модели еще не подготовлен для Chrome. Откройте его в Safari - там AR соберется на месте.</p>
+      <a class="k3-send k3-call" href="x-safari-${u}">Открыть в Safari</a>`;
+  }
+  async function startIOS() {
+    const s = ctx.state();
+    open('Дополненная реальность', `<p class="k3-sum">Готовим модель для AR…</p><div class="k3-spin" aria-hidden="true"></div>`);
+    const st = usdzStatic(s);
+    if (await staticExists(st)) { readyBody(st); return; }
+    open('Дополненная реальность', `<p class="k3-sum">Готовим модель для AR, это займет 5-20 секунд…</p><div class="k3-spin" aria-hidden="true"></div>`);
+    let blobUrl;
+    try { blobUrl = await buildUSDZ(); }
+    catch (e) {
       console.error(e);
       body.innerHTML = `<p class="k3-err">Не получилось подготовить модель. Обновите страницу и попробуйте еще раз.</p><p class="k3-note">Код ошибки: ${String(e && e.message || e).slice(0, 140).replace(/[<>&]/g, '')}</p>`;
+      return;
     }
+    const saved = await uploadUSDZ(s, blobUrl);
+    if (saved) { readyBody(st); return; }
+    if (chromeLike) { safariHint(); return; }
+    readyBody(blobUrl);
   }
-
   // ---------- Android: Scene Viewer
   function startAndroid() {
     if (packed) {
@@ -169,7 +204,7 @@ export function setupAR(ctx) {
   btn.title = mobile ? 'Поставить КАЗС на площадку через камеру телефона' : 'Показать QR-код для просмотра в AR с телефона';
 
   return {
-    start, showCall, buildUSDZ, shareUrl,
+    start, showCall, buildUSDZ, shareUrl, usdzName, uploadUSDZ, staticExists, usdzStatic,
     // параметры из ссылки: ?ar=1 сразу предлагает AR, #call или ?call=1 - карточка звонка
     afterLoad() {
       const p = new URLSearchParams(location.search);

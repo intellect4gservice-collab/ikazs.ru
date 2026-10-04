@@ -8,3 +8,10 @@ AddType application/wasm .wasm
     Header set Access-Control-Allow-Origin "*"
   </FilesMatch>
 </IfModule>
+
+# готовые AR-файлы: не кэшировать 404, отдавать с правильным типом
+<IfModule mod_headers.c>
+  <FilesMatch "\.usdz$">
+    Header set Content-Disposition "inline"
+  </FilesMatch>
+</IfModule>

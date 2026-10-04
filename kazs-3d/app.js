@@ -573,6 +573,8 @@ const ar = setupAR({
   file: (line, v) => LINES[line].file(v),
 });
 window.k3AR = ar;
+// для страницы build-ar.html: заранее собрать AR-файлы всех вариантов
+window.k3 = { ar, lines: LINES, showVolume, setPaint, ready: () => !!current };
 root.k3ar = ar;
 
 // ---------- старт
