@@ -1,0 +1,216 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<style>html,body{height:100%;margin:0;background:#e7e9ec}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap">
+<style>
+  /* Виджет: сцена на всю площадь, поверх - марка слева сверху и панель управления снизу */
+  #kazs3d {
+    --k3-bg: #e7e9ec; --k3-panel: rgba(255,255,255,.78); --k3-line: rgba(22,24,28,.12);
+    --k3-fg: #16181c; --k3-muted: #5d636d; --k3-card: #ffffff; --k3-field: #f3f4f6; --k3-accent: #1c6ed4; --k3-on-accent: #ffffff;
+    --k3-font: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    position: relative; width: 100%; height: 100%; min-height: 360px; overflow: hidden;
+    background: var(--k3-bg); color: var(--k3-fg); font-family: var(--k3-font);
+    transition: background-color .6s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #kazs3d[data-mode="night"] {
+    --k3-bg: #0b0f19; --k3-panel: rgba(16,21,33,.72); --k3-line: rgba(238,241,246,.14);
+    --k3-fg: #eef1f6; --k3-muted: #9aa3b2; --k3-card: #141a26; --k3-field: #0e131d; --k3-accent: #4d9dff; --k3-on-accent: #07101f;
+  }
+  #kazs3d [hidden] { display: none !important; }
+  #kazs3d .k3-stage { position: absolute; inset: 0; cursor: grab; touch-action: none; }
+  #kazs3d .k3-stage:active { cursor: grabbing; }
+  #kazs3d canvas { display: block; width: 100%; height: 100%; }
+  #kazs3d .k3-brand { position: absolute; left: 20px; top: 18px; display: grid; gap: 2px; pointer-events: none; }
+  #kazs3d .k3-brand b { font-weight: 600; font-size: 17px; letter-spacing: .01em; }
+  #kazs3d .k3-brand span { font-size: 13px; color: var(--k3-muted); letter-spacing: .01em; }
+  #kazs3d .k3-bar {
+    position: absolute; left: 0; right: 0; bottom: 18px; margin-inline: auto; width: max-content;
+    display: flex; align-items: center; gap: 10px; padding: 6px;
+    background: var(--k3-panel); border: 1px solid var(--k3-line); border-radius: 14px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    max-width: calc(100% - 32px); flex-wrap: wrap; justify-content: center;
+  }
+  #kazs3d .k3-seg { display: flex; gap: 2px; }
+  #kazs3d .k3-seg-label { font-size: 12px; color: var(--k3-muted); padding: 0 6px 0 8px; align-self: center; letter-spacing: .03em; }
+  #kazs3d button {
+    font: inherit; font-size: 14px; font-weight: 500; color: var(--k3-fg); background: transparent;
+    border: 0; border-radius: 9px; padding: 8px 12px; cursor: pointer; font-variant-numeric: tabular-nums; white-space: nowrap;
+    transition: background-color .2s, color .2s;
+  }
+  #kazs3d button:hover { background: var(--k3-line); }
+  #kazs3d button:focus-visible { outline: 2px solid var(--k3-accent); outline-offset: 2px; }
+  #kazs3d .k3-vol[aria-checked="true"] { background: var(--k3-accent); color: var(--k3-on-accent); }
+  #kazs3d .k3-vol sup { font-size: .62em; }
+  #kazs3d .k3-sw { display: flex; gap: 6px; align-items: center; padding: 0 4px; }
+  #kazs3d .k3-swatch { width: 22px; height: 22px; padding: 0; border-radius: 50%; background: var(--c); border: 1.5px solid var(--k3-line); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+  #kazs3d .k3-swatch:hover { background: var(--c); transform: scale(1.08); }
+  #kazs3d .k3-swatch[aria-checked="true"] { outline: 2px solid var(--k3-accent); outline-offset: 2px; }
+  #kazs3d .k3-order { background: var(--k3-accent); color: var(--k3-on-accent); font-weight: 600; padding: 8px 16px; }
+  #kazs3d .k3-order:hover { background: var(--k3-accent); filter: brightness(1.08); }
+  #kazs3d .k3-modal { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; padding: 16px;
+    background: rgba(5,8,14,.45); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  #kazs3d .k3-card { position: relative; width: min(420px, 100%); max-height: 100%; overflow: auto; background: var(--k3-card);
+    color: var(--k3-fg); border: 1px solid var(--k3-line); border-radius: 16px; padding: 24px 22px 20px; box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+  #kazs3d .k3-card h3 { margin: 0 0 4px; font-size: 20px; font-weight: 600; }
+  #kazs3d .k3-sum { margin: 0 0 16px; font-size: 13.5px; color: var(--k3-muted); }
+  #kazs3d .k3-form { display: grid; gap: 12px; }
+  #kazs3d .k3-form label { display: grid; gap: 5px; font-size: 13px; color: var(--k3-muted); }
+  #kazs3d .k3-form input:not([type=checkbox]) { font: inherit; font-size: 15px; color: var(--k3-fg); background: var(--k3-field);
+    border: 1px solid var(--k3-line); border-radius: 10px; padding: 10px 12px; outline: none; }
+  #kazs3d .k3-form input:focus-visible { border-color: var(--k3-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--k3-accent) 25%, transparent); }
+  #kazs3d .k3-form .k3-check { grid-template-columns: auto 1fr; align-items: start; gap: 8px; font-size: 12.5px; }
+  #kazs3d .k3-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  #kazs3d .k3-err { margin: 0; font-size: 13px; color: #d93a3a; }
+  #kazs3d .k3-send { background: var(--k3-accent); color: var(--k3-on-accent); font-weight: 600; padding: 12px; font-size: 15px; }
+  #kazs3d .k3-send:hover { background: var(--k3-accent); filter: brightness(1.08); }
+  #kazs3d .k3-send:disabled { opacity: .6; cursor: progress; }
+  #kazs3d .k3-x { position: absolute; right: 8px; top: 8px; font-size: 22px; line-height: 1; padding: 6px 10px; color: var(--k3-muted); }
+  #kazs3d .k3-done { text-align: center; padding: 12px 0 4px; }
+  #kazs3d .k3-done p { color: var(--k3-muted); font-size: 14px; margin: 8px 0 16px; }
+  #kazs3d .k3-done b { font-size: 20px; font-weight: 600; }
+  #kazs3d .k3-div { width: 1px; align-self: stretch; background: var(--k3-line); margin: 4px 2px; }
+  #kazs3d .k3-mode { display: flex; align-items: center; gap: 8px; min-width: 92px; justify-content: center; }
+  #kazs3d .k3-mode svg { width: 18px; height: 18px; }
+  #kazs3d .k3-mode .k3-moon { display: none; }
+  #kazs3d[data-mode="night"] .k3-mode .k3-sun { display: none; }
+  #kazs3d[data-mode="night"] .k3-mode .k3-moon { display: block; }
+  #kazs3d .k3-hint { position: absolute; right: 20px; top: 20px; font-size: 12.5px; color: var(--k3-muted); pointer-events: none; transition: opacity .6s; }
+  #kazs3d .k3-hint.is-gone { opacity: 0; }
+  #kazs3d .k3-status {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+    font-size: 14px; color: var(--k3-muted); background: var(--k3-panel); padding: 10px 16px; border-radius: 10px;
+  }
+  #kazs3d .k3-lines { position: absolute; left: 0; right: 0; top: 16px; margin-inline: auto; width: max-content; z-index: 2;
+    display: flex; gap: 2px; padding: 4px; background: var(--k3-panel); border: 1px solid var(--k3-line); border-radius: 12px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  #kazs3d .k3-line { padding: 7px 18px; }
+  #kazs3d .k3-line[aria-checked="true"] { background: var(--k3-fg); color: var(--k3-bg); }
+  #kazs3d .k3-soon { position: absolute; left: 50%; top: 46%; transform: translate(-50%,-50%); width: min(360px, calc(100% - 32px));
+    text-align: center; display: grid; gap: 8px; justify-items: center; }
+  #kazs3d .k3-soon[hidden] { display: none; }
+  #kazs3d .k3-soon b { font-size: 26px; font-weight: 600; letter-spacing: .01em; }
+  #kazs3d .k3-soon p { margin: 0 0 8px; color: var(--k3-muted); font-size: 14.5px; line-height: 1.45; }
+  @media (max-width: 900px) { #kazs3d .k3-hint { display: none; } }
+  @media (max-width: 560px) {
+    #kazs3d .k3-lines { top: 52px; }
+    #kazs3d .k3-hint { display: none; }
+    #kazs3d .k3-seg-label { display: none; }
+    #kazs3d button { padding: 8px 9px; font-size: 13.5px; }
+    #kazs3d .k3-bar { bottom: 14px; gap: 6px; }
+    #kazs3d .k3-div { display: none; }
+    #kazs3d .k3-brand { left: 16px; top: 14px; }
+  }
+  #kazs3d .k3-brand { gap: 4px; }
+  #kazs3d .k3-logo { display: block; height: 34px; width: auto; }
+  #kazs3d .k3-logo-night { display: none; }
+  #kazs3d[data-mode="night"] .k3-logo-day { display: none; }
+  #kazs3d[data-mode="night"] .k3-logo-night { display: block; }
+  #kazs3d .k3-brand span { padding-left: 2px; }
+  #kazs3d .k3-ar { position: absolute; right: 16px; top: 16px; z-index: 2; display: flex; align-items: center; gap: 8px;
+    background: var(--k3-panel); border: 1px solid var(--k3-line); border-radius: 12px; padding: 9px 14px;
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); font-weight: 600; }
+  #kazs3d .k3-ar svg { width: 20px; height: 20px; }
+  #kazs3d .k3-hint { top: 70px; }
+  #kazs3d .k3-arsheet h3 { margin: 0 0 6px; font-size: 20px; font-weight: 600; padding-right: 28px; }
+  #kazs3d .k3-arbody { display: grid; gap: 12px; }
+  #kazs3d .k3-arbody .k3-sum { margin: 0; line-height: 1.45; }
+  #kazs3d .k3-qr { background: #fff; border-radius: 12px; padding: 10px; width: min(240px, 70vw); justify-self: center; line-height: 0; }
+  #kazs3d .k3-qr svg { width: 100%; height: auto; display: block; }
+  #kazs3d .k3-note { margin: 0; font-size: 12.5px; color: var(--k3-muted); line-height: 1.45; }
+  #kazs3d .k3-call { display: block; text-align: center; text-decoration: none; border-radius: 9px; }
+  #kazs3d .k3-spin { width: 34px; height: 34px; border-radius: 50%; border: 3px solid var(--k3-line); border-top-color: var(--k3-accent);
+    justify-self: center; animation: k3spin 0.9s linear infinite; }
+  @keyframes k3spin { to { transform: rotate(360deg); } }
+  @media (max-width: 560px) {
+    #kazs3d .k3-logo { height: 26px; }
+    #kazs3d .k3-brand span { display: none; }
+    #kazs3d .k3-lines { top: 62px; }
+    #kazs3d .k3-ar { top: 12px; right: 12px; padding: 8px 11px; font-size: 13.5px; }
+    #kazs3d .k3-ar span { display: inline; }
+  }
+  @media (max-width: 380px) { #kazs3d .k3-ar span { display: none; } }
+  @media (prefers-reduced-motion: reduce) { #kazs3d, #kazs3d button, #kazs3d .k3-hint { transition: none; } }
+  #kazs3d .k3-toast{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:6;background:rgba(24,32,42,.82);color:#fff;font-size:13px;padding:9px 16px;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none}
+  #kazs3d .k3-toast.on{opacity:1}
+</style>
+
+<div id="kazs3d" data-base="./" data-line="lux" data-volume="10" data-color="#0b0c0e" data-mode="day" aria-label="3D-модель контейнерной АЗС ИнтеллектКАЗС">
+  <div class="k3-stage"></div>
+  <div class="k3-brand"><img class="k3-logo k3-logo-day" src="tex/logo_line.png" alt="ИнтеллектКАЗС" width="1274" height="209"><img class="k3-logo k3-logo-night" src="tex/logo_line_light.png" alt="" aria-hidden="true" width="1274" height="209"><span>Топливная инфраструктура под ключ</span></div>
+  <button class="k3-ar" id="k3-ar" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M12 2.8 20 7.4v9.2L12 21.2 4 16.6V7.4z"/><path d="M4 7.4 12 12l8-4.6M12 12v9.2"/></svg><span>Смотреть в AR</span></button>
+  <div class="k3-hint">Потяните, чтобы повернуть, колесико - масштаб</div>
+  <div class="k3-status" role="status">Загружаем модель…</div>
+  <div class="k3-lines" role="radiogroup" aria-label="Линейка КАЗС">
+    <button class="k3-line" data-line="lux" role="radio" aria-checked="true">Люкс</button>
+    <button class="k3-line" data-line="premium" role="radio" aria-checked="false">Премиум</button>
+  </div>
+  <div class="k3-soon" hidden>
+    <b>КАЗС Премиум</b>
+    <p>3D-модель этой линейки скоро появится. Оставьте заявку - пришлем фото, комплектацию и расчет.</p>
+    <button class="k3-order" onclick="document.getElementById('k3-order').click()">Заказать</button>
+  </div>
+  <div class="k3-bar">
+    <span class="k3-seg-label">Резервуар</span>
+    <div class="k3-seg" role="radiogroup" aria-label="Объем резервуара">
+      <button class="k3-vol" id="k3-v10" data-v="10" role="radio" aria-checked="true">10 м<sup>3</sup></button>
+      <button class="k3-vol" id="k3-v15" data-v="15" role="radio" aria-checked="false">15 м<sup>3</sup></button>
+      <button class="k3-vol" id="k3-v20" data-v="20" role="radio" aria-checked="false">20 м<sup>3</sup></button>
+      <button class="k3-vol" id="k3-v25" data-v="25" role="radio" aria-checked="false" title="Резервуар 25 м³: 5 + 10 + 10" hidden>25 м<sup>3</sup></button>
+    </div>
+    <span class="k3-div" aria-hidden="true"></span>
+    <div class="k3-sw" role="radiogroup" aria-label="Цвет фриза, вставок и колонки">
+      <span class="k3-seg-label">Цвет</span>
+      <button class="k3-swatch" id="k3-c0" data-c="#0b0c0e" role="radio" aria-checked="true" aria-label="Черный" title="Черный" style="--c:#0b0c0e"></button>
+      <button class="k3-swatch" id="k3-c1" data-c="#383c42" role="radio" aria-checked="false" aria-label="Графит" title="Графит" style="--c:#383c42"></button>
+      <button class="k3-swatch" id="k3-c2" data-c="#7d8084" role="radio" aria-checked="false" aria-label="Серый Nardo" title="Серый Nardo" style="--c:#7d8084"></button>
+      <button class="k3-swatch" id="k3-c3" data-c="#eceef0" role="radio" aria-checked="false" aria-label="Белый" title="Белый" style="--c:#eceef0"></button>
+      <button class="k3-swatch" id="k3-c4" data-c="#1b4fa0" role="radio" aria-checked="false" aria-label="Синий" title="Синий" style="--c:#1b4fa0"></button>
+      <button class="k3-swatch" id="k3-c5" data-c="#a3141c" role="radio" aria-checked="false" aria-label="Красный" title="Красный" style="--c:#a3141c"></button>
+      <button class="k3-swatch" id="k3-c6" data-c="#1f6a3c" role="radio" aria-checked="false" aria-label="Зеленый" title="Зеленый" style="--c:#1f6a3c"></button>
+      <button class="k3-swatch" id="k3-c7" data-c="#5b3a24" role="radio" aria-checked="false" aria-label="Коричневый" title="Коричневый" style="--c:#5b3a24"></button>
+      <button class="k3-swatch" id="k3-c8" data-c="#e2621b" role="radio" aria-checked="false" aria-label="Оранжевый" title="Оранжевый" style="--c:#e2621b"></button>
+      <button class="k3-swatch" id="k3-c9" data-c="#0f9a9a" role="radio" aria-checked="false" aria-label="Бирюзовый" title="Бирюзовый" style="--c:#0f9a9a"></button>
+      <button class="k3-swatch" id="k3-c10" data-c="#f2a900" role="radio" aria-checked="false" aria-label="Желтый" title="Желтый" style="--c:#f2a900"></button>
+    </div>
+    <span class="k3-div" aria-hidden="true"></span>
+    <button class="k3-mode" id="k3-mode" aria-pressed="false" aria-label="Переключить день и ночь">
+      <svg class="k3-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+      <svg class="k3-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+      <span class="k3-mode-label">День</span>
+    </button>
+    <span class="k3-div" aria-hidden="true"></span>
+    <button class="k3-order" id="k3-order">Заказать</button>
+  </div>
+  <div class="k3-modal k3-arsheet" hidden role="dialog" aria-modal="true" aria-labelledby="k3-ar-title">
+    <div class="k3-card">
+      <button type="button" class="k3-x" aria-label="Закрыть">×</button>
+      <h3 id="k3-ar-title">Дополненная реальность</h3>
+      <div class="k3-arbody"></div>
+    </div>
+  </div>
+  <div class="k3-modal" hidden role="dialog" aria-modal="true" aria-labelledby="k3-mt">
+    <div class="k3-card">
+      <button type="button" class="k3-x" aria-label="Закрыть">×</button>
+      <form class="k3-form" id="k3-form" novalidate>
+        <div><h3 id="k3-mt">Заявка на КАЗС</h3><p class="k3-sum" id="k3-sum"></p></div>
+        <label for="k3-name">ФИО<input id="k3-name" name="name" autocomplete="name" maxlength="120" required></label>
+        <label for="k3-phone">Телефон<input id="k3-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="30" placeholder="+7 900 000-00-00" required></label>
+        <label for="k3-email">Почта<input id="k3-email" name="email" type="email" autocomplete="email" maxlength="120" placeholder="name@company.ru" required></label>
+        <input class="k3-hp" id="k3-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <label class="k3-check" for="k3-agree"><input type="checkbox" id="k3-agree" name="agree"> <span>Согласен на обработку персональных данных</span></label>
+        <p class="k3-err" id="k3-err" role="alert" hidden></p>
+        <button type="submit" class="k3-send" id="k3-send">Отправить</button>
+      </form>
+      <div class="k3-done" hidden><b>Спасибо, заявка отправлена</b><p id="k3-done-note"></p><button type="button" class="k3-send k3-x2" onclick="this.closest('.k3-modal').querySelector('.k3-x').click()">Готово</button></div>
+    </div>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.min.js", "three/addons/": "./vendor/addons/" } }
+</script>
+<script src="./vendor/qrcode.js"></script>
+<script type="module" src="./app.js"></script>
+
+</body></html>

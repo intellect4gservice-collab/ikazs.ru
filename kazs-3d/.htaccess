@@ -1,0 +1,10 @@
+# типы файлов для 3D и AR
+AddType model/gltf-binary .glb
+AddType model/vnd.usdz+zip .usdz
+AddType application/wasm .wasm
+<IfModule mod_headers.c>
+  <FilesMatch "\.(glb|usdz|wasm|png|js)$">
+    Header set Cache-Control "public, max-age=604800"
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
+</IfModule>

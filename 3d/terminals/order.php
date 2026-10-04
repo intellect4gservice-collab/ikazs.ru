@@ -19,6 +19,7 @@ $clean=function($v,$max=200){$v=trim((string)$v);$v=preg_replace('/[\x00-\x1F\x7
 $name=$clean($d['name']??'',120); $phone=$clean($d['phone']??'',40); $email=$clean($d['email']??'',120);
 $model=$clean($d['model']??'',60); $color=$clean($d['color']??'',40);
 $partner=$clean($d['partner']??'',80); $site=$clean($d['site']??'',200);
+$kind=($d['kind']??'')==='kazs'?'КАЗС':'терминал';
 if($name==='') out(422,['success'=>false,'message'=>'name']);
 if(strlen(preg_replace('/\D/','',$phone))<10 && !filter_var($email,FILTER_VALIDATE_EMAIL)) out(422,['success'=>false,'message'=>'contact']);
 if($email!=='' && !filter_var($email,FILTER_VALIDATE_EMAIL)) $email='';
@@ -31,7 +32,7 @@ $hits[]=time(); @file_put_contents($lf,json_encode(array_values($hits)));
 
 $when=date('d.m.Y H:i');
 $h=fn($s)=>htmlspecialchars($s,ENT_QUOTES,'UTF-8');
-$tg="🟢 <b>Заявка на терминал</b>\n".
+$tg="🟢 <b>Заявка на ".$kind."</b>\n".
     "<b>Модель:</b> ".$h($model)." · ".$h($color)."\n".
     "<b>ФИО:</b> ".$h($name)."\n".
     "<b>Телефон:</b> ".$h($phone?:'-')."\n".
@@ -48,7 +49,7 @@ if(!empty($cfg['tg_token']) && strpos($cfg['tg_token'],'ВСТАВЬ')===false){
 }
 $okMail=false;
 if(!empty($cfg['email_to'])){
-  $subj='Заявка на терминал '.$model.($partner?' от партнёра '.$partner:'').' - '.$name;
+  $subj='Заявка на '.$kind.' '.$model.($partner?' от партнёра '.$partner:'').' - '.$name;
   $body="Модель: $model\nЦвет: $color\nФИО: $name\nТелефон: ".($phone?:'-')."\nПочта: ".($email?:'-').
         "\nПартнёр: ".($partner?:'прямой заход')."\nСайт: ".($site?:'-')."\nВремя: $when\n";
   $hdr="From: ".$cfg['email_from']."\r\nContent-Type: text/plain; charset=UTF-8\r\n".($email?"Reply-To: $email\r\n":'');

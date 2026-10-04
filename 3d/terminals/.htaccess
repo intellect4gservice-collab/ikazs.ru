@@ -1,4 +1,0 @@
-<Files "order-config.php">
-  Require all denied
-</Files>
-Options -Indexes
