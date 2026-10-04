@@ -1,0 +1,717 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Терминалы ИнтеллектКАЗС</title>
+<script>window.ORION_EMBED=self!==top||/[?&]embed/.test(location.search);window.ORION_SITE=/[?&]embed=site/.test(location.search);document.documentElement.classList.toggle("embed",ORION_EMBED);document.documentElement.classList.toggle("site",ORION_SITE)</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Onest:wght@400;500;600;700&family=Unbounded:wght@500;700&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* Layout: светло-серая фотостудия на весь экран; паспорт сверху слева, логотип сверху справа, управление снизу.
+   Единый светлый вид сознательно: предметная съёмка изделия. */
+:root{
+  --bg:#c9ced4; --bg-glow:#e3e6ea; --fg:#18202a; --muted:#56616e; --line:rgba(24,32,42,.16);
+  --panel:rgba(255,255,255,.72); --accent:#1446c8; --accent-fg:#ffffff;
+  --f-display:"Unbounded","Onest",system-ui,sans-serif; --f-body:"Onest",system-ui,sans-serif; --f-mono:"JetBrains Mono",ui-monospace,monospace;
+  color-scheme:light;
+}
+html,body{height:100%;margin:0}
+[hidden]{display:none!important}
+body{background:radial-gradient(ellipse 60% 65% at 50% 45%,var(--bg-glow) 0%,var(--bg) 75%);background-color:var(--bg);color:var(--fg);font-family:var(--f-body);overflow:hidden}
+#stage{position:fixed;inset:0}
+canvas{display:block;touch-action:none}
+.hud{position:fixed;left:0;right:0;pointer-events:none;padding-inline:max(16px,3vw);display:flex;justify-content:space-between;gap:16px}
+.hud>*{pointer-events:auto}
+.top{top:calc(env(safe-area-inset-top,0px) + 18px);align-items:flex-start}
+.bottom{bottom:calc(env(safe-area-inset-bottom,0px) + 18px);align-items:flex-end}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(22px,3.2vw,34px);letter-spacing:.01em;margin:0;line-height:1.05}
+.eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.specs{display:grid;grid-template-columns:auto auto;gap:2px 14px;margin-top:10px;font-family:var(--f-mono);font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.specs b{font-weight:400;color:var(--fg)}
+.top{flex-wrap:wrap}
+.models{display:flex;align-items:center;gap:4px;background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:999px;padding:4px;align-self:flex-start}
+.models .mtab{border:0;border-radius:999px;padding:7px 14px;font-size:13px;font-weight:600;white-space:nowrap}
+.models .mtab[aria-selected="true"]{background:var(--fg);color:#fff}
+.models .marr{border:0;width:28px;height:28px;padding:0;border-radius:50%;font-size:16px;line-height:1}
+.models .marr:hover,.models .mtab:hover{background:rgba(0,0,0,.06)}
+.models .mtab[aria-selected="true"]:hover{background:var(--fg)}
+.brand{width:170px;pointer-events:none}
+.brand img{display:block;width:100%;height:auto}
+.hint{font-size:12px;color:var(--muted);max-width:280px;margin:0;text-align:right;line-height:1.45}
+.hint b{color:var(--fg);font-weight:600}
+.panel{background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0;max-width:100%}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:transparent;color:var(--fg);border-radius:10px;padding:9px 14px;font-weight:500;font-size:14px}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+#explode{background:var(--accent);color:var(--accent-fg);border-color:transparent;font-weight:600;font-size:13px;padding:8px 14px;min-width:7.5em;white-space:nowrap}
+#explode:disabled{opacity:.75;cursor:default}
+.lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ctl{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dbtn{font-size:13px;padding:7px 12px;white-space:nowrap;background:rgba(255,255,255,.55)}
+.dbtn[aria-pressed="true"]{background:var(--fg);color:#fff;border-color:var(--fg)}
+.dbtn:disabled{opacity:.45;cursor:default}
+.picker{position:relative;display:flex;align-items:center;gap:4px}
+.orderw{position:relative}
+#orderBtn{background:#16a34a;color:#fff;border-color:#16a34a;font-weight:600;font-size:13px;padding:8px 16px}
+#orderBtn:hover{background:#15803d}
+.order{position:absolute;left:0;bottom:calc(100% + 10px);width:min(320px,calc(100vw - 32px));background:var(--panel);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 14px 34px rgba(0,0,0,.2);z-index:6;display:flex;flex-direction:column;gap:9px}
+.order h3{margin:0;font-size:15px;font-weight:700}
+.order .om{font-size:12px;color:var(--muted);margin-top:-4px}
+.order label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted)}
+.order input[type=text],.order input[type=tel],.order input[type=email]{font:inherit;font-size:14px;color:var(--fg);background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px 10px}
+.order input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.order .ok{display:flex;gap:8px;align-items:flex-start;font-size:11.5px;color:var(--muted);flex-direction:row;line-height:1.35}
+.order .ok input{margin-top:2px}
+.order .send{background:var(--accent);color:#fff;border-color:transparent;font-weight:600;padding:9px 14px}
+.order .send:disabled{opacity:.6;cursor:default}
+.order .msg{font-size:12.5px;line-height:1.4;margin:0}
+.order .msg.err{color:#b42318}
+.order .msg.good{color:#15803d;font-weight:600}
+.order .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+@media (max-width:760px){.order{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 90px);width:auto}}
+.arr{width:30px;height:30px;padding:0;border-radius:50%;font-size:16px;line-height:1;display:grid;place-items:center}
+.arr:hover{background:rgba(0,0,0,.06)}
+.dot{width:30px;height:30px;border-radius:50%;padding:0;border:1px solid rgba(0,0,0,.25);box-shadow:inset 0 2px 5px rgba(255,255,255,.4)}
+.dot:hover{outline:2px solid var(--line);outline-offset:2px}
+#cname{font-size:13px;color:var(--fg);min-width:6.5em;padding-left:4px}
+.menu{position:absolute;left:0;bottom:calc(100% + 10px);background:var(--panel);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:12px;padding:8px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px;width:250px;box-shadow:0 12px 30px rgba(0,0,0,.18);z-index:5}
+.opt{display:flex;align-items:center;gap:8px;border:0;border-radius:8px;padding:6px 8px;font-size:13px;font-weight:500;text-align:left}
+.opt:hover,.opt:focus-visible{background:rgba(0,0,0,.06)}
+.opt[aria-selected="true"]{background:rgba(20,70,200,.10)}
+.opt i{width:18px;height:18px;border-radius:50%;flex:none;border:1px solid rgba(0,0,0,.25)}
+#tip{position:fixed;pointer-events:none;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(10px);border-radius:8px;padding:6px 10px;font-size:13px;max-width:280px;transform:translate(-50%,calc(-100% - 12px))}
+#night{position:fixed;inset:0;background:radial-gradient(ellipse 60% 70% at 50% 42%,#141920 0%,#040506 72%);opacity:0;transition:opacity 1.4s ease;pointer-events:none}
+#stage{z-index:1}
+.hud{z-index:2;transition:opacity .8s ease}
+body.demo .hud{opacity:0;pointer-events:none}
+body.demo .hud *{pointer-events:none}
+body.demo #night{opacity:1}
+#fade{position:fixed;inset:0;background:#000;opacity:0;transition:opacity .45s ease;pointer-events:none;z-index:4}
+#demoUI{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);display:flex;justify-content:center;z-index:3;opacity:0;transition:opacity .8s ease;pointer-events:none}
+body.demo #demoUI{opacity:1;pointer-events:auto}
+#skip{color:rgba(255,255,255,.82);border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.06);font-size:13px;padding:7px 14px;border-radius:999px}
+#cap{position:fixed;left:max(24px,7vw);top:50%;transform:translate(0,calc(-50% + 10px));z-index:3;text-align:left;color:#fff;opacity:0;transition:opacity 1.2s ease,transform 1.2s ease;pointer-events:none;width:min(360px,34vw)}
+#cap.on{opacity:1;transform:translate(0,-50%)}
+#cap img{width:140px;height:auto;display:block;margin:0 0 16px}
+@media (max-width:760px){#cap{left:50%;top:calc(env(safe-area-inset-top,0px) + 28px);transform:translate(-50%,8px);text-align:center;width:90vw}#cap.on{transform:translate(-50%,0)}#cap img{margin:0 auto 10px;width:110px}}
+#cap h2{font-family:var(--f-display);font-weight:700;font-size:clamp(30px,5vw,52px);letter-spacing:.02em;margin:0;line-height:1}
+#cap p{margin:10px 0 0;font-size:14px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.vbtn{font-size:13px;padding:7px 12px;white-space:nowrap;background:rgba(255,255,255,.55)}
+#demoBtn{background:#111418;color:#fff;border-color:#111418}
+#load{position:fixed;inset:0;display:grid;place-items:center;font-family:var(--f-mono);font-size:13px;color:var(--muted);pointer-events:none}
+@media (max-width:760px){
+  .specs{display:none}
+  .hint{text-align:left;max-width:none}
+  .bottom{flex-direction:column;align-items:stretch}
+  .brand{width:120px}
+  .models{order:3;width:100%;justify-content:center;border-radius:14px}
+}
+html.site{--f-display:"Inter",system-ui,sans-serif;--f-body:"Inter",system-ui,sans-serif;--accent:#0071e3}
+html.site h1{font-weight:600;letter-spacing:-.02em}
+html.site .brand{visibility:hidden}
+#wtoast{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:6;background:rgba(24,32,42,.82);color:#fff;font-size:13px;padding:9px 16px;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none}
+#wtoast.on{opacity:1}
+</style>
+<div id="night"></div>
+<div id="stage"></div>
+<div id="load">Загрузка модели… <span id="pct"></span></div>
+<div class="hud top">
+  <div>
+    <div class="eyebrow" id="meye">Терминал самообслуживания АЗС</div>
+    <h1 id="mname">S30 Орион</h1>
+    <div class="specs" id="mspecs"></div>
+  </div>
+  <nav class="models" id="models" aria-label="Модель терминала"></nav>
+  <div class="brand"><img src="logo_dark.png" alt="ИнтеллектКАЗС"></div>
+</div>
+<div class="hud bottom">
+  <div class="panel">
+    <div class="ctl">
+      <button id="explode" type="button">Разобрать</button>
+      <button class="dbtn" id="doorTop" type="button" aria-pressed="false">Открыть экран</button>
+      <button class="dbtn" id="doorBot" type="button" aria-pressed="false">Открыть низ</button>
+      <button class="vbtn" id="spinBtn" type="button">Вращение</button>
+      <button class="vbtn" id="demoBtn" type="button">▶ Демо</button>
+      <div class="orderw">
+        <button id="orderBtn" type="button" aria-expanded="false" aria-controls="order">Заказать</button>
+        <form class="order" id="order" hidden novalidate>
+          <h3>Заявка на терминал</h3>
+          <div class="om" id="orderModel">S30 Орион · Синий</div>
+          <label>ФИО<input type="text" id="oName" name="name" autocomplete="name" required></label>
+          <label>Телефон<input type="tel" id="oPhone" name="phone" autocomplete="tel" placeholder="+7 900 000-00-00"></label>
+          <label>Почта<input type="email" id="oEmail" name="email" autocomplete="email" placeholder="name@company.ru"></label>
+          <label class="ok"><input type="checkbox" id="oAgree" required><span>Согласен на обработку персональных данных для ответа на заявку</span></label>
+          <input class="hp" type="text" id="oHoney" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+          <button class="send" id="oSend" type="submit">Отправить</button>
+          <p class="msg" id="oMsg" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+      <div class="picker">
+        <button class="arr" id="cprev" type="button" aria-label="Предыдущий цвет">‹</button>
+        <button class="dot" id="cdot" type="button" aria-haspopup="listbox" aria-expanded="false" aria-label="Выбрать цвет корпуса"></button>
+        <button class="arr" id="cnext" type="button" aria-label="Следующий цвет">›</button>
+        <span id="cname">Синий</span>
+        <div class="menu" id="cmenu" role="listbox" aria-label="Цвет корпуса" hidden></div>
+      </div>
+    </div>
+  </div>
+  <p class="hint"><b>Колесо мыши или два пальца - приблизить</b> любой узел крупно. Тянуть - вращать, правая кнопка - сдвиг. Клик по детали - её название.</p>
+</div>
+<div id="tip" hidden></div>
+<div id="wtoast">Ctrl + колесо мыши — приблизить</div>
+<div id="cap"><img src="logo_white.png" alt="ИнтеллектКАЗС"><h2 id="capName">S30 Орион</h2><p>Терминал самообслуживания АЗС</p></div>
+<div id="demoUI"><button id="skip" type="button">Пропустить демо</button></div>
+<div id="fade"></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {MeshoptDecoder} from 'three/addons/libs/meshopt_decoder.module.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+
+/* ---------- РЕЕСТР МОДЕЛЕЙ: чтобы добавить терминал - добавить запись и положить models/<id>.glb ----------
+   hinge - ось петель дверей в координатах модели (м), screen - стекло экрана (по названию детали) и активная область,
+   logo - высота центра логотипа на двери от пола и ширина (м), height - высота терминала (масштаб камеры и демо) */
+const MODELS=[
+  {id:'orion5',name:'S30 Орион',eyebrow:'Терминал самообслуживания АЗС',height:2.0,
+   specs:[['Ширина','568 мм'],['Глубина','424 мм'],['Высота','2000 мм'],['Экран','32″ сенсорный']],
+   hinge:{x:0.274,z:0.067},screen:{glass:'Стекло сенс',w:0.398,h:0.708,layout:'portrait'},logo:{y:0.495,w:0.30}},
+  {id:'tsv17',name:'S1 Урбан',eyebrow:'Терминал самообслуживания АЗС',height:1.829,
+   specs:[['Ширина','640 мм'],['Глубина','524 мм'],['Высота','1829 мм'],['Экран','17″ сенсорный']],
+   hinge:{x:0.262,z:0.182},screen:{glass:'Стекло тач',w:0.338,h:0.270,layout:'landscape'},logo:{y:0.41,w:0.26}},
+];
+let M=MODELS[0];
+const S=()=>M.height/2.0;     // масштаб относительно ОРИОН-5 (камера, демо)
+const MOVE_MS=8000;          // разборка и сборка - медленно
+const IDLE_MS=5000;          // бездействие до возврата камеры
+const SPIN=0.12;             // рад/с - один оборот примерно за 52 с
+const SCREEN_MS=3800;
+const reduce=false;   // анимация всегда: системная настройка «Уменьшить движение» её больше не отключает
+
+// цвета корпуса: [название, hex, металлик]
+const COLORS=[
+  ['Синий','#0a3cc2',0],['Голубой','#1e7fd8',0],['Чёрный','#0b0c0e',0],['Графит','#33383e',0.2],
+  ['Серебро','#b9bec5',0.75],['Белый','#f3f4f5',0],['Красный','#c40f24',0],['Бордовый','#6a0f1d',0],
+  ['Оранжевый','#f06400',0],['Жёлтый','#f2c200',0],['Зелёный','#12703a',0]
+];
+
+/* ---------- рендер и студийный рассеянный свет ---------- */
+const stage=document.getElementById('stage');
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.outputColorSpace=THREE.SRGBColorSpace;
+renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.0;
+stage.appendChild(renderer.domElement);
+const scene=new THREE.Scene();
+const pmrem=new THREE.PMREMGenerator(renderer);
+scene.environment=pmrem.fromScene(new RoomEnvironment(),0.04).texture;   // мягкие софтбоксы для отражений
+const hemi=new THREE.HemisphereLight(0xffffff,0xb8bec6,1.1); scene.add(hemi);
+const keyL=new THREE.DirectionalLight(0xffffff,1.3); keyL.position.set(2,6,4); scene.add(keyL);
+const fillL=new THREE.DirectionalLight(0xffffff,0.6); fillL.position.set(-4,3,2); scene.add(fillL);
+const rimL=new THREE.DirectionalLight(0xffffff,0.5); rimL.position.set(0,3,-4); scene.add(rimL);
+// боковой свет: слева и справа на уровне середины терминала + мягкий нижний фронтальный, чтобы были видны детали
+const sideL=new THREE.DirectionalLight(0xffffff,1.1); sideL.position.set(-5,1.4,0.8); scene.add(sideL);
+const sideR=new THREE.DirectionalLight(0xffffff,1.1); sideR.position.set(5,1.4,0.8); scene.add(sideR);
+const lowF=new THREE.DirectionalLight(0xffffff,0.45); lowF.position.set(0,0.6,5); scene.add(lowF);
+
+// мягкая контактная тень под терминалом (без жёстких краёв)
+function softShadow(){
+  const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');
+  const gr=x.createRadialGradient(128,128,0,128,128,128);gr.addColorStop(0,'rgba(0,0,0,.55)');gr.addColorStop(.45,'rgba(0,0,0,.28)');gr.addColorStop(1,'rgba(0,0,0,0)');
+  x.fillStyle=gr;x.fillRect(0,0,256,256);const t=new THREE.CanvasTexture(c);
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1.1),new THREE.MeshBasicMaterial({map:t,transparent:true,depthWrite:false}));
+  m.rotation.x=-Math.PI/2;m.position.y=0.002;return m;}
+scene.add(softShadow());
+const STUDIO=[hemi,keyL,fillL,rimL,sideL,sideR,lowF].map(l=>({l,base:l.intensity}));
+
+const camera=new THREE.PerspectiveCamera(30,1,0.05,60);
+const controls=new OrbitControls(camera,renderer.domElement);
+/* встраивание через iframe: колесо без Ctrl листает страницу, вертикальный свайп на телефоне тоже */
+if(window.ORION_EMBED){renderer.domElement.style.touchAction='pan-y';let tt=0;const toast=document.getElementById('wtoast');addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey)return;e.stopPropagation();toast.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>toast.classList.remove('on'),1200);},{capture:true,passive:true});document.querySelector('.hint').innerHTML='<b>Тянуть — вращать.</b> Ctrl + колесо или два пальца — приблизить, правая кнопка — сдвиг. Клик по детали — её название.';}
+const post=m=>{try{parent!==self&&parent.postMessage({orion:m},'*')}catch(e){}};
+controls.enableDamping=true; controls.zoomToCursor=true; controls.minDistance=0.5; controls.maxDistance=12; controls.maxPolarAngle=Math.PI*0.55;
+function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();}
+addEventListener('resize',resize); resize();
+
+/* ---------- камера: исходный вид и возврат при бездействии ---------- */
+const HOME_T=new THREE.Vector3(0,0.95,0);
+function setHomeT(){HOME_T.set(0,0.95*S(),0);}
+let exploded=false;
+function homePos(){const d=(innerWidth<760?7.4:5.6)*(exploded?1.35:1)*S();
+  return new THREE.Vector3(0.9,0.75,d).normalize().multiplyScalar(d).add(new THREE.Vector3(0,0.2*S(),0));}
+camera.position.copy(homePos()); controls.target.copy(HOME_T);
+// возврат при бездействии: тот же ракурс по горизонтали, камера просто отъезжает на обзорную дистанцию
+function pullBackPos(){
+  const h=homePos().sub(HOME_T), dist=h.length(), elev=Math.asin(h.y/dist);
+  const cur=camera.position.clone().sub(controls.target), az=Math.atan2(cur.x,cur.z);
+  return new THREE.Vector3(Math.sin(az)*Math.cos(elev),Math.sin(elev),Math.cos(az)*Math.cos(elev)).multiplyScalar(dist).add(HOME_T);
+}
+let fly=null;
+const ease=t=>-(Math.cos(Math.PI*t)-1)/2;
+// возврат в исходный вид: камера по дуге приходит в исходный ракурс, а терминал поворачивается вместе с ней,
+// поэтому сторона, которую рассматривал человек, не «перескакивает», вращение продолжается с неё же
+const wrapA=a=>Math.atan2(Math.sin(a),Math.cos(a));
+function sph(v){const r=v.length();return {r,az:Math.atan2(v.x,v.z),el:Math.asin(THREE.MathUtils.clamp(v.y/r,-1,1))};}
+function goHome(ms,done){
+  const t0v=controls.target.clone(), a=sph(camera.position.clone().sub(t0v)), b=sph(homePos().sub(HOME_T));
+  fly={kind:'home',t0:performance.now(),ms,done,t0v,a,b,dAz:wrapA(b.az-a.az),r0:root?root.rotation.y:0,idle:true};
+}
+function flyTo(pos,tgt,ms,done){fly={p0:camera.position.clone(),p1:pos,t0v:controls.target.clone(),t1v:tgt,t0:performance.now(),ms,done};}
+let lastInput=performance.now(), spinning=!reduce, homing=false;
+function userInput(){lastInput=performance.now();spinning=false;if(homing){homing=false;fly=null;}}
+// активность пользователя = только перетаскивание (кнопка мыши или палец нажаты) и приближение (колесо, щипок).
+// Простое движение мыши над моделью не считается - терминал продолжает вращаться.
+let dragging=false;
+['pointerdown','wheel','touchstart'].forEach(ev=>renderer.domElement.addEventListener(ev,userInput,{passive:true}));
+renderer.domElement.addEventListener('pointermove',e=>{if(e.buttons)userInput();},{passive:true});
+renderer.domElement.addEventListener('touchmove',userInput,{passive:true});
+controls.addEventListener('start',()=>{dragging=true;userInput();});
+controls.addEventListener('end',()=>{dragging=false;userInput();});
+controls.addEventListener('change',()=>{if(dragging)userInput();});
+
+/* ---------- экран АСУ АЗС ---------- */
+const markImg=new Image(); markImg.src='logo_mark.png';
+// две поверхности экрана: вертикальная 9:16 (32″) и горизонтальная 5:4 (17″)
+function mkSurf(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;t.generateMipmaps=false;t.minFilter=THREE.LinearFilter;return {c,g:c.getContext('2d'),tex:t};}
+const SURF={portrait:mkSurf(720,1280),landscape:mkSurf(1280,1024)};
+let surf=SURF.portrait, g=surf.g;
+const C={bg:'#0d1a2e',card:'#16284a',card2:'#1d3560',acc:'#2f7bff',ok:'#22c55e',warn:'#f59e0b',tx:'#ffffff',mu:'#9fb3d1'};
+const F='"Onest",system-ui,sans-serif';
+function rr(x,y,w,h,r,fill){g.beginPath();g.roundRect(x,y,w,h,r);g.fillStyle=fill;g.fill();}
+function txt(s,x,y,size,color,weight=500,align='left'){g.font=`${weight} ${size}px ${F}`;g.fillStyle=color;g.textAlign=align;g.fillText(s,x,y);}
+function header(title,step){
+  g.fillStyle=C.bg;g.fillRect(0,0,720,1280);
+  const grd=g.createLinearGradient(0,0,0,420);grd.addColorStop(0,'rgba(47,123,255,.28)');grd.addColorStop(1,'rgba(47,123,255,0)');g.fillStyle=grd;g.fillRect(0,0,720,420);
+  if(markImg.complete&&markImg.naturalWidth)g.drawImage(markImg,40,36,64,64);
+  txt('ИнтеллектКАЗС',118,80,30,C.tx,700);
+  const d=new Date();txt(d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}),680,80,30,C.mu,500,'right');
+  if(step){for(let i=0;i<6;i++)rr(40+i*110,140,98,8,4,i<step?C.acc:'rgba(255,255,255,.14)');}
+  txt(title,40,240,50,C.tx,700);
+}
+function footer(label){rr(40,1150,640,90,22,C.acc);txt(label,360,1208,34,'#fff',600,'center');}
+const pumps=[['1','Свободна',C.ok],['2','Свободна',C.ok],['3','Заправка',C.warn],['4','Свободна',C.ok]];
+const fuels=[['АИ-92','58,40'],['АИ-95','63,90'],['АИ-100','79,50'],['ДТ','71,20']];
+const screens=[
+  t=>{header('Выберите колонку',1);txt('Нажмите номер колонки, у которой стоит автомобиль',40,300,26,C.mu,400);
+      pumps.forEach(([n,s,c],i)=>{const x=40+(i%2)*330,y=360+Math.floor(i/2)*330;rr(x,y,310,300,28,i===1?C.card2:C.card);
+        if(i===1){g.lineWidth=4;g.strokeStyle=C.acc;g.beginPath();g.roundRect(x,y,310,300,28);g.stroke();}
+        txt(n,x+155,y+175,120,C.tx,700,'center');rr(x+75,y+215,160,46,23,'rgba(255,255,255,.08)');txt(s,x+155,y+247,24,c,600,'center');});
+      txt('Касса работает круглосуточно',360,1100,24,C.mu,400,'center');},
+  t=>{header('Колонка 2 · топливо',2);txt('Цена за литр',40,300,26,C.mu,400);
+      fuels.forEach(([f,p],i)=>{const y=340+i*170;rr(40,y,640,150,26,i===1?C.card2:C.card);
+        if(i===1){g.lineWidth=4;g.strokeStyle=C.acc;g.beginPath();g.roundRect(40,y,640,150,26);g.stroke();}
+        txt(f,80,y+95,52,C.tx,700);txt(p+' ₽',640,y+95,44,i===1?'#8fb8ff':C.mu,600,'right');});
+      footer('Далее');},
+  t=>{header('Сколько заправить?',3);
+      ['Литры','Рубли','Полный бак'].forEach((s,i)=>{rr(40+i*217,290,200,70,35,i===0?C.acc:C.card);txt(s,140+i*217,336,26,'#fff',600,'center');});
+      rr(40,400,640,190,28,C.card);txt('30 л',360,510,96,C.tx,700,'center');txt('АИ-95 · 1 917,00 ₽',360,565,30,C.mu,500,'center');
+      const keys=['1','2','3','4','5','6','7','8','9','⌫','0','OK'];
+      keys.forEach((k,i)=>{const x=40+(i%3)*217,y=620+Math.floor(i/3)*128;rr(x,y,200,112,22,k==='OK'?C.acc:C.card);txt(k,x+100,y+74,44,'#fff',600,'center');});},
+  t=>{header('Способ оплаты',4);
+      [['Банковская карта','Visa · Mastercard · МИР'],['СБП по QR-коду','Оплата с телефона'],['Топливная карта','Лукойл · Роснефть · Газпромнефть'],['Наличные','Купюроприёмник, сдача на карту']].forEach(([a,b],i)=>{
+        const y=300+i*190;rr(40,y,640,170,26,i===0?C.card2:C.card);
+        if(i===0){g.lineWidth=4;g.strokeStyle=C.acc;g.beginPath();g.roundRect(40,y,640,170,26);g.stroke();}
+        txt(a,80,y+80,40,C.tx,700);txt(b,80,y+128,26,C.mu,400);});
+      footer('К оплате 1 917,00 ₽');},
+  t=>{header('Приложите карту',5);txt('к считывателю под экраном',40,300,30,C.mu,400);
+      const p=(t/1000)%1.6/1.6;for(let i=0;i<3;i++){const k=(p+i/3)%1;g.beginPath();g.arc(360,700,120+k*230,0,Math.PI*2);g.strokeStyle=`rgba(47,123,255,${(1-k)*.7})`;g.lineWidth=6;g.stroke();}
+      rr(250,610,220,140,18,C.acc);rr(250,640,220,26,0,'rgba(0,0,0,.35)');rr(280,700,60,34,6,'#f5c542');
+      txt('1 917,00 ₽',360,1060,64,C.tx,700,'center');txt('АИ-95 · 30 л · колонка 2',360,1110,28,C.mu,400,'center');},
+  t=>{header('Идёт заправка',6);const k=Math.min(1,t/SCREEN_MS);const L=(30*k).toFixed(2).replace('.',',');
+      g.beginPath();g.arc(360,660,250,Math.PI*0.75,Math.PI*2.25);g.strokeStyle='rgba(255,255,255,.1)';g.lineWidth=34;g.lineCap='round';g.stroke();
+      g.beginPath();g.arc(360,660,250,Math.PI*0.75,Math.PI*(0.75+1.5*k));g.strokeStyle=C.ok;g.stroke();
+      txt(L,360,670,120,C.tx,700,'center');txt('литров из 30',360,730,30,C.mu,400,'center');
+      txt((1917*k).toFixed(2).replace('.',',')+' ₽',360,1000,56,C.tx,700,'center');txt('Колонка 2 · АИ-95',360,1050,28,C.mu,400,'center');},
+  t=>{header('Спасибо!',6);g.beginPath();g.arc(360,600,150,0,Math.PI*2);g.fillStyle='rgba(34,197,94,.16)';g.fill();
+      g.beginPath();g.moveTo(290,600);g.lineTo(345,655);g.lineTo(440,545);g.strokeStyle=C.ok;g.lineWidth=22;g.lineCap='round';g.lineJoin='round';g.stroke();
+      txt('Заправка завершена',360,850,46,C.tx,700,'center');txt('Заберите чек · 30 л · 1 917,00 ₽',360,905,28,C.mu,400,'center');
+      footer('Хорошей дороги');}
+];
+let scrIdx=0, scrT0=performance.now(), lastDraw=0;
+// левая панель горизонтального экрана: бренд, время, табло цен
+function sidePanel(){
+  g.fillStyle='#0a1526';g.fillRect(0,0,660,1024);
+  const grd=g.createLinearGradient(0,0,660,0);grd.addColorStop(0,'rgba(47,123,255,.22)');grd.addColorStop(1,'rgba(47,123,255,0)');g.fillStyle=grd;g.fillRect(0,0,660,1024);
+  if(markImg.complete&&markImg.naturalWidth)g.drawImage(markImg,56,56,84,84);
+  txt('ИнтеллектКАЗС',160,112,40,C.tx,700);
+  const d=new Date();txt(d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'}),56,270,110,C.tx,700);
+  txt(d.toLocaleDateString('ru-RU',{weekday:'long',day:'numeric',month:'long'}),58,322,30,C.mu,400);
+  txt('Цены на топливо, ₽/л',56,430,28,C.mu,500);
+  fuels.forEach(([f,p],i)=>{const y=460+i*110;rr(56,y,548,92,20,i===1?C.card2:C.card);txt(f,92,y+60,44,C.tx,700);txt(p,570,y+60,44,'#8fb8ff',600,'right');});
+  txt('Касса работает круглосуточно',56,960,26,C.mu,400);
+}
+function drawScreen(now){
+  if(now-lastDraw<50)return; lastDraw=now;
+  let t=now-scrT0; if(t>SCREEN_MS){scrIdx=(scrIdx+1)%screens.length;scrT0=now;t=0;}
+  if(M.screen.layout==='landscape'){
+    sidePanel(); g.save(); g.translate(682,0); g.scale(0.8,0.8); screens[scrIdx](t); g.restore();
+    const fade=Math.min(1,t/350); if(fade<1){g.fillStyle=`rgba(13,26,46,${1-fade})`;g.fillRect(682,0,576,1024);}
+  } else {
+    screens[scrIdx](t);
+    const fade=Math.min(1,t/350); if(fade<1){g.fillStyle=`rgba(13,26,46,${1-fade})`;g.fillRect(0,0,720,1280);}
+  }
+  surf.tex.needsUpdate=true;
+}
+
+
+
+/* ---------- краска: глянцевый лак ---------- */
+const paint=new THREE.MeshPhysicalMaterial({name:'paint',color:COLORS[0][1],metalness:0,roughness:0.35,clearcoat:1,clearcoatRoughness:0.04,envMapIntensity:1.1,side:THREE.DoubleSide});
+
+/* ---------- модель: загрузка по выбору, предыдущая полностью выгружается ---------- */
+const parts=[]; let root=null, logoMesh=null, loadToken=0;
+const logoTex={white:new THREE.TextureLoader().load('logo_white.png'),dark:new THREE.TextureLoader().load('logo_dark.png')};
+Object.values(logoTex).forEach(t=>{t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=8;});
+const loader=new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
+const loadEl=document.getElementById('load');
+function unloadModel(){
+  if(!root)return;
+  scene.remove(root);
+  root.traverse(o=>{if(o.isMesh){o.geometry&&o.geometry.dispose();
+    const mm=Array.isArray(o.material)?o.material:[o.material];
+    mm.forEach(m=>{if(m&&m!==paint)m.dispose();});}});   // текстуры логотипа и экрана общие - не трогаем
+  root=null; logoMesh=null; parts.length=0; envMats=null;
+  for(const d of Object.values(DOORS)){d.pivot=null;d.a=d.from=d.to=0;d.btn.setAttribute('aria-pressed','false');d.btn.textContent=d.open;}
+  phase='assembled'; exploded=false; pendingExplode=false; btn.disabled=false; btn.textContent='Разобрать';
+}
+function onLoad(gltf,token){
+  if(token!==loadToken)return;          // пользователь уже переключился на другую модель
+  root=gltf.scene; let glass=null;
+  root.traverse(o=>{
+    if(o.isMesh&&o.material){
+      if(o.material.name==='Корпус_краска')o.material=paint;
+      else{o.material.side=THREE.DoubleSide;o.material.envMapIntensity=0.9;}
+    }
+    if(o.userData&&o.userData.explode){
+      const e=o.userData.explode;
+      parts.push({obj:o,home:o.position.clone(),off:new THREE.Vector3(e[0],e[1],e[2]),d:Math.hypot(e[0],e[1],e[2])});
+      if((o.userData.label||'').startsWith(M.screen.glass))glass=o;
+    }
+  });
+  const maxd=Math.max(...parts.map(p=>p.d)); parts.forEach(p=>p.delay=0.35*(1-p.d/maxd));
+  // двери на петлях: вертикальная ось по линии петель, всё что закреплено на двери (extras.door) уходит вместе с ней
+  const modelNode=parts[0].obj.parent;
+  for(const key of ['top','bottom']){
+    const pv=new THREE.Object3D(); pv.position.set(M.hinge.x,0,M.hinge.z); modelNode.add(pv); pv.updateMatrixWorld(true);
+    for(const p of parts){ if(p.obj.userData.door===key){ pv.attach(p.obj); p.home=p.obj.position.clone(); } }
+    DOORS[key].pivot=pv;
+  }
+  scene.add(root); root.updateMatrixWorld(true);
+  surf=SURF[M.screen.layout]; g=surf.g; lastDraw=0; surf.tex.needsUpdate=true;
+  if(glass){ // экран за сенсорным стеклом: активная область из паспорта модели
+    const bb=new THREE.Box3().setFromObject(glass),c=bb.getCenter(new THREE.Vector3());
+    const scr=new THREE.Mesh(new THREE.PlaneGeometry(M.screen.w,M.screen.h),new THREE.MeshBasicMaterial({map:surf.tex,toneMapped:false,polygonOffset:true,polygonOffsetFactor:-4,polygonOffsetUnits:-4}));
+    scr.renderOrder=2; scene.add(scr);scr.position.set(c.x,c.y,bb.max.z+0.004);scr.updateMatrixWorld(true);glass.attach(scr);
+  }
+  // логотип ИнтеллектКАЗС на нижней двери: ищем лучом переднюю поверхность в точке из паспорта
+  const ray=new THREE.Raycaster(); ray.set(new THREE.Vector3(0,M.logo.y,3),new THREE.Vector3(0,0,-1));
+  const hit=ray.intersectObject(root,true)[0];
+  if(hit){
+    let door=hit.object; while(door&&!(door.userData&&door.userData.explode))door=door.parent;
+    logoMesh=new THREE.Mesh(new THREE.PlaneGeometry(M.logo.w,M.logo.w*0.43),
+      new THREE.MeshStandardMaterial({map:logoTex.white,transparent:true,roughness:0.3,metalness:0,polygonOffset:true,polygonOffsetFactor:-2,depthWrite:false}));
+    scene.add(logoMesh);logoMesh.position.set(0,M.logo.y,hit.point.z+0.0008);logoMesh.updateMatrixWorld(true);
+    (door||root).attach(logoMesh);
+  }
+  const np=document.getElementById('nparts'); if(np)np.textContent=parts.length;
+  setColor(colorIdx);
+  // исходный вид этой модели и вращение
+  setHomeT(); fly=null; homing=false; controls.target.copy(HOME_T); camera.position.copy(homePos()); controls.update();
+  root.rotation.y=0; spinning=true; lastInput=performance.now();
+  loadEl.hidden=true; post('ok'); document.getElementById('fade').style.opacity=0;
+}
+function onErr(err){post('err');loadEl.hidden=false;loadEl.textContent='Не удалось загрузить модель: '+(err&&err.message||err);}
+function loadModel(id){
+  const m=MODELS.find(x=>x.id===id)||MODELS[0];
+  if(demo)endDemo(false);
+  M=m; const token=++loadToken;
+  document.getElementById('fade').style.opacity=1;
+  document.getElementById('mname').textContent=m.name; document.getElementById('meye').textContent=m.eyebrow;
+  document.getElementById('capName').textContent=m.name; 
+  document.getElementById('mspecs').innerHTML=m.specs.map(([k,v])=>'<span>'+k+'</span><b>'+v+'</b>').join('')+'<span>Узлов в разборке</span><b id="nparts">-</b>';
+  document.querySelectorAll('#models .mtab').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.id===id)));
+  try{history.replaceState(null,'',location.pathname+location.search+'#'+id);}catch(e){}
+  setTimeout(()=>{
+    if(token!==loadToken)return;
+    unloadModel(); loadEl.hidden=false; loadEl.firstChild.textContent='Загрузка '+m.name+'… ';
+    const bin64=window.__MODEL_B64&&window.__MODEL_B64[id];
+    const parseB64=b=>{const bin=Uint8Array.from(atob(b),c=>c.charCodeAt(0));loader.parse(bin.buffer,'',gl=>onLoad(gl,token),onErr);};
+    if(bin64)parseB64(bin64);
+    else if(window.MODEL_JS){ // версия-артефакт: модель лежит в models/<id>.js в base64
+      const sc=document.createElement('script'); sc.src='models/'+id+'.js';
+      sc.onload=()=>parseB64(window.__MODEL_B64[id]); sc.onerror=()=>onErr('нет файла models/'+id+'.js'); document.head.appendChild(sc);
+    } else loader.load('models/'+id+'.glb',gl=>onLoad(gl,token),e=>{if(e.total)document.getElementById('pct').textContent=Math.round(e.loaded/e.total*100)+'%';},onErr);
+  },480);
+}
+// переключатель моделей сверху: вкладки + стрелки
+const nav=document.getElementById('models');
+nav.innerHTML='<button class="marr" type="button" aria-label="Предыдущая модель" data-d="-1">‹</button>'+
+  MODELS.map(m=>'<button class="mtab" type="button" role="tab" data-id="'+m.id+'">'+m.name+'</button>').join('')+
+  '<button class="marr" type="button" aria-label="Следующая модель" data-d="1">›</button>';
+nav.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  if(b.dataset.id){if(b.dataset.id!==M.id)loadModel(b.dataset.id);return;}
+  const i=MODELS.indexOf(M), n=MODELS.length; loadModel(MODELS[(i+ +b.dataset.d+n)%n].id);});
+
+/* ---------- цвета ---------- */
+// листалка: стрелки ‹ › перебирают цвета, клик по кружку открывает меню со всеми цветами
+let colorIdx=0;
+const cdot=document.getElementById('cdot'), cmenu=document.getElementById('cmenu');
+COLORS.forEach(([name,hex],i)=>{const b=document.createElement('button');b.type='button';b.className='opt';b.setAttribute('role','option');
+  b.innerHTML='<i style="background:'+hex+'"></i>'+name;b.addEventListener('click',()=>{setColor(i);closeMenu();cdot.focus();});cmenu.appendChild(b);});
+function openMenu(){cmenu.hidden=false;cdot.setAttribute('aria-expanded','true');cmenu.children[colorIdx].focus();}
+function closeMenu(){cmenu.hidden=true;cdot.setAttribute('aria-expanded','false');}
+cdot.addEventListener('click',e=>{e.stopPropagation();cmenu.hidden?openMenu():closeMenu();});
+document.getElementById('cprev').addEventListener('click',()=>setColor((colorIdx-1+COLORS.length)%COLORS.length));
+document.getElementById('cnext').addEventListener('click',()=>setColor((colorIdx+1)%COLORS.length));
+document.addEventListener('click',e=>{if(!cmenu.hidden&&!cmenu.contains(e.target))closeMenu();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!cmenu.hidden){closeMenu();cdot.focus();}});
+function setColor(i){
+  colorIdx=i; const [name,hex,metal]=COLORS[i];
+  paint.color.set(hex); paint.metalness=metal; paint.roughness=metal?0.28:0.35;
+  cdot.style.background=hex; cdot.title=name;
+  [...cmenu.children].forEach((b,j)=>b.setAttribute('aria-selected',String(i===j)));
+  document.getElementById('cname').textContent=name;
+  if(logoMesh){ // на светлом корпусе - тёмная надпись, на тёмном - белая
+    const c=new THREE.Color(hex), lum=0.2126*c.r+0.7152*c.g+0.0722*c.b;
+    logoMesh.material.map=lum>0.35?logoTex.dark:logoTex.white; logoMesh.material.needsUpdate=true;}
+}
+
+/* ---------- двери: верхняя (экран) и нижняя, открываются на петлях вправо ---------- */
+const DOOR_OPEN=THREE.MathUtils.degToRad(105), DOOR_MS=2600;
+const DOORS={top:{pivot:null,a:0,from:0,to:0,t0:0,btn:document.getElementById('doorTop'),open:'Открыть экран',close:'Закрыть экран'},
+             bottom:{pivot:null,a:0,from:0,to:0,t0:0,btn:document.getElementById('doorBot'),open:'Открыть низ',close:'Закрыть низ'}};
+function setDoor(key,open){const d=DOORS[key];d.from=d.a;d.to=open?DOOR_OPEN:0;d.t0=performance.now();
+  d.btn.setAttribute('aria-pressed',String(open));d.btn.textContent=open?d.close:d.open;}
+Object.entries(DOORS).forEach(([key,d])=>d.btn.addEventListener('click',()=>{
+  if(phase!=='assembled')return; userInput(); setDoor(key,d.to===0);}));
+function doorsClosed(){return DOORS.top.a<1e-3&&DOORS.bottom.a<1e-3&&DOORS.top.to===0&&DOORS.bottom.to===0;}
+function tickDoors(now){for(const d of Object.values(DOORS)){if(!d.pivot)continue;
+  const k=Math.min(1,(now-d.t0)/DOOR_MS); d.a=d.from+(d.to-d.from)*ease(k); d.pivot.rotation.y=d.a;}}
+function syncDoorButtons(){const ok=phase==='assembled'&&!pendingExplode;Object.values(DOORS).forEach(d=>d.btn.disabled=!ok);}
+let pendingExplode=false;
+
+/* ---------- разборка / сборка по кнопке ---------- */
+let phase='assembled', t0=0; const btn=document.getElementById('explode');
+const clamp01=v=>v<0?0:v>1?1:v;
+function setOut(k){for(const p of parts)p.e=ease(clamp01((k-p.delay)/0.65));}
+function setIn(k){for(const p of parts)p.e=1-ease(clamp01((k-(0.35-p.delay))/0.65));}
+/* «дышащий механизм»: в разобранном виде детали медленно покачиваются вдоль линии разлёта,
+   фаза зависит от высоты детали - по механизму идёт волна снизу вверх. Амплитуда растёт вместе с разлётом. */
+const BREATH_T=5.5;                 // период, с
+const tmpV=new THREE.Vector3();
+function applyParts(time){
+  const w=2*Math.PI/BREATH_T;
+  for(const p of parts){
+    const e=p.e||0;
+    p.obj.position.copy(p.home).addScaledVector(p.off,e);
+    if(e>0.001){
+      if(!p.dir){p.dir=p.off.clone().normalize();p.ph=p.home.y*2.4+p.d*3.1;p.amp=0.018+0.06*p.d;}
+      const s=Math.sin(w*time-p.ph), c=Math.cos(w*time*0.8-p.ph*1.3);
+      p.obj.position.addScaledVector(p.dir,p.amp*s*e);        // вдох-выдох вдоль направления разлёта
+      p.obj.position.y+=0.012*c*e;                            // лёгкое парение вверх-вниз
+      p.obj.rotation.set(0.035*c*e,0.03*s*e,0.025*s*e);       // едва заметный наклон
+    } else if(p.obj.rotation.x||p.obj.rotation.y||p.obj.rotation.z){p.obj.rotation.set(0,0,0);}
+  }
+}
+btn.addEventListener('click',()=>{
+  if(!parts.length)return;
+  if(phase==='assembled'){userInput();
+    if(!doorsClosed()){setDoor('top',false);setDoor('bottom',false);pendingExplode=true;btn.disabled=true;btn.textContent='Закрываю двери…';syncDoorButtons2(true);}
+    else startExplode();}
+  else if(phase==='exploded'){userInput();startAssemble();}
+});
+function syncDoorButtons2(dis){Object.values(DOORS).forEach(d=>d.btn.disabled=dis);}
+function startExplode(){pendingExplode=false;phase='out';exploded=true;t0=performance.now();btn.disabled=true;btn.textContent='Разборка…';}
+function startAssemble(){phase='in';exploded=false;t0=performance.now();btn.disabled=true;btn.textContent='Сборка…';}
+function tickExplode(now){
+  const dur=reduce?1:MOVE_MS;
+  if(phase==='out'){const k=Math.min(1,(now-t0)/dur);setOut(k);if(k>=1){phase='exploded';btn.disabled=false;btn.textContent='Собрать';lastInput=now;}}
+  else if(phase==='in'){const k=Math.min(1,(now-t0)/dur);setIn(k);if(k>=1){phase='assembled';btn.disabled=false;btn.textContent='Разобрать';lastInput=now;}}
+}
+
+/* ---------- подпись детали по клику ---------- */
+const ray2=new THREE.Raycaster(), ndc=new THREE.Vector2(), tip=document.getElementById('tip'); let down=null;
+renderer.domElement.addEventListener('pointerdown',e=>{down=[e.clientX,e.clientY];tip.hidden=true;});
+renderer.domElement.addEventListener('pointerup',e=>{
+  if(!down||Math.hypot(e.clientX-down[0],e.clientY-down[1])>5||!root)return;
+  ndc.set(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1); ray2.setFromCamera(ndc,camera);
+  const hit=ray2.intersectObject(root,true)[0]; if(!hit)return;
+  let o=hit.object; while(o&&!(o.userData&&o.userData.label))o=o.parent;
+  tip.textContent=cleanName(o?o.userData.label:''); tip.style.left=e.clientX+'px'; tip.style.top=e.clientY+'px'; tip.hidden=false;
+});
+function cleanName(n){return n.replace(/^[0-9A-Za-zА-Яа-я]+[-.][0-9A-Za-zА-Яа-я.\-]*(_СБ)?\s+/,'').trim();}
+
+
+/* ---------- ЗАЯВКА «Заказать»: письмо на почту компании через FormSubmit (без своего сервера) ----------
+   При первой заявке FormSubmit пришлёт на ORDER_EMAIL письмо «Activate Form» - один раз нажать Activate, дальше заявки идут сразу. */
+const ORDER_EMAIL='intellect4gservice@gmail.com';
+const ORDER_URL='https://formsubmit.co/ajax/'+ORDER_EMAIL;
+// партнёрская метка: виджет встраивается партнёрами через iframe со ссылкой ...?partner=<метка>
+const QS=new URLSearchParams(location.search);
+const PARTNER=(QS.get('partner')||'').slice(0,80);
+let PARTNER_SITE='';try{PARTNER_SITE=document.referrer?new URL(document.referrer).origin:'';}catch(e){}
+const orderBtn=document.getElementById('orderBtn'), orderF=document.getElementById('order'), oMsg=document.getElementById('oMsg'), oSend=document.getElementById('oSend');
+function orderSummary(){return M.name+' · цвет '+COLORS[colorIdx][0];}
+function openOrder(){closeMenu();orderF.hidden=false;orderBtn.setAttribute('aria-expanded','true');
+  document.getElementById('orderModel').textContent=orderSummary(); oMsg.textContent=''; oMsg.className='msg';
+  setTimeout(()=>document.getElementById('oName').focus(),30);}
+function closeOrder(){orderF.hidden=true;orderBtn.setAttribute('aria-expanded','false');}
+orderBtn.addEventListener('click',e=>{e.stopPropagation();orderF.hidden?openOrder():closeOrder();});
+document.addEventListener('click',e=>{if(!orderF.hidden&&!orderF.contains(e.target)&&e.target!==orderBtn)closeOrder();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!orderF.hidden){closeOrder();orderBtn.focus();}});
+orderF.addEventListener('keydown',e=>e.stopPropagation());   // ввод в форме не останавливает и не двигает модель
+function say(t,cls){oMsg.textContent=t;oMsg.className='msg'+(cls?' '+cls:'');}
+orderF.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const name=document.getElementById('oName').value.trim(), phone=document.getElementById('oPhone').value.trim(), email=document.getElementById('oEmail').value.trim();
+  if(!name){say('Укажите ФИО.','err');document.getElementById('oName').focus();return;}
+  if(phone.replace(/\D/g,'').length<10&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){say('Укажите телефон или почту, чтобы мы могли связаться.','err');return;}
+  if(email&&!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){say('Проверьте адрес почты.','err');return;}
+  if(!document.getElementById('oAgree').checked){say('Нужно согласие на обработку данных.','err');return;}
+  if(document.getElementById('oHoney').value)return;   // ловушка для спам-ботов
+  oSend.disabled=true; say('Отправляю…');
+  const payload={'ФИО':name,'Телефон':phone||'-','Почта':email||'-','Модель':M.name,'Цвет корпуса':COLORS[colorIdx][0],
+    'Партнёр':PARTNER||'прямой заход','Сайт партнёра':PARTNER_SITE||'-','Виджет':location.origin+location.pathname,
+    '_subject':'Заявка на терминал '+M.name+(PARTNER?' от партнёра '+PARTNER:'')+' - '+name,'_template':'table','_captcha':'false'};
+  if(email)payload._replyto=email;
+  try{
+    // 1) свой обработчик order.php рядом с виджетом: Телеграм + почта, токен скрыт на сервере
+    let ok=false;
+    if(!window.MODEL_JS){
+      try{
+        const r1=await fetch(new URL('order.php',location.href),{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({name,phone,email,model:M.name,color:COLORS[colorIdx][0],partner:PARTNER,site:PARTNER_SITE,_honey:''})});
+        const j1=await r1.json().catch(()=>({})); ok=r1.ok&&j1.success===true;
+        if(r1.status===422){say('Проверьте ФИО и контакты.','err');return;}
+        if(r1.status===429){say('Слишком много заявок подряд. Попробуйте через 10 минут.','err');return;}
+      }catch(e){}
+    }
+    // 2) запасной канал: FormSubmit на почту (если order.php недоступен)
+    if(!ok){
+      const r=await fetch(ORDER_URL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)});
+      const j=await r.json().catch(()=>({}));
+      ok=r.ok&&(j.success===true||j.success==='true');
+      if(!ok)throw new Error(j.message||('HTTP '+r.status));
+    }
+    say('Заявка отправлена. Мы свяжемся с вами в ближайшее время.','good');
+    ['oName','oPhone','oEmail'].forEach(id=>document.getElementById(id).value='');document.getElementById('oAgree').checked=false;
+    setTimeout(()=>{if(!orderF.hidden)closeOrder();},3500);
+  }catch(err){
+    say(window.MODEL_JS?'В этой демо-версии отправка отключена - на сайте заявка уйдёт сразу. Связаться: '+ORDER_EMAIL
+                       :'Не получилось отправить заявку. Напишите нам на '+ORDER_EMAIL,'err');
+  }finally{oSend.disabled=false;}
+});
+
+/* ---------- кнопка «Вращение»: исходный вид + медленное вращение ---------- */
+document.getElementById('spinBtn').addEventListener('click',()=>{
+  if(demo)return; lastInput=performance.now(); spinning=false; homing=true;
+  goHome(2200,()=>{homing=false;spinning=true;lastInput=performance.now();});
+});
+
+/* ---------- ДЕМО: тёмная сцена, прожекторы с видимыми лучами, пролёт камеры по ключевым формам, 15 с ---------- */
+const DEMO_MS=15000;
+let demo=null, dk=0;
+const fadeEl=document.getElementById('fade'), capEl=document.getElementById('cap');
+function beamMat(color){return new THREE.ShaderMaterial({
+  uniforms:{uOpacity:{value:0},uColor:{value:new THREE.Color(color)}},
+  vertexShader:`varying vec2 vUv;varying vec3 vN;varying vec3 vV;
+    void main(){vUv=uv;vec4 mv=modelViewMatrix*vec4(position,1.);vV=normalize(-mv.xyz);vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`uniform float uOpacity;uniform vec3 uColor;varying vec2 vUv;varying vec3 vN;varying vec3 vV;
+    void main(){float edge=pow(abs(dot(normalize(vN),normalize(vV))),3.0);float along=(0.3+0.7*pow(vUv.y,1.3))*smoothstep(0.0,0.18,vUv.y);
+      gl_FragColor=vec4(uColor*uOpacity*edge*along,1.);}`,
+  transparent:true,depthWrite:false,side:THREE.DoubleSide,
+  // чисто аддитивный свет: цвет добавляется, прозрачность холста не меняется (иначе на светлом фоне проступает чёрный силуэт конусов)
+  blending:THREE.CustomBlending,blendEquation:THREE.AddEquation,blendSrc:THREE.OneFactor,blendDst:THREE.OneFactor,
+  blendSrcAlpha:THREE.ZeroFactor,blendDstAlpha:THREE.OneFactor});}
+const SPOTS=[
+  {p:[-1.5,4.3,1.7],t:[0,1.1,0.1],c:0xfff1e0,i:34,at:0.3},
+  {p:[1.8,4.1,-1.4],t:[0,1.3,0.0],c:0xdfe9ff,i:40,at:1.1},
+  {p:[0.5,4.6,1.0],t:[0,0.6,0.3],c:0xffffff,i:26,at:1.9}];
+const demoRig=new THREE.Group(); scene.add(demoRig);
+SPOTS.forEach(s=>{
+  const P=new THREE.Vector3(...s.p),T=new THREE.Vector3(...s.t),ang=0.3;
+  const sp=new THREE.SpotLight(s.c,0,0,ang,0.6,1.6); sp.position.copy(P); sp.target.position.copy(T); demoRig.add(sp,sp.target); s.light=sp;
+  const L=P.distanceTo(T)*1.15, g=new THREE.CylinderGeometry(0.02,Math.tan(ang*0.62)*L,L,64,1,true);
+  g.translate(0,-L/2,0); g.rotateX(-Math.PI/2);
+  const m=new THREE.Mesh(g,beamMat(s.c)); m.position.copy(P); m.lookAt(T); m.renderOrder=5; m.visible=false; demoRig.add(m); s.beam=m;
+});
+// тёмный пол, на котором видны световые пятна прожекторов (края растворяются в темноте)
+const floorFade=(()=>{const c=document.createElement('canvas');c.width=c.height=256;const x=c.getContext('2d');
+  const gr=x.createRadialGradient(128,128,0,128,128,128);gr.addColorStop(0,'#fff');gr.addColorStop(.55,'#888');gr.addColorStop(1,'#000');x.fillStyle=gr;x.fillRect(0,0,256,256);return new THREE.CanvasTexture(c);})();
+const floor=new THREE.Mesh(new THREE.CircleGeometry(5,64),new THREE.MeshStandardMaterial({color:0x1a1d22,roughness:0.5,metalness:0,transparent:true,opacity:0,alphaMap:floorFade,depthWrite:false}));
+floor.rotation.x=-Math.PI/2; floor.position.y=0.0005; scene.add(floor);
+let envMats=null;
+function collectMats(){envMats=[];const seen=new Set();scene.traverse(o=>{if(o.isMesh&&o.material&&o.material.envMapIntensity!==undefined&&!seen.has(o.material)&&o!==floor){seen.add(o.material);envMats.push({m:o.material,base:o.material.envMapIntensity});}});}
+function buildPath(){
+  const H=homePos(), V=(a,b,c)=>new THREE.Vector3(a,b,c);
+  // ракурсы: низ двери с логотипом → проёмы оборудования → профиль экрана → козырёк сверху → вид сзади-сбоку → общий план
+  const k=S(), W=(a,b,c)=>V(a*k,b*k,c*k);   // ракурсы рассчитаны на ОРИОН-5 и масштабируются по высоте модели
+  const cam=new THREE.CatmullRomCurve3([W(1.05,0.42,1.45),W(-0.25,0.62,0.95),W(-1.05,1.45,0.55),W(-0.55,2.45,0.7),W(1.2,2.1,-1.0),W(2.1,1.35,1.7),H],false,'centripetal');
+  const tgt=new THREE.CatmullRomCurve3([V(0,M.logo.y,0.12),W(0,0.72,0.12),W(0,1.35,0.05),W(0,1.8,0),W(0,1.4,0),W(0,1.05,0),HOME_T.clone()],false,'centripetal');
+  return {cam,tgt};
+}
+function startDemo(){
+  if(demo||!root)return;
+  if(!envMats)collectMats();
+  fadeEl.style.opacity=1; document.body.classList.add('demo'); controls.enabled=false;
+  spinning=false; homing=false; fly=null; tip.hidden=true; closeMenu(); closeOrder();
+  demo={t0:performance.now()+600,path:buildPath()};
+  setTimeout(()=>{ // под затемнением: терминал собран, двери закрыты, исходный поворот
+    pendingExplode=false; phase='assembled'; exploded=false; parts.forEach(p=>p.e=0);
+    for(const d of Object.values(DOORS)){d.a=d.from=d.to=0;if(d.pivot)d.pivot.rotation.y=0;d.btn.setAttribute('aria-pressed','false');d.btn.textContent=d.open;}
+    btn.disabled=false; btn.textContent='Разобрать'; root.rotation.y=0;
+    fadeEl.style.opacity=0;
+  },500);
+}
+function endDemo(natural){
+  if(!demo)return; demo=null;
+  document.body.classList.remove('demo'); capEl.classList.remove('on');
+  controls.enabled=true; lastInput=performance.now(); spinning=!!natural;
+}
+document.getElementById('demoBtn').addEventListener('click',startDemo);
+document.getElementById('skip').addEventListener('click',()=>endDemo(false));
+['pointerdown','wheel','touchstart'].forEach(ev=>renderer.domElement.addEventListener(ev,()=>{if(demo&&performance.now()>demo.t0)endDemo(false);},{passive:true}));
+function tickDemo(now,dt){
+  dk=THREE.MathUtils.clamp(dk+(demo?1:-1)*dt/1.3,0,1);
+  if(window.__dkFix!=null)dk=window.__dkFix;   // линейно за 1,3 с - в такт затемнению фона
+  const tsec=demo?(demo.fixed!=null?demo.fixed*15:Math.max(0,(now-demo.t0)/1000)):99;
+  // свет студии гаснет, прожекторы загораются по очереди
+  STUDIO.forEach(o=>o.l.intensity=o.base*(1-0.9*dk));
+  if(envMats)envMats.forEach(o=>o.m.envMapIntensity=o.base*(1-0.8*dk));
+  floor.material.opacity=dk*dk*dk; floor.visible=dk>0.01;
+  SPOTS.forEach(s=>{const on=demo?THREE.MathUtils.clamp((tsec-s.at)/1.2,0,1):1, k=dk*ease(on);
+    s.light.intensity=s.i*k; s.beam.material.uniforms.uOpacity.value=0.2*k; s.beam.visible=k>0.002;});
+  if(!demo)return;
+  const u=demo.fixed!=null?demo.fixed:THREE.MathUtils.clamp((now-demo.t0)/DEMO_MS,0,1), w=0.35*u+0.65*ease(u);
+  camera.position.copy(demo.path.cam.getPoint(w)); controls.target.copy(demo.path.tgt.getPoint(w));
+  if(u>0.76)capEl.classList.add('on');
+  if(u>=1)endDemo(true);
+}
+
+/* ---------- цикл ---------- */
+let prev=performance.now();
+const loop=(now)=>{
+  const dt=Math.min(0.1,(now-prev)/1000); prev=now;
+  if(fly){const k=Math.min(1,(now-fly.t0)/fly.ms),e=ease(k);
+    if(fly.kind==='home'){
+      controls.target.lerpVectors(fly.t0v,HOME_T,e);
+      const az=fly.a.az+fly.dAz*e, el=fly.a.el+(fly.b.el-fly.a.el)*e, r=fly.a.r+(fly.b.r-fly.a.r)*e;
+      camera.position.set(Math.sin(az)*Math.cos(el),Math.sin(el),Math.cos(az)*Math.cos(el)).multiplyScalar(r).add(controls.target);
+      if(root)root.rotation.y=fly.r0+fly.dAz*e;
+    } else {camera.position.lerpVectors(fly.p0,fly.p1,e);controls.target.lerpVectors(fly.t0v,fly.t1v,e);}
+    if(k>=1){const d=fly.done;fly=null;d&&d();}}
+  tickDemo(now,dt);
+  // 5 с без действий: камера отъезжает в исходный ракурс, терминал снова медленно вращается
+  // долго без действий: камера отъезжает, терминал собирается (если был разобран) и начинает медленно вращаться
+  const animating=phase==='out'||phase==='in';
+  if(!demo&&!dragging&&!homing&&!animating&&now-lastInput>IDLE_MS&&(!spinning||phase==='exploded')){
+    homing=true;
+    if(phase==='exploded')startAssemble();
+    goHome(3000,()=>{homing=false;spinning=true;});}
+  if(spinning&&root)root.rotation.y+=SPIN*dt;
+  tickDoors(now); if(pendingExplode&&doorsClosed())startExplode(); tickExplode(now); applyParts(now/1000); syncDoorButtons(); drawScreen(now); if(demo)camera.lookAt(controls.target); else controls.update(); renderer.render(scene,camera);
+};
+renderer.setAnimationLoop(loop);
+addEventListener('message',e=>{const m=e.data&&e.data.orion;if(m==='pause')renderer.setAnimationLoop(null);else if(m==='play'){prev=performance.now();renderer.setAnimationLoop(loop);}});
+loadModel((location.hash||'').slice(1)||MODELS[0].id);
+window.__orion={camera,controls,scene,startDemo,endDemo,demoAt:(u)=>{if(demo){demo.fixed=u;dk=1;}},dbg:()=>({dragging,spinning,homing,phase,idle:performance.now()-lastInput})};
+</script>

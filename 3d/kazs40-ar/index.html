@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>КАЗС-40 в дополненной реальности</title>
+<meta name="description" content="КАЗС-40 (4×10 м³) ИнтеллектКАЗС: посмотрите станцию на своём участке или на столе через камеру телефона.">
+<style>
+@font-face{font-family:GOSTA;src:url(gost.ttf) format('truetype');font-display:swap}
+:root{--bg:#16181b;--panel:rgba(24,27,31,.92);--fg:#eef1f4;--muted:#9aa4ae;--line:#33393f;--accent:#e30613;--sel:#eef1f4;--seltext:#16181b;
+  --gost:GOSTA,"Arial Narrow",Arial,sans-serif;--sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font:15px/1.4 var(--sans)}
+model-viewer{width:100%;height:100%;display:block;background:radial-gradient(ellipse at 50% 35%,#3a3f45 0%,#202327 60%,#141517 100%);--poster-color:transparent}
+.top{position:absolute;left:0;right:0;top:0;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 10px;pointer-events:none;background:linear-gradient(#16181bdd,#16181b00)}
+.top h1{margin:0;font:400 24px/1.1 var(--gost);letter-spacing:.02em}
+.top p{margin:4px 0 0;font:14px var(--gost);color:var(--muted)}
+.sheet{position:absolute;left:0;right:0;bottom:0;padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 14px);background:var(--panel);border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.lbl{font:13px var(--gost);color:var(--muted);letter-spacing:.06em;text-transform:uppercase;min-width:70px}
+.seg{display:flex;flex:1;border:1px solid var(--line);border-radius:8px;overflow:hidden;min-width:0}
+.seg button{flex:1;padding:9px 6px;background:transparent;color:var(--fg);border:0;border-right:1px solid var(--line);font:14px var(--sans);cursor:pointer;min-width:0}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--sel);color:var(--seltext);font-weight:600}
+.arbtn{width:100%;padding:14px;border:0;border-radius:10px;background:var(--accent);color:#fff;font:600 17px var(--sans);cursor:pointer}
+.hint{font-size:12.5px;color:var(--muted);margin:0}
+.hs{width:24px;height:24px;border-radius:50%;border:2px solid #fff;background:var(--accent);color:#fff;font:13px/20px var(--gost);text-align:center;padding:0;box-shadow:0 1px 4px #0008}
+.hs[data-visible="false"]{opacity:.2}
+.tip{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top,0px) + 70px);background:var(--panel);border-left:3px solid var(--accent);border-radius:6px;padding:8px 10px;font-size:14px}
+.tip[hidden],.hs[hidden]{display:none}
+.nohs .hs{display:none}
+/* в режиме AR (Android) панель компактнее */
+model-viewer[ar-status="session-started"] .top,model-viewer[ar-status="session-started"] .hint,model-viewer[ar-status="session-started"] .arbtn{display:none}
+html.embed .top{display:none}
+.more{display:none;align-self:center;background:none;border:0;color:var(--muted);font:13px var(--sans);padding:4px 10px;cursor:pointer}
+@media (max-width:899px){
+  .top{padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 8px}.top h1{font-size:19px}.top p{font-size:12.5px}
+  .sheet{padding:8px 12px calc(env(safe-area-inset-bottom,0px) + 10px);gap:7px}
+  .lbl{min-width:0;width:100%;font-size:11px;margin-bottom:-3px}
+  .row{gap:4px}.seg button{padding:7px 4px;font-size:13px;line-height:1.15}
+  .arbtn{padding:11px;font-size:15px;border-radius:9px}
+  .hint{font-size:11.5px}
+  .more{display:block}
+  .sheet.min .row,.sheet.min .hint{display:none}
+}
+@media (min-width:900px){.sheet{left:auto;right:16px;bottom:16px;width:420px;border:1px solid var(--line);border-radius:12px}}
+</style>
+</head>
+<body>
+<model-viewer id="mv" class="nohs" src="kazs40_full.glb" ios-src="kazs40_full.usdz" alt="3D-модель КАЗС-40 4×10 м³"
+  camera-controls touch-action="pan-y" shadow-intensity="1.1" shadow-softness="0.9" exposure="1.0" tone-mapping="aces"
+  environment-image="neutral" camera-orbit="-35deg 68deg 70%" min-camera-orbit="auto auto 1%" interaction-prompt="none"
+  ar ar-modes="webxr scene-viewer quick-look" ar-scale="auto" ar-placement="floor">
+  <div slot="ar-button" style="display:none"></div>
+  <div class="top"><h1>КАЗС-40 (4×10 м³)</h1><p id="sub">Масштаб 1:1 · 17 500 × 2 200 × 2 750 мм</p></div>
+  <div class="tip" id="tip" hidden></div>
+  <div class="sheet" id="sheet">
+    <div class="row"><span class="lbl">Вид</span>
+      <div class="seg" id="segVar"><button data-v="full" aria-pressed="true">Целиком</button><button data-v="open" aria-pressed="false">Отсеки открыты</button><button data-v="dims" aria-pressed="false">Размеры</button></div></div>
+    <div class="row"><span class="lbl">Масштаб</span>
+      <div class="seg" id="segScale"><button data-s="" aria-pressed="true">Участок 1:1</button><button data-s="_stol" aria-pressed="false">Стол 1:50</button></div></div>
+    <div class="row"><span class="lbl">Позиции</span>
+      <div class="seg" id="segHs"><button data-h="1" aria-pressed="false">Показать</button><button data-h="0" aria-pressed="true">Скрыть</button></div></div>
+    <button class="more" id="more" type="button">Скрыть настройки ▾</button>
+    <button class="arbtn" id="arb" type="button">Поставить через камеру (AR)</button>
+    <p class="hint" id="hint">Наведите камеру на пол или стол и коснитесь поверхности. В AR: один палец — перетащить, два пальца — сжать/растянуть и повернуть. Двойное касание — вернуть исходный масштаб.</p>
+  </div>
+</model-viewer>
+<script src="model-viewer.min.js"></script>
+<script>if(self!==top){document.documentElement.classList.add("embed");addEventListener("wheel",e=>{if(!(e.ctrlKey||e.metaKey))e.stopPropagation()},{capture:true,passive:true});}</script>
+<script>
+const HOT = {"tank": {"n": "1", "t": "Резервуар 4×10 м³ (ДТ1-ДТ4), двустенный Ø2200", "p": [1.25, 2.05, 0.75]}, "partition": {"n": "5", "t": "Перегородки межсекционные (3 шт.)", "p": [-1.475, 1.3, 0.0], "internal": true}, "hatch": {"n": "9", "t": "Люк-лаз Ду700 (4 шт.) с патрубками: налив, ЛЗ-80, Струна+, деаэрация, обесшламливание", "p": [6.105, 2.85, 0]}, "level": {"n": "22", "t": "Уровнемер «Струна+» на каждой секции", "p": [3.527, 2.9, 0.22]}, "vent": {"n": "17", "t": "Деаэрация Ду50 с СМДК-50 (4 шт.)", "p": [-1.777, 3.6, 0.0]}, "pump25": {"n": "25", "t": "Погружные насосы HQB-150 (секции 1-2) -> ТРК 210-17", "p": [0.5, 2.95, 0.22]}, "line16": {"n": "16", "t": "Линия выдачи Ду40 с секций 1-2 на ТРК Топаз 210-17", "p": [-3.55, 2.48, -0.2]}, "line15": {"n": "15", "t": "Линия выдачи Ду40 с секций 3-4 на ТРК Топаз 511", "p": [-2.75, 2.2, 0.77]}, "platform": {"n": "24", "t": "Площадка обслуживания на уровне люков (2 шт.): проход к люкам с обеих сторон, мостик к стремянке", "p": [-0.75, 3.731, 0.0]}, "lightning": {"n": "13", "t": "Молниеотвод (h ≈ 6,3 м)", "p": [1.2, 6.3, -1.18]}, "cabinet": {"n": "26", "t": "Шкаф автоматики (настенный, тыльная стена)", "p": [-5.43, 2.1, -0.78]}, "el_panel": {"n": "Щ", "t": "Электрощит (настенный, на стенке резервуара слева)", "p": [-4.45, 1.85, -0.48]}, "terminal": {"n": "ТС", "t": "Терминал самообслуживания (справа у стенки резервуара)", "p": [-4.51, 1.97, 0.5]}, "comp_auto": {"n": "10", "t": "Тех. отсек автоматики 2000 мм, распашная дверь в боковой стенке", "p": [-5.21, 1.3, 1.06]}, "pump23": {"n": "23", "t": "Насос наполнения КМ-80-65-140Е: нагнетание на две стороны, каждая раздваивается - 4 трубы с кранами в отсеке", "p": [7.22, 0.88, 0]}, "fill14": {"n": "14", "t": "Линия налива Ду80: от насоса два стояка, каждый раздваивается - 4 линии на 4 секции, кран у каждого люка", "p": [2.25, 2.3, -0.82]}, "comp_pump": {"n": "10", "t": "Тех. отсек насоса 1850 мм, распашная дверь в торце", "p": [8.65, 2.1, 0.0]}, "trk511": {"n": "18", "t": "ТРК Топаз 511 (всасывающая, 50 л/мин), секции 3-4. Табло к торцу станции", "p": [-8.28, 1.85, 0]}, "trk210": {"n": "19", "t": "ТРК Топаз 210-17 (напорная, 300 л/мин) L-образная, секции 1-2", "p": [-7.0, 2.35, 0]}};
+const mv = document.getElementById('mv'), tip = document.getElementById('tip');
+let v = 'full', s = '';
+function src(){ mv.src = 'kazs40_' + v + s + '.glb'; mv.setAttribute('ios-src','kazs40_' + v + s + '.usdz');
+  document.getElementById('sub').textContent = (s ? 'Масштаб 1:50 · 350 × 44 × 55 мм' : 'Масштаб 1:1 · 17 500 × 2 200 × 2 750 мм');
+  const k = s ? 0.02 : 1;
+  document.querySelectorAll('.hs').forEach(b=>{ const p = HOT[b.dataset.id].p; b.dataset.position = p.map(x=>(x*k)+'m').join(' '); });
+  if(mv.updateHotspot) document.querySelectorAll('.hs').forEach(b=>mv.updateHotspot({name:b.slot, position:b.dataset.position}));
+  tip.hidden = true; }
+function seg(id, attr, cb){ const el = document.getElementById(id);
+  el.addEventListener('click', e=>{ const b = e.target.closest('button'); if(!b) return;
+    el.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b)); cb(b.dataset[attr]); }); }
+seg('segVar', 'v', x=>{ v = x; src(); });
+seg('segScale', 's', x=>{ s = x; src(); });
+seg('segHs', 'h', x=>{ mv.classList.toggle('nohs', x==='0'); tip.hidden = true; });
+Object.entries(HOT).forEach(([id,h])=>{
+  const b = document.createElement('button'); b.className = 'hs'; b.slot = 'hotspot-' + id; b.dataset.id = id;
+  b.dataset.position = h.p.map(x=>x+'m').join(' '); b.dataset.normal = '0m 1m 0m'; b.textContent = h.n; b.setAttribute('aria-label', h.t);
+  b.addEventListener('click', ()=>{ tip.hidden = false; tip.textContent = 'Поз. ' + h.n + '. ' + h.t; });
+  mv.appendChild(b); });
+const UA=navigator.userAgent, IOS=/iPad|iPhone|iPod/.test(UA)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1), AND=/Android/i.test(UA), PHONE=IOS||AND;
+const hintEl=document.getElementById('hint'), arb=document.getElementById('arb');
+const abs=p=>new URL(p,location.href).href;
+function quickLook(){ const a=document.createElement('a'); a.rel='ar'; a.href=abs('kazs40_'+v+s+'.usdz'); a.appendChild(document.createElement('img')); document.body.appendChild(a); a.click(); a.remove(); }
+function sceneViewer(){ const f=abs('kazs40_'+v+s+'.glb'); location.href='intent://arvr.google.com/scene-viewer/1.0?file='+encodeURIComponent(f)+'&mode=ar_preferred&resizable=true&title='+encodeURIComponent('КАЗС-40')+'#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url='+encodeURIComponent(location.href)+';end;'; }
+arb.addEventListener('click', ()=>{
+  if(mv.canActivateAR){ mv.activateAR(); return; }
+  if(IOS){ quickLook(); return; }
+  if(AND){ sceneViewer(); return; }
+  hintEl.textContent='Откройте эту страницу на телефоне: iPhone — Safari или Chrome, Android — Chrome. Кнопка запустит камеру.';
+});
+if(!PHONE){ arb.textContent='AR — откройте страницу на телефоне'; }
+if(matchMedia('(max-width:899px) and (orientation:portrait)').matches){ mv.cameraOrbit='-35deg 72deg 115%'; }
+const sheet=document.getElementById('sheet'), more=document.getElementById('more');
+more.addEventListener('click',()=>{ const m=sheet.classList.toggle('min'); more.textContent=m?'Вид и масштаб ▴':'Скрыть настройки ▾'; });
+if(matchMedia('(max-width:899px)').matches){ sheet.classList.add('min'); more.textContent='Вид и масштаб ▴'; }
+mv.addEventListener('ar-status', e=>{ if(e.detail.status === 'failed') document.getElementById('hint').textContent = 'AR на этом устройстве не запустился. Нужен iPhone с iOS 12+ (Safari) или Android с Google Play Services for AR (Chrome).'; });
+
+</script>
+</body>
+</html>
